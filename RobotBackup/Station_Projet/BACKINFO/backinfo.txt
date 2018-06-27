@@ -1,14 +1,14 @@
 #
 # Generated backup file, do not edit.
 #
-# Originally at: /hd0a/TEMP/backup.622957
-# 2018-06-26  09:15:40
+# Originally at: C:\Users\carol\Desktop\Stage_1\Solution_EGM\Systems\TEMP\1530005652\backup.279583
+# 2018-06-27  17:27:56
 #
 >>SYSTEM_ID:
 120-100840
 
 >>PRODUCTS_ID:
-RobotWare Version: 6.03.02.00
+RobotWare Version: 6.06.01.00
 
   RobotWare Base
   709-1 DeviceNet Master/Slave
@@ -28,7 +28,7 @@ RobotWare Version: 6.03.02.00
   Motor Commutation
   Service Info System
   Pendelum Calibration
-  Drive System IRB 120/140/260/360/910SC/1200/1400/1520/1600 IRC5 Compact
+  Drive System IRB 120/140/260/360/910SC/1200/1400/1520/1600/1660ID IRC5 Compact
   Axis Calibration
   IRB 120-3/0.6
 
@@ -45,13 +45,10 @@ MOC.cfg
 
 
 >>TASK1: (T_ROB1,T_ROB1,)
-PROGMOD/MainModule.mod @ 
-SYSMOD/LINKEDM.sys @ HIDDEN
-SYSMOD/GripperFunctions.sys @ 
-
->>TASK2: (Serveur,,)
-SYSMOD/user.sys @ 
-PROGMOD/MainServer.mod @ 
+PROGMOD\EGM_test_UDP.mod @ 
+SYSMOD\user.sys @ 
+SYSMOD\LINKEDM.sys @ HIDDEN
+SYSMOD\GripperFunctions.sys @ 
 
 
 >>EOF:
