@@ -25,3 +25,8 @@ C:\Users\carol\Desktop\Stage_1\EGM_Stuff\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot
 C:\Users\carol\Desktop\Stage_1\EGM_Stuff\EGM_Projet\EGM_Projet\bin\Debug\CsvHelper.xml
 C:\Users\carol\Desktop\Stage_1\EGM_Stuff\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot.pdb
 C:\Users\carol\Desktop\Stage_1\EGM_Stuff\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot.xml
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\CsvHelper.dll
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot.dll
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\CsvHelper.xml
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot.pdb
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot.xml
