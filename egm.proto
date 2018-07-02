@@ -95,6 +95,7 @@ message EgmFeedBack				// Feed back position, i.e. actual measured position for 
     optional EgmJoints    joints = 1;
     optional EgmPose      cartesian = 2;
     optional EgmJoints    externalJoints = 3;
+	optional uint32       test = 4;
 }
 
 message EgmMotorState			// Motor state
