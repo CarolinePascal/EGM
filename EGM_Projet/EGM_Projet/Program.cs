@@ -39,7 +39,7 @@ namespace EgmSmallTest
 
     public class Sensor
     {
-        //private Thread _sensorThread = null;
+        private Thread _sensorThread = null;
         private UdpClient _udpServer = null;
         private bool _exitThread = false;
 
@@ -131,59 +131,79 @@ namespace EgmSmallTest
             var remoteEP = new IPEndPoint(IPAddress.Any, Program.IpPortNumber);
             Console.WriteLine("Connexion avec le client - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);// The IPAdress is created by the program
 
-            StringBuilder text = PlotInit();
+            //StringBuilder text = PlotInit();
 
-            int count = 0;  //Number of positions recoded and ploted
+            int counter = 0;  //Number of positions recoded and ploted
+            int counter2 = 0;
+            int timer = 0;
+
             int n = 0;
             double corr = 1;
 
-            while (_exitThread == false && count <= Program.Plot)
+            while (_exitThread == false && timer <= Program.Plot)
             {
                 if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape) break;  //Stops the program if esc key is pressed
-
-                count++;
 
                 // get the message from robot
                 var data = _udpServer.Receive(ref remoteEP);
 
                 if (data != null)
                 {
-                    // de-serialize inbound message from robot using Google Protocol Buffer 
-                    EgmRobot robot = EgmRobot.CreateBuilder().MergeFrom(data).Build();
+                    timer++;
 
-                    // Get the robots X-position
-                    _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
-                    // Get the robots Y-position
-                    _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
-                    // Get the robots Z-position
-                    _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
-
-                    Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), text);
-
-                    // Put the signal value acquisition here !
-
-                    // create a new outbound sensor message
-                    EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
-                    CreateSensorMessage(sensor,ref n,ref corr);
-
-                    using (MemoryStream memoryStream = new MemoryStream())
+                    if (data.Length >= 300)
                     {
-                        EgmSensor sensorMessage = sensor.Build();
-                        sensorMessage.WriteTo(memoryStream);
+                        counter++;
 
-                        // send the UDP message to the robot
-                        int bytesSent = _udpServer.Send(memoryStream.ToArray(),
-                                                       (int)memoryStream.Length, remoteEP);
-                        if (bytesSent < 0)
+                        // de-serialize inbound message from robot using Google Protocol Buffer
+                        EgmRobot robot = EgmRobot.CreateBuilder().MergeFrom(data).Build();
+
+                        // Get the robots X-position
+                        _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
+                        // Get the robots Y-position
+                        _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
+                        // Get the robots Z-position
+                        _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
+
+                        //Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), text);
+
+                        // create a new outbound sensor message
+                        EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
+                        CreateSensorMessage(sensor, ref n, ref corr);
+
+                        using (MemoryStream memoryStream = new MemoryStream())
                         {
-                            Console.WriteLine("Error send to robot");
+                            EgmSensor sensorMessage = sensor.Build();
+                            sensorMessage.WriteTo(memoryStream);
+
+                            // send the UDP message to the robot
+                            int bytesSent = _udpServer.Send(memoryStream.ToArray(),
+                                                           (int)memoryStream.Length, remoteEP);
+                            if (bytesSent < 0)
+                            {
+                                Console.WriteLine("Error send to robot");
+                            }
                         }
+                    }
+
+                    else
+                    {
+                        counter2++;
+                        string returnData = Encoding.ASCII.GetString(data);
+                        Console.WriteLine(returnData);
                     }
                 }
             }
 
-            Plot(text);
+            //Plot(text);
+            Console.WriteLine(counter);
+            Console.WriteLine(counter2);
+            Console.WriteLine(timer);
             this.Stop();
+            Console.WriteLine("Press any key to exit");
+            while (!Console.KeyAvailable)
+            {
+            }
         }
 
         // Display message from robot
@@ -193,16 +213,19 @@ namespace EgmSmallTest
             if (robot.HasHeader && robot.Header.HasSeqno && robot.Header.HasTm)
             {
                 time = (int)robot.Header.Tm;
-                //Console.WriteLine("Seq={0} tm={1}", robot.Header.Seqno.ToString(), robot.Header.Tm.ToString()); //Uncomment to display
+                Console.WriteLine("Seq={0} tm={1}", robot.Header.Seqno.ToString(), robot.Header.Tm.ToString()); //Uncomment to display
             }
             else
             {
-                //Console.WriteLine("No header in robot message");  //Uncomment to display
+                Console.WriteLine("No header in robot message");  //Uncomment to display
             }
             return (time);
         }
 
+
         //////////////////////////////////////////////////////////////////////////
+
+
         // Create a sensor message to send to the robot
         void CreateSensorMessage(EgmSensor.Builder sensor, ref int n, ref double corr)
         {
@@ -222,12 +245,12 @@ namespace EgmSmallTest
             EgmQuaternion.Builder pq = new EgmQuaternion.Builder();
             EgmCartesian.Builder pc = new EgmCartesian.Builder();
 
-            if(n<750)
+            if (n < 750)
             {
                 n++;
             }
 
-            else if(n>=750)
+            else if (n >= 750)
             {
                 n = 0;
                 corr = -corr;
@@ -235,7 +258,7 @@ namespace EgmSmallTest
 
             _x = 400;
             _y = SimpleCorrection(ref _y, (float)corr);
-            _z = 100 + 100*(float)Math.Cos(n/25);
+            _z = 100 + 100 * (float)Math.Cos(n / 25);
 
 
             pc.SetX(_x)
@@ -252,7 +275,7 @@ namespace EgmSmallTest
 
             // bind pos object to planned
             planned.SetCartesian(pos);
-            // bind planned to sensor object 
+            // bind planned to sensor object
             sensor.SetPlanned(planned);
 
             return;
@@ -261,16 +284,15 @@ namespace EgmSmallTest
         // Start a thread to listen on inbound messages
         public void Start()
         {
-            //_sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking <3
-            //_sensorThread.Start();
-            SensorThread();
+            _sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking <3
+            _sensorThread.Start();
         }
 
         // Stop and exit thread
         public void Stop()
         {
             _exitThread = true;
-            //_sensorThread.Abort();  //Stops the thread
+            _sensorThread.Abort();  //Stops the thread
         }
 
         public float SimpleCorrection(ref float target, float corr)
@@ -280,5 +302,3 @@ namespace EgmSmallTest
         }
     }
 }
-
-
