@@ -16,39 +16,39 @@ using abb.egm;
 namespace EgmSmallTest
 {
     class Program
-    {
-        // listen on this port for inbound messages
-        public static int IpPortNumber = 6510;
-
+    {    
         // usefull Paths
         public static string filePath = "C:/Users/carol/Desktop/Stage_1/plot.py";
         public static string filePath2 = "C:/Users/carol/Desktop/Stage_1/plot2.py";
         public static string python = "c:/users/carol/appdata/local/programs/python/python36-32/python.exe";
 
-        // number of positions to plot
         public static int Plot = 1000;
+
 
         static void Main(string[] args)
         {
             Sensor s = new Sensor();
             while (s._reboot)
             {
-                s._reboot = false;
-                s._exitThread = false;
                 s.Start();
-                
             }
-            
             
         }
     }
 
     public class Sensor
     {
-        //private Thread _sensorThread = null;
+
+        //////////////////////////// PROPRIETIES ////////////////////////////
+
+
+        //private Thread _sensorThread = null;  //In case of Multitasking purposes - unables the stop-restart thing
+
         private UdpClient _udpServer = null;
-        public bool _exitThread = false;
-        public bool _reboot = true;
+        private int IpPortNumber = 6510;
+
+        private bool _exitThread;
+        public bool _reboot;
 
         private uint _seqNumber = 0;    //for sumscheck
 
@@ -74,7 +74,13 @@ namespace EgmSmallTest
             _robotX = 0;
             _robotY = 0;
             _robotZ = 0;
+
+            _exitThread = false;
+            _reboot = true;
         }
+
+
+        //////////////////////////////// PLOT ////////////////////////////////
 
 
         //Initializes the header of the plotting python script
@@ -150,8 +156,6 @@ namespace EgmSmallTest
             text.AppendLine(newLine);
         }
 
-
-
         //Writes the plotting instructions in the python script and executes it
         public void Plot(StringBuilder text)
         {
@@ -174,7 +178,6 @@ namespace EgmSmallTest
             Process process = Process.Start(start);
         }
 
-        //Writes the plotting instructions in the python script and executes it
         public void PlotTorque(StringBuilder text)
         {
             text.AppendLine("T_smooth=np.linspace(T[0],T[-1],1000);");
@@ -192,12 +195,12 @@ namespace EgmSmallTest
             text.AppendLine("plt.plot(T_smooth,t5,label='Axe 5')");
             text.AppendLine("plt.plot(T_smooth,t6,label='Axe 6')");
 
-            //text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
-            //text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
-            //text.AppendLine("plt.plot(T,T3,'--',label='Axe 3')");
-            //text.AppendLine("plt.plot(T,T4,'--',label='Axe 4')");
-            //text.AppendLine("plt.plot(T,T5,'--',label='Axe 5')");
-            //text.AppendLine("plt.plot(T,T6,'--',label='Axe 6')");
+            text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
+            text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
+            text.AppendLine("plt.plot(T,T3,'--',label='Axe 3')");
+            text.AppendLine("plt.plot(T,T4,'--',label='Axe 4')");
+            text.AppendLine("plt.plot(T,T5,'--',label='Axe 5')");
+            text.AppendLine("plt.plot(T,T6,'--',label='Axe 6')");
 
             text.AppendLine("plt.legend()");
             text.AppendLine("plt.show()");
@@ -217,24 +220,31 @@ namespace EgmSmallTest
             Process process = Process.Start(start);
         }
 
+
+        //////////////////////////// COMMUNICATION ////////////////////////////
+
+
         public void SensorThread()
         {
-            // create an udp client and listen on any address and the port _ipPortNumber
-            _udpServer = new UdpClient(Program.IpPortNumber);
-            var remoteEP = new IPEndPoint(IPAddress.Any, Program.IpPortNumber);
-            Console.WriteLine("Connexion avec le client - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);// The IPAdress is created by the program
-            Console.WriteLine("Start Rapid Procedure");
+            // create an udp client and listen on any address and the port ipPortNumber
 
+            _udpServer = new UdpClient(IpPortNumber);
+            var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumber);
+            Console.WriteLine("Connexion avec le client - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);// The IPAdress is created by the program
+            Console.WriteLine("==> Start the Rapid procedure <==");
 
             StringBuilder text = PlotInit();
             StringBuilder text2 = TorqueInit();
 
-            int counter = 0;  //Number of positions recoded and ploted
+            //Counters
+
+            int counter = 0;  
             int counter2 = 0;
             int timer = 0;
 
             while (_exitThread == false && timer <= Program.Plot)
             {
+
                 if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)  //Stops the program if esc key is pressed
                 {
 
@@ -242,22 +252,44 @@ namespace EgmSmallTest
 
                     do
                     {
-                        Console.WriteLine("Continue ? Press C Quit ? press Q");
+                        Console.WriteLine("Do you want to quit the procedure ? Yes [Y] No [N]");
                         key2 = Console.ReadKey(true).Key;
 
-                    } while (key2 != ConsoleKey.C && key2 != ConsoleKey.Q);
+                    } while (key2 != ConsoleKey.Y && key2 != ConsoleKey.N);
 
-                    if (key2 == ConsoleKey.Q) { break; }
-                    else if (key2 == ConsoleKey.C) { continue; }
+                    if (key2 == ConsoleKey.Y) { break; }
+                    else if (key2 == ConsoleKey.N) { continue; }
                 }
+
                 // get the message from robot
+
                 var data = _udpServer.Receive(ref remoteEP);                
 
                 if (data != null)
                 {
                     timer++;
 
-                    if (data.Length >= 300)
+                    //Displays processing
+
+                    if (timer % (Program.Plot/20) == 0)
+                    {
+                        int taux = timer*20 / Program.Plot;
+                        string chaine = "";
+                        for(int i=0; i<taux; i++)
+                        {
+                            chaine+= ".";
+                        }
+                        for(int i=taux;i<21;i++)
+                        {
+                            chaine += " ";
+                        }
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.Write(new String(' ', Console.BufferWidth));
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.WriteLine("Processing : "+chaine+(timer*100/Program.Plot).ToString()+"%");
+                    }
+
+                    if (data.Length >= 300) //EGM Feedback data message
                     {
                         counter++;
 
@@ -294,11 +326,11 @@ namespace EgmSmallTest
                         }
                     }
 
-                    else
+                    else //Torque Freedback message
                     {
                         counter2++;
                         string returnData = Encoding.ASCII.GetString(data);
-                        Console.WriteLine(returnData);
+                        //Console.WriteLine(returnData);    //Display
                         String[] substrings = returnData.Split(' ');
 
                         FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text2);
@@ -306,32 +338,29 @@ namespace EgmSmallTest
                 }
             }
 
-
-
-
             Plot(text);
             PlotTorque(text2);
-            Console.WriteLine(counter);
-            Console.WriteLine(counter2);
-            Console.WriteLine(timer);
+
+            Console.WriteLine(" ");
+            Console.WriteLine("Nombre de Feedbacks EGM : "+ counter);
+            Console.WriteLine("Nombre de Feedbacks couples : " + counter2);
+            Console.WriteLine("Nombre de messages totaux :" + timer);
 
             _udpServer.Close();
-
             
             bool flag = true;
             ConsoleKey key = new ConsoleKey();
 
             do
             {
-                Console.WriteLine("Retry ? Press S Quit ? Press Q");
+                Console.WriteLine("Reboot the procedure ? Yes [Y] No [N]");
                 key = Console.ReadKey(true).Key;
 
-            } while (key != ConsoleKey.S && key != ConsoleKey.Q);
+            } while (key != ConsoleKey.Y && key != ConsoleKey.N);
 
-            if (key == ConsoleKey.Q) { flag = false; }
-            else if (key == ConsoleKey.S) { }
+            if (key == ConsoleKey.N) { flag = false; }
+            else if (key == ConsoleKey.Y) { }
             
-
             this.Stop(flag);
         }
 
@@ -352,12 +381,11 @@ namespace EgmSmallTest
         }
 
 
-        //////////////////////////////////////////////////////////////////////////
+        /////////////////////////// PATH PLANNING ///////////////////////////
 
-        public int c=0;
+        public int c = 0;
         public int n = 0;
-        public double corr = 0.5;
-
+        public double corr = 1;
 
         // Create a sensor message to send to the robot
         void CreateSensorMessage(EgmSensor.Builder sensor, ref int n, ref double corr)
@@ -378,12 +406,12 @@ namespace EgmSmallTest
             EgmQuaternion.Builder pq = new EgmQuaternion.Builder();
             EgmCartesian.Builder pc = new EgmCartesian.Builder();
 
-            if (n < 1000)
+            if (n < 250)
             {
                 n++;
             }
 
-            else if (n >= 1000)
+            else if (n >= 250)
             {
                 n = 0;
                 corr = -corr;
@@ -399,7 +427,7 @@ namespace EgmSmallTest
               .SetY(_y)
               .SetZ(_z);
 
-            Console.WriteLine(_x.ToString()+ _y.ToString()+ _z.ToString());
+            //Console.WriteLine(_x.ToString()+" "+ _y.ToString()+" "+ _z.ToString());
 
             pq.SetU0(0.0)   //To check, but seems to be vertical
               .SetU1(0.0)
@@ -417,12 +445,24 @@ namespace EgmSmallTest
             return;
         }
 
+        // Writes a simple offset correction on the path
+        public float SimpleCorrection(ref float target, float corr)
+        {
+            target = target + corr;
+            return (target);
+        }
+
+
+        /////////////////////////// STOP & START ///////////////////////////
+
+
         // Start a thread to listen on inbound messages
         public void Start()
         {
-            //_sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking <3
+            //_sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking 
             //_sensorThread.Start();
             _reboot = false;
+            _exitThread = false;
             SensorThread();
         }
 
@@ -432,12 +472,6 @@ namespace EgmSmallTest
             _exitThread = true;
             _reboot = reboot;
             //_sensorThread.Abort();  //Stops the thread
-        }
-
-        public float SimpleCorrection(ref float target, float corr)
-        {
-            target = target + corr;
-            return (target);
         }
     }
 }
