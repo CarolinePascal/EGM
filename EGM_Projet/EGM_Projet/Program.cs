@@ -26,23 +26,29 @@ namespace EgmSmallTest
         public static string python = "c:/users/carol/appdata/local/programs/python/python36-32/python.exe";
 
         // number of positions to plot
-        public static int Plot = 1500;
+        public static int Plot = 1000;
 
         static void Main(string[] args)
         {
             Sensor s = new Sensor();
-            s.Start();
-
-            Console.WriteLine("Press any key to Exit");
-            Console.ReadLine();
+            while (s._reboot)
+            {
+                s._reboot = false;
+                s._exitThread = false;
+                s.Start();
+                
+            }
+            
+            
         }
     }
 
     public class Sensor
     {
-        private Thread _sensorThread = null;
+        //private Thread _sensorThread = null;
         private UdpClient _udpServer = null;
-        private bool _exitThread = false;
+        public bool _exitThread = false;
+        public bool _reboot = true;
 
         private uint _seqNumber = 0;    //for sumscheck
 
@@ -98,6 +104,8 @@ namespace EgmSmallTest
 
             text.AppendLine("#Plot Python Essai");
             text.AppendLine("import matplotlib.pyplot as plt");
+            text.AppendLine("from scipy.interpolate import spline");
+            text.AppendLine("import numpy as np");
             text.AppendLine(" ");
             text.AppendLine("T1=[]");
             text.AppendLine("T2=[]");
@@ -169,12 +177,28 @@ namespace EgmSmallTest
         //Writes the plotting instructions in the python script and executes it
         public void PlotTorque(StringBuilder text)
         {
-            text.AppendLine("plt.plot(T,T1,label='Axe 1')");
-            text.AppendLine("plt.plot(T,T2,label='Axe 2')");
-            text.AppendLine("plt.plot(T,T3,label='Axe 3')");
-            text.AppendLine("plt.plot(T,T4,label='Axe 4')");
-            text.AppendLine("plt.plot(T,T5,label='Axe 5')");
-            text.AppendLine("plt.plot(T,T6,label='Axe 6')");
+            text.AppendLine("T_smooth=np.linspace(T[0],T[-1],1000);");
+            text.AppendLine("t1=spline(T,T1,T_smooth)");
+            text.AppendLine("t2=spline(T,T2,T_smooth)");
+            text.AppendLine("t3=spline(T,T3,T_smooth)");
+            text.AppendLine("t4=spline(T,T4,T_smooth)");
+            text.AppendLine("t5=spline(T,T5,T_smooth)");
+            text.AppendLine("t6=spline(T,T6,T_smooth)");
+
+            text.AppendLine("plt.plot(T_smooth,t1,label='Axe 1')");
+            text.AppendLine("plt.plot(T_smooth,t2,label='Axe 2')");
+            text.AppendLine("plt.plot(T_smooth,t3,label='Axe 3')");
+            text.AppendLine("plt.plot(T_smooth,t4,label='Axe 4')");
+            text.AppendLine("plt.plot(T_smooth,t5,label='Axe 5')");
+            text.AppendLine("plt.plot(T_smooth,t6,label='Axe 6')");
+
+            //text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
+            //text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
+            //text.AppendLine("plt.plot(T,T3,'--',label='Axe 3')");
+            //text.AppendLine("plt.plot(T,T4,'--',label='Axe 4')");
+            //text.AppendLine("plt.plot(T,T5,'--',label='Axe 5')");
+            //text.AppendLine("plt.plot(T,T6,'--',label='Axe 6')");
+
             text.AppendLine("plt.legend()");
             text.AppendLine("plt.show()");
             File.WriteAllText(Program.filePath2, text.ToString());
@@ -199,6 +223,8 @@ namespace EgmSmallTest
             _udpServer = new UdpClient(Program.IpPortNumber);
             var remoteEP = new IPEndPoint(IPAddress.Any, Program.IpPortNumber);
             Console.WriteLine("Connexion avec le client - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);// The IPAdress is created by the program
+            Console.WriteLine("Start Rapid Procedure");
+
 
             StringBuilder text = PlotInit();
             StringBuilder text2 = TorqueInit();
@@ -207,13 +233,23 @@ namespace EgmSmallTest
             int counter2 = 0;
             int timer = 0;
 
-            int n = 0;
-            double corr = 1;
-
             while (_exitThread == false && timer <= Program.Plot)
             {
-                if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape) break;  //Stops the program if esc key is pressed
+                if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)  //Stops the program if esc key is pressed
+                {
 
+                    ConsoleKey key2 = new ConsoleKey();
+
+                    do
+                    {
+                        Console.WriteLine("Continue ? Press C Quit ? press Q");
+                        key2 = Console.ReadKey(true).Key;
+
+                    } while (key2 != ConsoleKey.C && key2 != ConsoleKey.Q);
+
+                    if (key2 == ConsoleKey.Q) { break; }
+                    else if (key2 == ConsoleKey.C) { continue; }
+                }
                 // get the message from robot
                 var data = _udpServer.Receive(ref remoteEP);                
 
@@ -227,6 +263,8 @@ namespace EgmSmallTest
 
                         // de-serialize inbound message from robot using Google Protocol Buffer
                         EgmRobot robot = EgmRobot.CreateBuilder().MergeFrom(data).Build();
+
+                        //DisplayInboundMessage(robot);
 
                         // Get the robots X-position
                         _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
@@ -268,16 +306,33 @@ namespace EgmSmallTest
                 }
             }
 
+
+
+
             Plot(text);
             PlotTorque(text2);
             Console.WriteLine(counter);
             Console.WriteLine(counter2);
             Console.WriteLine(timer);
-            this.Stop();
-            Console.WriteLine("Press any key to exit");
-            while (!Console.KeyAvailable)
+
+            _udpServer.Close();
+
+            
+            bool flag = true;
+            ConsoleKey key = new ConsoleKey();
+
+            do
             {
-            }
+                Console.WriteLine("Retry ? Press S Quit ? Press Q");
+                key = Console.ReadKey(true).Key;
+
+            } while (key != ConsoleKey.S && key != ConsoleKey.Q);
+
+            if (key == ConsoleKey.Q) { flag = false; }
+            else if (key == ConsoleKey.S) { }
+            
+
+            this.Stop(flag);
         }
 
         // Display message from robot
@@ -299,6 +354,10 @@ namespace EgmSmallTest
 
         //////////////////////////////////////////////////////////////////////////
 
+        public int c=0;
+        public int n = 0;
+        public double corr = 0.5;
+
 
         // Create a sensor message to send to the robot
         void CreateSensorMessage(EgmSensor.Builder sensor, ref int n, ref double corr)
@@ -319,25 +378,28 @@ namespace EgmSmallTest
             EgmQuaternion.Builder pq = new EgmQuaternion.Builder();
             EgmCartesian.Builder pc = new EgmCartesian.Builder();
 
-            if (n < 750)
+            if (n < 1000)
             {
                 n++;
             }
 
-            else if (n >= 750)
+            else if (n >= 1000)
             {
                 n = 0;
                 corr = -corr;
+                c += 0;
             }
 
             _x = 400;
             _y = SimpleCorrection(ref _y, (float)corr);
-            _z = 100 + 100 * (float)Math.Cos(n / 25);
+            _z = 100 + c;
 
 
             pc.SetX(_x)
               .SetY(_y)
               .SetZ(_z);
+
+            Console.WriteLine(_x.ToString()+ _y.ToString()+ _z.ToString());
 
             pq.SetU0(0.0)   //To check, but seems to be vertical
               .SetU1(0.0)
@@ -358,15 +420,18 @@ namespace EgmSmallTest
         // Start a thread to listen on inbound messages
         public void Start()
         {
-            _sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking <3
-            _sensorThread.Start();
+            //_sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking <3
+            //_sensorThread.Start();
+            _reboot = false;
+            SensorThread();
         }
 
         // Stop and exit thread
-        public void Stop()
+        public void Stop(bool reboot)
         {
             _exitThread = true;
-            _sensorThread.Abort();  //Stops the thread
+            _reboot = reboot;
+            //_sensorThread.Abort();  //Stops the thread
         }
 
         public float SimpleCorrection(ref float target, float corr)
