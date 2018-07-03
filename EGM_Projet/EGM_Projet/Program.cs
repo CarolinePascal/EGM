@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using abb.egm;
 
 
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -22,7 +23,7 @@ namespace EgmSmallTest
         public static string filePath2 = "C:/Users/carol/Desktop/Stage_1/plot2.py";
         public static string python = "c:/users/carol/appdata/local/programs/python/python36-32/python.exe";
 
-        public static int Plot = 1000;
+        public static int Plot = 2000;
 
 
         static void Main(string[] args)
@@ -68,8 +69,8 @@ namespace EgmSmallTest
         {
             //Initial position specified by the fine robtarget in Rapid
             _x = 400;
-            _y = -300;
-            _z = 100;
+            _y = 0;
+            _z = 0;
 
             _robotX = 0;
             _robotY = 0;
@@ -95,6 +96,7 @@ namespace EgmSmallTest
             text.AppendLine("X=[]");
             text.AppendLine("Y=[]");
             text.AppendLine("Z=[]");
+            text.AppendLine("T=[]");
             text.AppendLine(" ");
             text.AppendLine("fig=plt.figure()");
             text.AppendLine("ax=fig.gca(projection='3d')");
@@ -128,13 +130,15 @@ namespace EgmSmallTest
         }
 
         //Writes the recorded positions values in the python script
-        public void Fill(string x, string y, string z, StringBuilder text)
+        public void Fill(string x, string y, string z, string t, StringBuilder text)
         {
             var newLine = string.Format("X.append({0})", x);
             text.AppendLine(newLine);
             newLine = string.Format("Y.append({0})", y);
             text.AppendLine(newLine);
             newLine = string.Format("Z.append({0})", z);
+            text.AppendLine(newLine);
+            newLine = string.Format("T.append({0})", t);
             text.AppendLine(newLine);
         }
 
@@ -161,7 +165,20 @@ namespace EgmSmallTest
         {
             text.AppendLine("ax.plot(X,Y,Z)");
             text.AppendLine("plt.axis('equal')");
+
+            text.AppendLine("fig2=plt.figure()");
+
+            text.AppendLine("plt.plot(T,X,label='x')");
+            text.AppendLine("plt.plot(T,Y,label='y')");
+            text.AppendLine("plt.plot(T,Z,label='z')");
+
+            text.AppendLine("plt.xlabel('Temps en ms')");
+            text.AppendLine("plt.ylabel('Axes')");
+
+            text.AppendLine("plt.legend(loc='best')");
             text.AppendLine("plt.show()");
+
+
             File.WriteAllText(Program.filePath, text.ToString());
 
             ProcessStartInfo start = new ProcessStartInfo();
@@ -202,7 +219,11 @@ namespace EgmSmallTest
             text.AppendLine("plt.plot(T,T5,'--',label='Axe 5')");
             text.AppendLine("plt.plot(T,T6,'--',label='Axe 6')");
 
-            text.AppendLine("plt.legend()");
+            text.AppendLine("plt.xlabel('Temps en ms')");
+            text.AppendLine("plt.ylabel('Couples en Nm')");
+
+
+            text.AppendLine("plt.legend(loc='best')");
             text.AppendLine("plt.show()");
             File.WriteAllText(Program.filePath2, text.ToString());
 
@@ -241,6 +262,8 @@ namespace EgmSmallTest
             int counter = 0;  
             int counter2 = 0;
             int timer = 0;
+
+            int Reftime = 0;
 
             while (_exitThread == false && timer <= Program.Plot)
             {
@@ -296,6 +319,11 @@ namespace EgmSmallTest
                         // de-serialize inbound message from robot using Google Protocol Buffer
                         EgmRobot robot = EgmRobot.CreateBuilder().MergeFrom(data).Build();
 
+                        if (counter == 1)
+                        {
+                            Reftime = (int)robot.Header.Tm;
+                        }
+
                         //DisplayInboundMessage(robot);
 
                         // Get the robots X-position
@@ -305,11 +333,11 @@ namespace EgmSmallTest
                         // Get the robots Z-position
                         _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
 
-                        Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), text);
+                        Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(),((int)robot.Header.Tm - Reftime).ToString(), text);
 
                         // create a new outbound sensor message
                         EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
-                        CreateSensorMessage(sensor, ref n, ref corr);
+                        CreateSensorMessage(sensor);
 
                         using (MemoryStream memoryStream = new MemoryStream())
                         {
@@ -383,12 +411,10 @@ namespace EgmSmallTest
 
         /////////////////////////// PATH PLANNING ///////////////////////////
 
-        public int c = 0;
-        public int n = 0;
-        public double corr = 1;
+        double n = 0;
 
         // Create a sensor message to send to the robot
-        void CreateSensorMessage(EgmSensor.Builder sensor, ref int n, ref double corr)
+        void CreateSensorMessage(EgmSensor.Builder sensor)
         {
             // create a header
             EgmHeader.Builder hdr = new EgmHeader.Builder();
@@ -406,22 +432,11 @@ namespace EgmSmallTest
             EgmQuaternion.Builder pq = new EgmQuaternion.Builder();
             EgmCartesian.Builder pc = new EgmCartesian.Builder();
 
-            if (n < 250)
-            {
-                n++;
-            }
-
-            else if (n >= 250)
-            {
-                n = 0;
-                corr = -corr;
-                c += 0;
-            }
-
             _x = 400;
-            _y = SimpleCorrection(ref _y, (float)corr);
-            _z = 100 + c;
+            _y = heart_y(n);
+            _z = heart_z(n); ;
 
+            n+=2*Math.PI/(Program.Plot-200);
 
             pc.SetX(_x)
               .SetY(_y)
@@ -450,6 +465,17 @@ namespace EgmSmallTest
         {
             target = target + corr;
             return (target);
+        }
+
+        //Describes the shape of a heart 
+        public float heart_y(double n)
+        {
+            return (float)(16*5 * Math.Pow(Math.Sin(n), 3));
+        }
+
+        public float heart_z(double n)
+        {
+            return (float)(13*5 * Math.Cos(n) - 5*5 * Math.Cos(2 * n) - 2*5 * Math.Cos(3 * n) - 5*Math.Cos(4 * n));
         }
 
 
