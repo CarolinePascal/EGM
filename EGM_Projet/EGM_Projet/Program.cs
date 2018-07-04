@@ -20,7 +20,6 @@ namespace EgmSmallTest
     {    
         // usefull Paths
         public static string filePath = "C:/Users/carol/Desktop/Stage_1/plot.py";
-        public static string filePath2 = "C:/Users/carol/Desktop/Stage_1/plot2.py";
         public static string python = "c:/users/carol/appdata/local/programs/python/python36-32/python.exe";
 
         public static int Plot = 1000;
@@ -200,6 +199,8 @@ namespace EgmSmallTest
             text.AppendLine("plt.xlabel('Temps en ms')");
             text.AppendLine("plt.ylabel('Couples en Nm')");
 
+            text.AppendLine(" ");
+
             text.AppendLine("plt.legend(loc='best')");
             text.AppendLine("plt.show()");
 
@@ -227,6 +228,7 @@ namespace EgmSmallTest
             var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumberT);
 
             int timer = 0;
+            double check = -4;
 
             while (!Abort)
             {
@@ -240,14 +242,23 @@ namespace EgmSmallTest
 
                 if (data != null)
                 {
-                    timer++;
 
-                        string returnData = Encoding.ASCII.GetString(data);
-                        Console.WriteLine(returnData);    //Display
-                        String[] substrings = returnData.Split(' ');
 
+                    string returnData = Encoding.ASCII.GetString(data);
+                    String[] substrings = returnData.Split(' ');
+
+                    int temps = Int32.Parse(substrings[0]);
+                   
+
+                    if (temps % 4 == 0 && temps!=check)
+                    {
+                        check = temps;
                         FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text);
-                    
+                        Console.WriteLine(returnData);    //Display
+                        timer++;
+                    }
+
+                       
                 }
             }
 
@@ -274,7 +285,7 @@ namespace EgmSmallTest
             int timer = 0;
             int RefTime = 0;
 
-            while (_exitThread == false && timer < Program.Plot)
+            while (_exitThread == false && timer <= Program.Plot)
             {
 
                 if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)  //Stops the program if esc key is pressed
@@ -314,23 +325,23 @@ namespace EgmSmallTest
 
                     //Displays processing
 
-                    if (timer % (Program.Plot / 20) == 0)
-                    {
-                        int taux = timer * 20 / Program.Plot;
-                        string chaine = "";
-                        for (int i = 0; i < taux; i++)
-                        {
-                            chaine += ".";
-                        }
-                        for (int i = taux; i < 21; i++)
-                        {
-                            chaine += " ";
-                        }
-                        Console.SetCursorPosition(0, Console.CursorTop - 1);
-                        Console.Write(new String(' ', Console.BufferWidth));
-                        Console.SetCursorPosition(0, Console.CursorTop - 1);
-                        Console.WriteLine("Processing : " + chaine + (timer * 100 / Program.Plot).ToString() + "%");
-                    }
+                    //if (timer % (Program.Plot / 20) == 0)
+                    //{
+                    //    int taux = timer * 20 / Program.Plot;
+                    //    string chaine = "";
+                    //    for (int i = 0; i < taux; i++)
+                    //    {
+                    //        chaine += ".";
+                    //    }
+                    //    for (int i = taux; i < 21; i++)
+                    //    {
+                    //        chaine += " ";
+                    //    }
+                    //    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    //    Console.Write(new String(' ', Console.BufferWidth));
+                    //    Console.SetCursorPosition(0, Console.CursorTop - 1);
+                    //    Console.WriteLine("Processing : " + chaine + (timer * 100 / Program.Plot).ToString() + "%");
+                    //}
 
 
                     // de-serialize inbound message from robot using Google Protocol Buffer
