@@ -59,6 +59,8 @@ namespace EgmSmallTest
         private UdpClient _udpServer = null;
         private UdpClient _udpServerT = null;
 
+        private StringBuilder text;
+
         private int IpPortNumber = 6510;
         private int IpPortNumberT = 5000;
 
@@ -96,6 +98,8 @@ namespace EgmSmallTest
             _reboot = true;
             Abort = false;
             Wait = false;
+
+            text = new StringBuilder();
         }
 
 
@@ -107,31 +111,15 @@ namespace EgmSmallTest
         {
             var text = new StringBuilder();
 
-            text.AppendLine("#Plot Python Essai");
+            text.AppendLine("#Plot Python ");
             text.AppendLine("import matplotlib.pyplot as plt");
             text.AppendLine("from mpl_toolkits.mplot3d import Axes3D");
+
             text.AppendLine(" ");
             text.AppendLine("X=[]");
             text.AppendLine("Y=[]");
             text.AppendLine("Z=[]");
-            text.AppendLine("T=[]");
-            text.AppendLine(" ");
-            text.AppendLine("fig=plt.figure()");
-            text.AppendLine("ax=fig.gca(projection='3d')");
-            text.AppendLine(" ");
-
-            return (text);
-
-        }
-
-        public StringBuilder TorqueInit()
-        {
-            var text = new StringBuilder();
-
-            text.AppendLine("#Plot Python Essai");
-            text.AppendLine("import matplotlib.pyplot as plt");
-            text.AppendLine("from scipy.interpolate import spline");
-            text.AppendLine("import numpy as np");
+            text.AppendLine("TEGM=[]");
             text.AppendLine(" ");
             text.AppendLine("T1=[]");
             text.AppendLine("T2=[]");
@@ -141,10 +129,14 @@ namespace EgmSmallTest
             text.AppendLine("T6=[]");
             text.AppendLine("T=[]");
             text.AppendLine(" ");
+
             text.AppendLine("fig=plt.figure()");
+            text.AppendLine("ax=fig.gca(projection='3d')");
+
             text.AppendLine(" ");
 
             return (text);
+
         }
 
         //Writes the recorded positions values in the python script
@@ -156,7 +148,7 @@ namespace EgmSmallTest
             text.AppendLine(newLine);
             newLine = string.Format("Z.append({0})", z);
             text.AppendLine(newLine);
-            newLine = string.Format("T.append({0})", t);
+            newLine = string.Format("TEGM.append({0})", t);
             text.AppendLine(newLine);
         }
 
@@ -181,21 +173,35 @@ namespace EgmSmallTest
         //Writes the plotting instructions in the python script and executes it
         public void Plot(StringBuilder text)
         {
+            text.AppendLine(" ");
             text.AppendLine("ax.plot(X,Y,Z)");
             text.AppendLine("plt.axis('equal')");
 
-            text.AppendLine("fig2=plt.figure()");
+            text.AppendLine(" ");
 
-            text.AppendLine("plt.plot(T,X,label='x')");
-            text.AppendLine("plt.plot(T,Y,label='y')");
-            text.AppendLine("plt.plot(T,Z,label='z')");
+            text.AppendLine("fig2=plt.figure()");
+            text.AppendLine("plt.plot(TEGM,X,label='x')");
+            text.AppendLine("plt.plot(TEGM,Y,label='y')");
+            text.AppendLine("plt.plot(TEGM,Z,label='z')");
 
             text.AppendLine("plt.xlabel('Temps en ms')");
             text.AppendLine("plt.ylabel('Axes')");
 
+            text.AppendLine(" ");
+
+            text.AppendLine("fig3=plt.figure()");
+            text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
+            text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
+            text.AppendLine("plt.plot(T,T3,'--',label='Axe 3')");
+            text.AppendLine("plt.plot(T,T4,'--',label='Axe 4')");
+            text.AppendLine("plt.plot(T,T5,'--',label='Axe 5')");
+            text.AppendLine("plt.plot(T,T6,'--',label='Axe 6')");
+
+            text.AppendLine("plt.xlabel('Temps en ms')");
+            text.AppendLine("plt.ylabel('Couples en Nm')");
+
             text.AppendLine("plt.legend(loc='best')");
             text.AppendLine("plt.show()");
-
 
             File.WriteAllText(Program.filePath, text.ToString());
 
@@ -213,61 +219,12 @@ namespace EgmSmallTest
             Process process = Process.Start(start);
         }
 
-        public void PlotTorque(StringBuilder text)
-        {
-            //text.AppendLine("T_smooth=np.linspace(T[0],T[-1],1000);");
-            //text.AppendLine("t1=spline(T,T1,T_smooth)");
-            //text.AppendLine("t2=spline(T,T2,T_smooth)");
-            //text.AppendLine("t3=spline(T,T3,T_smooth)");
-            //text.AppendLine("t4=spline(T,T4,T_smooth)");
-            //text.AppendLine("t5=spline(T,T5,T_smooth)");
-            //text.AppendLine("t6=spline(T,T6,T_smooth)");
-
-            //text.AppendLine("plt.plot(T_smooth,t1,label='Axe 1')");
-            //text.AppendLine("plt.plot(T_smooth,t2,label='Axe 2')");
-            //text.AppendLine("plt.plot(T_smooth,t3,label='Axe 3')");
-            //text.AppendLine("plt.plot(T_smooth,t4,label='Axe 4')");
-            //text.AppendLine("plt.plot(T_smooth,t5,label='Axe 5')");
-            //text.AppendLine("plt.plot(T_smooth,t6,label='Axe 6')");
-
-            text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
-            text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
-            text.AppendLine("plt.plot(T,T3,'--',label='Axe 3')");
-            text.AppendLine("plt.plot(T,T4,'--',label='Axe 4')");
-            text.AppendLine("plt.plot(T,T5,'--',label='Axe 5')");
-            text.AppendLine("plt.plot(T,T6,'--',label='Axe 6')");
-
-            text.AppendLine("plt.xlabel('Temps en ms')");
-            text.AppendLine("plt.ylabel('Couples en Nm')");
-
-
-            text.AppendLine("plt.legend(loc='best')");
-            text.AppendLine("plt.show()");
-            File.WriteAllText(Program.filePath2, text.ToString());
-
-            ProcessStartInfo start = new ProcessStartInfo();
-            string cmd = Program.python;
-            string args = Program.filePath2;
-
-            start.FileName = cmd;
-            start.Arguments = args;
-            start.UseShellExecute = false;// Do not use OS shell
-            start.CreateNoWindow = true; // We don't need new window
-            start.RedirectStandardOutput = true;// Any output, generated by application will be redirected back
-            start.RedirectStandardError = true; // Any error in standard output will be redirected back (for example exceptions)
-
-            Process process = Process.Start(start);
-        }
-
-
         //////////////////////////// COMMUNICATION ////////////////////////////
 
         public void TorqueThread()
         {
             _udpServerT = new UdpClient(IpPortNumberT);
             var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumberT);
-
-            StringBuilder text2 = TorqueInit();
 
             int timer = 0;
 
@@ -289,12 +246,10 @@ namespace EgmSmallTest
                         Console.WriteLine(returnData);    //Display
                         String[] substrings = returnData.Split(' ');
 
-                        FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text2);
+                        FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text);
                     
                 }
             }
-
-            PlotTorque(text2);
 
             Console.WriteLine(" ");
             Console.WriteLine("Nombre de messages couples :" + timer);
@@ -313,8 +268,6 @@ namespace EgmSmallTest
 
             Console.WriteLine("Connexion avec le client - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);// The IPAdress is created by the program
             Console.WriteLine("==> Start the Rapid procedure <==");
-
-            StringBuilder text = PlotInit();
             
             //Counters
 
@@ -541,6 +494,8 @@ namespace EgmSmallTest
         // Start a thread to listen on inbound messages
         public void Start()
         {
+            text.Clear();
+            text = PlotInit();
             _reboot = false;
             _exitThread = false;
             _sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking ;
