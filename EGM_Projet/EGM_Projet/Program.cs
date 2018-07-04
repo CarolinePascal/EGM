@@ -201,6 +201,14 @@ namespace EgmSmallTest
 
             text.AppendLine(" ");
 
+            text.AppendLine("print(T==TEGM)");
+
+            text.AppendLine("fig4=plt.figure()");
+            text.AppendLine("plt.plot(Y,T1,label='Axe 1')");
+
+            text.AppendLine("plt.xlabel('Déplacement en Y en mm')");
+            text.AppendLine("plt.ylabel('Couple axe 1 en Nm')");
+
             text.AppendLine("plt.legend(loc='best')");
             text.AppendLine("plt.show()");
 
