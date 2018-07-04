@@ -197,20 +197,20 @@ namespace EgmSmallTest
 
         public void PlotTorque(StringBuilder text)
         {
-            text.AppendLine("T_smooth=np.linspace(T[0],T[-1],1000);");
-            text.AppendLine("t1=spline(T,T1,T_smooth)");
-            text.AppendLine("t2=spline(T,T2,T_smooth)");
-            text.AppendLine("t3=spline(T,T3,T_smooth)");
-            text.AppendLine("t4=spline(T,T4,T_smooth)");
-            text.AppendLine("t5=spline(T,T5,T_smooth)");
-            text.AppendLine("t6=spline(T,T6,T_smooth)");
+            //text.AppendLine("T_smooth=np.linspace(T[0],T[-1],1000);");
+            //text.AppendLine("t1=spline(T,T1,T_smooth)");
+            //text.AppendLine("t2=spline(T,T2,T_smooth)");
+            //text.AppendLine("t3=spline(T,T3,T_smooth)");
+            //text.AppendLine("t4=spline(T,T4,T_smooth)");
+            //text.AppendLine("t5=spline(T,T5,T_smooth)");
+            //text.AppendLine("t6=spline(T,T6,T_smooth)");
 
-            text.AppendLine("plt.plot(T_smooth,t1,label='Axe 1')");
-            text.AppendLine("plt.plot(T_smooth,t2,label='Axe 2')");
-            text.AppendLine("plt.plot(T_smooth,t3,label='Axe 3')");
-            text.AppendLine("plt.plot(T_smooth,t4,label='Axe 4')");
-            text.AppendLine("plt.plot(T_smooth,t5,label='Axe 5')");
-            text.AppendLine("plt.plot(T_smooth,t6,label='Axe 6')");
+            //text.AppendLine("plt.plot(T_smooth,t1,label='Axe 1')");
+            //text.AppendLine("plt.plot(T_smooth,t2,label='Axe 2')");
+            //text.AppendLine("plt.plot(T_smooth,t3,label='Axe 3')");
+            //text.AppendLine("plt.plot(T_smooth,t4,label='Axe 4')");
+            //text.AppendLine("plt.plot(T_smooth,t5,label='Axe 5')");
+            //text.AppendLine("plt.plot(T_smooth,t6,label='Axe 6')");
 
             text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
             text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
@@ -265,7 +265,7 @@ namespace EgmSmallTest
 
             int Reftime = 0;
 
-            while (_exitThread == false && timer <= Program.Plot)
+            while (_exitThread == false && counter <= Program.Plot)
             {
 
                 if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)  //Stops the program if esc key is pressed
@@ -324,7 +324,7 @@ namespace EgmSmallTest
                             Reftime = (int)robot.Header.Tm;
                         }
 
-                        //DisplayInboundMessage(robot);
+                        DisplayInboundMessage(robot);
 
                         // Get the robots X-position
                         _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
@@ -358,7 +358,7 @@ namespace EgmSmallTest
                     {
                         counter2++;
                         string returnData = Encoding.ASCII.GetString(data);
-                        //Console.WriteLine(returnData);    //Display
+                        Console.WriteLine(returnData);    //Display
                         String[] substrings = returnData.Split(' ');
 
                         FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text2);
