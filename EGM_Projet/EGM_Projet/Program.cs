@@ -23,15 +23,25 @@ namespace EgmSmallTest
         public static string filePath2 = "C:/Users/carol/Desktop/Stage_1/plot2.py";
         public static string python = "c:/users/carol/appdata/local/programs/python/python36-32/python.exe";
 
-        public static int Plot = 2000;
+        public static int Plot = 1000;
+
+        public static ManualResetEvent[] events = new ManualResetEvent[2];    //Events which signals the end of the threads
 
 
         static void Main(string[] args)
         {
             Sensor s = new Sensor();
+
             while (s._reboot)
             {
+                for (int i = 0; i < events.Length; i++)
+                {
+                    events[i] = new ManualResetEvent(false);
+                }
+
                 s.Start();
+
+                WaitHandle.WaitAll(events);
             }
             
         }
@@ -43,13 +53,19 @@ namespace EgmSmallTest
         //////////////////////////// PROPRIETIES ////////////////////////////
 
 
-        //private Thread _sensorThread = null;  //In case of Multitasking purposes - unables the stop-restart thing
+        private Thread _sensorThread = null;  //In case of Multitasking purposes - unables the stop-restart thing
+        private Thread _torqueThread = null;
 
         private UdpClient _udpServer = null;
+        private UdpClient _udpServerT = null;
+
         private int IpPortNumber = 6510;
+        private int IpPortNumberT = 5000;
 
         private bool _exitThread;
         public bool _reboot;
+        public bool Abort;
+        public bool Wait;
 
         private uint _seqNumber = 0;    //for sumscheck
 
@@ -78,6 +94,8 @@ namespace EgmSmallTest
 
             _exitThread = false;
             _reboot = true;
+            Abort = false;
+            Wait = false;
         }
 
 
@@ -244,6 +262,47 @@ namespace EgmSmallTest
 
         //////////////////////////// COMMUNICATION ////////////////////////////
 
+        public void TorqueThread()
+        {
+            _udpServerT = new UdpClient(IpPortNumberT);
+            var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumberT);
+
+            StringBuilder text2 = TorqueInit();
+
+            int timer = 0;
+
+            while (!Abort)
+            {
+
+                do
+                {
+                    if (Abort) { break; }
+                } while (Wait);
+
+                var data = _udpServerT.Receive(ref remoteEP);
+
+                if (data != null)
+                {
+                    timer++;
+
+                        string returnData = Encoding.ASCII.GetString(data);
+                        Console.WriteLine(returnData);    //Display
+                        String[] substrings = returnData.Split(' ');
+
+                        FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text2);
+                    
+                }
+            }
+
+            PlotTorque(text2);
+
+            Console.WriteLine(" ");
+            Console.WriteLine("Nombre de messages couples :" + timer);
+
+            _udpServerT.Close();
+
+        }
+
 
         public void SensorThread()
         {
@@ -251,25 +310,23 @@ namespace EgmSmallTest
 
             _udpServer = new UdpClient(IpPortNumber);
             var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumber);
+
             Console.WriteLine("Connexion avec le client - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);// The IPAdress is created by the program
             Console.WriteLine("==> Start the Rapid procedure <==");
 
             StringBuilder text = PlotInit();
-            StringBuilder text2 = TorqueInit();
-
+            
             //Counters
 
-            int counter = 0;  
-            int counter2 = 0;
             int timer = 0;
+            int RefTime = 0;
 
-            int Reftime = 0;
-
-            while (_exitThread == false && counter <= Program.Plot)
+            while (_exitThread == false && timer < Program.Plot)
             {
 
                 if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)  //Stops the program if esc key is pressed
                 {
+                    Wait = true;
 
                     ConsoleKey key2 = new ConsoleKey();
 
@@ -280,13 +337,23 @@ namespace EgmSmallTest
 
                     } while (key2 != ConsoleKey.Y && key2 != ConsoleKey.N);
 
-                    if (key2 == ConsoleKey.Y) { break; }
-                    else if (key2 == ConsoleKey.N) { continue; }
+                    if (key2 == ConsoleKey.Y)
+                    {
+                        Abort = true;
+                        break;
+                    }
+
+                    else if (key2 == ConsoleKey.N)
+                    {
+                        Wait = false;
+                        continue;
+                    }
                 }
 
                 // get the message from robot
 
-                var data = _udpServer.Receive(ref remoteEP);                
+                var data = _udpServer.Receive(ref remoteEP);
+
 
                 if (data != null)
                 {
@@ -294,85 +361,73 @@ namespace EgmSmallTest
 
                     //Displays processing
 
-                    if (timer % (Program.Plot/20) == 0)
+                    if (timer % (Program.Plot / 20) == 0)
                     {
-                        int taux = timer*20 / Program.Plot;
+                        int taux = timer * 20 / Program.Plot;
                         string chaine = "";
-                        for(int i=0; i<taux; i++)
+                        for (int i = 0; i < taux; i++)
                         {
-                            chaine+= ".";
+                            chaine += ".";
                         }
-                        for(int i=taux;i<21;i++)
+                        for (int i = taux; i < 21; i++)
                         {
                             chaine += " ";
                         }
                         Console.SetCursorPosition(0, Console.CursorTop - 1);
                         Console.Write(new String(' ', Console.BufferWidth));
                         Console.SetCursorPosition(0, Console.CursorTop - 1);
-                        Console.WriteLine("Processing : "+chaine+(timer*100/Program.Plot).ToString()+"%");
+                        Console.WriteLine("Processing : " + chaine + (timer * 100 / Program.Plot).ToString() + "%");
                     }
 
-                    if (data.Length >= 300) //EGM Feedback data message
+
+                    // de-serialize inbound message from robot using Google Protocol Buffer
+                    EgmRobot robot = EgmRobot.CreateBuilder().MergeFrom(data).Build();
+
+                    if (timer == 1)
                     {
-                        counter++;
+                        RefTime = (int)robot.Header.Tm;
+                    }
 
-                        // de-serialize inbound message from robot using Google Protocol Buffer
-                        EgmRobot robot = EgmRobot.CreateBuilder().MergeFrom(data).Build();
+                    //DisplayInboundMessage(robot);
 
-                        if (counter == 1)
+                    // Get the robots X-position
+                    _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
+                    // Get the robots Y-position
+                    _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
+                    // Get the robots Z-position
+                    _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
+
+                    Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(),((int)robot.Header.Tm-RefTime).ToString(), text);
+                    Console.WriteLine((int)robot.Header.Tm - RefTime);
+
+                    // create a new outbound sensor message
+                    EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
+                    CreateSensorMessage(sensor);
+
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        EgmSensor sensorMessage = sensor.Build();
+                        sensorMessage.WriteTo(memoryStream);
+
+                        // send the UDP message to the robot
+                        int bytesSent = _udpServer.Send(memoryStream.ToArray(),
+                                                        (int)memoryStream.Length, remoteEP);
+                        if (bytesSent < 0)
                         {
-                            Reftime = (int)robot.Header.Tm;
-                        }
-
-                        DisplayInboundMessage(robot);
-
-                        // Get the robots X-position
-                        _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
-                        // Get the robots Y-position
-                        _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
-                        // Get the robots Z-position
-                        _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
-
-                        Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(),((int)robot.Header.Tm - Reftime).ToString(), text);
-
-                        // create a new outbound sensor message
-                        EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
-                        CreateSensorMessage(sensor);
-
-                        using (MemoryStream memoryStream = new MemoryStream())
-                        {
-                            EgmSensor sensorMessage = sensor.Build();
-                            sensorMessage.WriteTo(memoryStream);
-
-                            // send the UDP message to the robot
-                            int bytesSent = _udpServer.Send(memoryStream.ToArray(),
-                                                           (int)memoryStream.Length, remoteEP);
-                            if (bytesSent < 0)
-                            {
-                                Console.WriteLine("Error send to robot");
-                            }
+                            Console.WriteLine("Error send to robot");
                         }
                     }
-
-                    else //Torque Freedback message
-                    {
-                        counter2++;
-                        string returnData = Encoding.ASCII.GetString(data);
-                        Console.WriteLine(returnData);    //Display
-                        String[] substrings = returnData.Split(' ');
-
-                        FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text2);
-                    }
+                    
                 }
             }
 
-            Plot(text);
-            PlotTorque(text2);
+            Abort = true;
 
-            Console.WriteLine(" ");
-            Console.WriteLine("Nombre de Feedbacks EGM : "+ counter);
-            Console.WriteLine("Nombre de Feedbacks couples : " + counter2);
-            Console.WriteLine("Nombre de messages totaux :" + timer);
+            System.Threading.Thread.Sleep(1);
+
+            Plot(text);
+
+            Console.WriteLine("Nombre de messages EGM :" + timer);
 
             _udpServer.Close();
             
@@ -389,7 +444,8 @@ namespace EgmSmallTest
             if (key == ConsoleKey.N) { flag = false; }
             else if (key == ConsoleKey.Y) { }
             
-            this.Stop(flag);
+            Stop(flag);
+            StopT(flag);
         }
 
         // Display message from robot
@@ -485,11 +541,18 @@ namespace EgmSmallTest
         // Start a thread to listen on inbound messages
         public void Start()
         {
-            //_sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking 
-            //_sensorThread.Start();
             _reboot = false;
             _exitThread = false;
-            SensorThread();
+            _sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking ;
+            _sensorThread.Start();
+            StartT();
+        }
+
+        public void StartT()
+        {
+            _torqueThread = new Thread(new ThreadStart(TorqueThread));  //Multitasking 
+            _torqueThread.Start();
+
         }
 
         // Stop and exit thread
@@ -497,7 +560,22 @@ namespace EgmSmallTest
         {
             _exitThread = true;
             _reboot = reboot;
-            //_sensorThread.Abort();  //Stops the thread
+            Program.events[0].Set();
+            if (!reboot)
+            {
+                _sensorThread.Abort();
+            }
+        }
+
+        public void StopT(bool reboot)
+        {
+            Abort = !reboot;
+            Program.events[1].Set();
+            if (!reboot)
+            {
+                _torqueThread.Abort();
+
+            }
         }
     }
 }
