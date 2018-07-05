@@ -22,7 +22,7 @@ namespace EgmSmallTest
         public static string filePath = "C:/Users/carol/Desktop/Stage_1/plot.py";
         public static string python = "c:/users/carol/appdata/local/programs/python/python36-32/python.exe";
 
-        public static int Plot = 1000;
+        public static int Plot = 500;
 
         public static ManualResetEvent[] events = new ManualResetEvent[2];    //Events which signals the end of the threads
 
@@ -38,11 +38,13 @@ namespace EgmSmallTest
                     events[i] = new ManualResetEvent(false);
                 }
 
+                s.StartI();
                 s.Start();
+                s.StartT();
 
                 WaitHandle.WaitAll(events);
             }
-            
+
         }
     }
 
@@ -54,19 +56,24 @@ namespace EgmSmallTest
 
         private Thread _sensorThread = null;  //In case of Multitasking purposes - unables the stop-restart thing
         private Thread _torqueThread = null;
+        private Thread _inputThread = null;
 
         private UdpClient _udpServer = null;
         private UdpClient _udpServerT = null;
+        private UdpClient _udpServerI = null;
 
         private StringBuilder text;
 
         private int IpPortNumber = 6510;
         private int IpPortNumberT = 5000;
+        private int IpPortNumberI = 4000;
 
         private bool _exitThread;
         public bool _reboot;
         public bool Abort;
+        public bool AbortI;
         public bool Wait;
+        public bool WaitI;
 
         private uint _seqNumber = 0;    //for sumscheck
 
@@ -80,23 +87,33 @@ namespace EgmSmallTest
         private int _robotY;
         private int _robotZ;
 
+        private double inputdata_x;
+        private double inputdata_y;
+        private double inputdata_z;
+
 
         // Set the measurements for the square and initialize the start points
         public Sensor()
         {
             //Initial position specified by the fine robtarget in Rapid
             _x = 400;
-            _y = 0;
-            _z = 0;
+            _y = -300;
+            _z = 100;
 
             _robotX = 0;
             _robotY = 0;
             _robotZ = 0;
 
+            inputdata_x = 0;
+            inputdata_y = 0;
+            inputdata_z = 0;
+
             _exitThread = false;
             _reboot = true;
             Abort = false;
             Wait = false;
+            AbortI = false;
+            WaitI = false;
 
             text = new StringBuilder();
         }
@@ -230,6 +247,41 @@ namespace EgmSmallTest
 
         //////////////////////////// COMMUNICATION ////////////////////////////
 
+        public void InputThread()
+        {
+            _udpServerI = new UdpClient(IpPortNumberI);
+            var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumberI);
+
+            int timer = 0;
+
+            while (!AbortI)
+            {
+                do
+                {
+                    if (AbortI) { break; }
+                } while (WaitI);
+
+                var data = _udpServerI.Receive(ref remoteEP);
+
+                if (data != null)
+                {
+                    timer++;
+                    string returnData = Encoding.ASCII.GetString(data);
+                    returnData = returnData.Replace('.', ',');
+                    String[] substrings = returnData.Split(' ');
+                    
+                    inputdata_x = double.Parse(substrings[0]);
+                    inputdata_y = double.Parse(substrings[1]);
+                    inputdata_z = double.Parse(substrings[2]);
+                }
+
+            }
+
+            Console.WriteLine("Nombre de messages reçus :" + timer);
+
+            _udpServerI.Close();
+        }
+
         public void TorqueThread()
         {
             _udpServerT = new UdpClient(IpPortNumberT);
@@ -251,18 +303,14 @@ namespace EgmSmallTest
                 if (data != null)
                 {
 
-
                     string returnData = Encoding.ASCII.GetString(data);
                     String[] substrings = returnData.Split(' ');
-
                     int temps = Int32.Parse(substrings[0]);
-                   
 
                     if (temps % 4 == 0 && temps!=check)
                     {
                         check = temps;
                         FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text);
-                        Console.WriteLine(returnData);    //Display
                         timer++;
                     }
 
@@ -274,9 +322,7 @@ namespace EgmSmallTest
             Console.WriteLine("Nombre de messages couples :" + timer);
 
             _udpServerT.Close();
-
         }
-
 
         public void SensorThread()
         {
@@ -299,6 +345,7 @@ namespace EgmSmallTest
                 if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)  //Stops the program if esc key is pressed
                 {
                     Wait = true;
+                    WaitI = true;
 
                     ConsoleKey key2 = new ConsoleKey();
 
@@ -312,12 +359,14 @@ namespace EgmSmallTest
                     if (key2 == ConsoleKey.Y)
                     {
                         Abort = true;
+                        AbortI = true;
                         break;
                     }
 
                     else if (key2 == ConsoleKey.N)
                     {
                         Wait = false;
+                        WaitI = false;
                         continue;
                     }
                 }
@@ -370,11 +419,10 @@ namespace EgmSmallTest
                     _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
 
                     Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(),((int)robot.Header.Tm-RefTime).ToString(), text);
-                    Console.WriteLine((int)robot.Header.Tm - RefTime);
 
                     // create a new outbound sensor message
                     EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
-                    CreateSensorMessage(sensor);
+                    CreateSensorMessage(sensor, inputdata_x, inputdata_y, inputdata_z);
 
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
@@ -393,15 +441,16 @@ namespace EgmSmallTest
                 }
             }
 
-            Abort = true;
+            _udpServer.Close();
 
-            System.Threading.Thread.Sleep(1);
+            Abort = true;
+            AbortI = true;
+
+            System.Threading.Thread.Sleep(1000);
 
             Plot(text);
 
             Console.WriteLine("Nombre de messages EGM :" + timer);
-
-            _udpServer.Close();
             
             bool flag = true;
             ConsoleKey key = new ConsoleKey();
@@ -418,6 +467,7 @@ namespace EgmSmallTest
             
             Stop(flag);
             StopT(flag);
+            StopI(flag);
         }
 
         // Display message from robot
@@ -442,7 +492,7 @@ namespace EgmSmallTest
         double n = 0;
 
         // Create a sensor message to send to the robot
-        void CreateSensorMessage(EgmSensor.Builder sensor)
+        void CreateSensorMessage(EgmSensor.Builder sensor, double x, double y, double z) //Replace double corr by a table
         {
             // create a header
             EgmHeader.Builder hdr = new EgmHeader.Builder();
@@ -460,17 +510,19 @@ namespace EgmSmallTest
             EgmQuaternion.Builder pq = new EgmQuaternion.Builder();
             EgmCartesian.Builder pc = new EgmCartesian.Builder();
 
-            _x = 400;
-            _y = heart_y(n);
-            _z = heart_z(n); ;
+            //Cartesians positions corrections
 
-            n+=2*Math.PI/(Program.Plot-200);
+            n++;
+
+            _y = -300 + (float)(y * 5);
+            _z = 100 + (float)(z * 5);
+            _x = 400 + (float)(x * 5);
+
+            //n+=2*Math.PI/(Program.Plot-200);
 
             pc.SetX(_x)
               .SetY(_y)
               .SetZ(_z);
-
-            //Console.WriteLine(_x.ToString()+" "+ _y.ToString()+" "+ _z.ToString());
 
             pq.SetU0(0.0)   //To check, but seems to be vertical
               .SetU1(0.0)
@@ -486,13 +538,6 @@ namespace EgmSmallTest
             sensor.SetPlanned(planned);
 
             return;
-        }
-
-        // Writes a simple offset correction on the path
-        public float SimpleCorrection(ref float target, float corr)
-        {
-            target = target + corr;
-            return (target);
         }
 
         //Describes the shape of a heart 
@@ -519,14 +564,20 @@ namespace EgmSmallTest
             _exitThread = false;
             _sensorThread = new Thread(new ThreadStart(SensorThread));  //Multitasking ;
             _sensorThread.Start();
-            StartT();
         }
 
         public void StartT()
         {
+            Abort = false;
             _torqueThread = new Thread(new ThreadStart(TorqueThread));  //Multitasking 
             _torqueThread.Start();
+        }
 
+        public void StartI()
+        {
+            AbortI = false;
+            _inputThread = new Thread(new ThreadStart(InputThread));
+            _inputThread.Start();
         }
 
         // Stop and exit thread
@@ -549,6 +600,16 @@ namespace EgmSmallTest
             {
                 _torqueThread.Abort();
 
+            }
+        }
+
+        public void StopI(bool reboot)
+        {
+            AbortI = !reboot;
+            Program.events[1].Set();
+            if(!reboot)
+            {
+                _inputThread.Abort();
             }
         }
     }
