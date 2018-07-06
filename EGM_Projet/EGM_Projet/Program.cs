@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using abb.egm;
 
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -22,9 +21,9 @@ namespace EgmSmallTest
         public static string filePath = "C:/Users/carol/Desktop/Stage_1/plot.py";
         public static string python = "c:/users/carol/appdata/local/programs/python/python36-32/python.exe";
 
-        public static int Plot = 500;
+        public static int Plot = 5000;  //Number of EGM messages to send (multiply by 4 to get the duration of the simulation in ms)
 
-        public static ManualResetEvent[] events = new ManualResetEvent[2];    //Events which signals the end of the threads
+        public static ManualResetEvent[] events = new ManualResetEvent[3];    //Events which signals the end of the threads
 
 
         static void Main(string[] args)
@@ -33,69 +32,101 @@ namespace EgmSmallTest
 
             while (s._reboot)
             {
+                //Set events on false
                 for (int i = 0; i < events.Length; i++)
                 {
                     events[i] = new ManualResetEvent(false);
                 }
 
+                //Starting the threads
                 s.StartI();
                 s.Start();
                 s.StartT();
 
+                //Wait until all threads are closed
                 WaitHandle.WaitAll(events);
             }
 
         }
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     public class Sensor
     {
 
         //////////////////////////// PROPRIETIES ////////////////////////////
 
+        //Threads
 
-        private Thread _sensorThread = null;  //In case of Multitasking purposes - unables the stop-restart thing
-        private Thread _torqueThread = null;
-        private Thread _inputThread = null;
+        private Thread _sensorThread = null;    //EGM thread
+        private Thread _torqueThread = null;    //Torque feedback thread
+        private Thread _inputThread = null;     //Orders reception thread
+
+
+        //UDP Clients - Same IP, one port by client
 
         private UdpClient _udpServer = null;
         private UdpClient _udpServerT = null;
         private UdpClient _udpServerI = null;
 
-        private StringBuilder text;
-
         private int IpPortNumber = 6510;
         private int IpPortNumberT = 5000;
         private int IpPortNumberI = 4000;
 
+
+        //.txt file for the Python script - plotting purposes
+
+        private StringBuilder text;
+
+
+        //Closing and reboot conditions of the main EGM thread
+
         private bool _exitThread;
         public bool _reboot;
+
+
+        //Suspend and closing conditions for torque and reception threads
+
         public bool Abort;
         public bool AbortI;
         public bool Wait;
         public bool WaitI;
 
-        private uint _seqNumber = 0;    //for sumscheck
 
-        //Ordered position
+        //EGM UDP messages sumcheck
+
+        private uint _seqNumber = 0;    
+
+
+        //Buffer position
+
         private float _x;
         private float _y;
         private float _z;
 
+
         //Robot's position
+
         private int _robotX;
         private int _robotY;
         private int _robotZ;
+
+
+        //Ordered position
 
         private double inputdata_x;
         private double inputdata_y;
         private double inputdata_z;
 
 
-        // Set the measurements for the square and initialize the start points
+        // Default constructor 
+
         public Sensor()
         {
-            //Initial position specified by the fine robtarget in Rapid
+            //Robot's initial position
             _x = 400;
             _y = -300;
             _z = 100;
@@ -110,8 +141,10 @@ namespace EgmSmallTest
 
             _exitThread = false;
             _reboot = true;
+
             Abort = false;
             Wait = false;
+
             AbortI = false;
             WaitI = false;
 
@@ -146,11 +179,6 @@ namespace EgmSmallTest
             text.AppendLine("T=[]");
             text.AppendLine(" ");
 
-            text.AppendLine("fig=plt.figure()");
-            text.AppendLine("ax=fig.gca(projection='3d')");
-
-            text.AppendLine(" ");
-
             return (text);
 
         }
@@ -168,6 +196,7 @@ namespace EgmSmallTest
             text.AppendLine(newLine);
         }
 
+        //Writes the recorded torques values in the python script
         public void FillTorque(string t1, string t2, string t3, string t4, string t5, string t6, string t, StringBuilder text)
         {
             var newLine = string.Format("T1.append({0})", t1);
@@ -190,12 +219,22 @@ namespace EgmSmallTest
         public void Plot(StringBuilder text)
         {
             text.AppendLine(" ");
+            text.AppendLine("fig=plt.figure()");
+            text.AppendLine("ax=fig.gca(projection='3d')");
+
             text.AppendLine("ax.plot(X,Y,Z)");
+
+            text.AppendLine("ax.set_xlabel('X')");
+            text.AppendLine("ax.set_ylabel('Y')");
+            text.AppendLine("ax.set_zlabel('Z')");
+
             text.AppendLine("plt.axis('equal')");
+            text.AppendLine("plt.legend(loc='best')");
 
             text.AppendLine(" ");
 
             text.AppendLine("fig2=plt.figure()");
+
             text.AppendLine("plt.plot(TEGM,X,label='x')");
             text.AppendLine("plt.plot(TEGM,Y,label='y')");
             text.AppendLine("plt.plot(TEGM,Z,label='z')");
@@ -203,9 +242,12 @@ namespace EgmSmallTest
             text.AppendLine("plt.xlabel('Temps en ms')");
             text.AppendLine("plt.ylabel('Axes')");
 
+            text.AppendLine("plt.legend(loc='best')");
+
             text.AppendLine(" ");
 
             text.AppendLine("fig3=plt.figure()");
+
             text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
             text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
             text.AppendLine("plt.plot(T,T3,'--',label='Axe 3')");
@@ -216,17 +258,20 @@ namespace EgmSmallTest
             text.AppendLine("plt.xlabel('Temps en ms')");
             text.AppendLine("plt.ylabel('Couples en Nm')");
 
+            text.AppendLine("plt.legend(loc='best')");
+
             text.AppendLine(" ");
 
-            text.AppendLine("print(T==TEGM)");
+            text.AppendLine("if(T==TEGM):");  //Synchronisation condition
 
-            text.AppendLine("fig4=plt.figure()");
-            text.AppendLine("plt.plot(Y,T1,label='Axe 1')");
+            text.AppendLine("   fig4=plt.figure()");
+            text.AppendLine("   plt.plot(Y,T1,label='Axe 1')");
 
-            text.AppendLine("plt.xlabel('Déplacement en Y en mm')");
-            text.AppendLine("plt.ylabel('Couple axe 1 en Nm')");
+            text.AppendLine("   plt.xlabel('Déplacement en Y en mm')");
+            text.AppendLine("   plt.ylabel('Couple axe 1 en Nm')");
 
-            text.AppendLine("plt.legend(loc='best')");
+            text.AppendLine("   plt.legend(loc='best')");
+
             text.AppendLine("plt.show()");
 
             File.WriteAllText(Program.filePath, text.ToString());
@@ -245,17 +290,24 @@ namespace EgmSmallTest
             Process process = Process.Start(start);
         }
 
+
         //////////////////////////// COMMUNICATION ////////////////////////////
 
+
+        //Reception of the ordered positions
         public void InputThread()
         {
+            //Creation of the UDP Client
             _udpServerI = new UdpClient(IpPortNumberI);
             var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumberI);
+            Console.WriteLine("Connexion avec le serveur Grasshopper - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);
 
             int timer = 0;
 
             while (!AbortI)
             {
+                //Momentary interruption
+
                 do
                 {
                     if (AbortI) { break; }
@@ -266,6 +318,9 @@ namespace EgmSmallTest
                 if (data != null)
                 {
                     timer++;
+
+                    //Parsing
+
                     string returnData = Encoding.ASCII.GetString(data);
                     returnData = returnData.Replace('.', ',');
                     String[] substrings = returnData.Split(' ');
@@ -274,25 +329,27 @@ namespace EgmSmallTest
                     inputdata_y = double.Parse(substrings[1]);
                     inputdata_z = double.Parse(substrings[2]);
                 }
-
             }
-
             Console.WriteLine("Nombre de messages reçus :" + timer);
-
             _udpServerI.Close();
         }
 
+        //Reception of the torques feedback
         public void TorqueThread()
         {
+            //Creation of the UDP Client
             _udpServerT = new UdpClient(IpPortNumberT);
             var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumberT);
+            Console.WriteLine("Connexion avec le serveur Rapid - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);
+            Console.WriteLine(" ");
+            Console.WriteLine("==> Start the Rapid procedure <==");
 
             int timer = 0;
-            double check = -4;
+            int check = 1;  //So at the first iteration check is different of 0 
 
             while (!Abort)
             {
-
+                //Momentary interruption
                 do
                 {
                     if (Abort) { break; }
@@ -302,46 +359,40 @@ namespace EgmSmallTest
 
                 if (data != null)
                 {
+                    //Parsing
 
                     string returnData = Encoding.ASCII.GetString(data);
                     String[] substrings = returnData.Split(' ');
                     int temps = Int32.Parse(substrings[0]);
 
+                    //Synchronization with EGM : the messages are recorded each 4 ms (EGM feedbacks are recieved at this frequency), based on the Rapid time.
                     if (temps % 4 == 0 && temps!=check)
                     {
                         check = temps;
                         FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0], text);
                         timer++;
-                    }
-
-                       
+                    }  
                 }
             }
-
-            Console.WriteLine(" ");
             Console.WriteLine("Nombre de messages couples :" + timer);
-
             _udpServerT.Close();
         }
 
+        //Basically, EGM
         public void SensorThread()
         {
-            // create an udp client and listen on any address and the port ipPortNumber
-
+            //Creation of the UDP Client
             _udpServer = new UdpClient(IpPortNumber);
             var remoteEP = new IPEndPoint(IPAddress.Any, IpPortNumber);
 
-            Console.WriteLine("Connexion avec le client - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);// The IPAdress is created by the program
-            Console.WriteLine("==> Start the Rapid procedure <==");
-            
-            //Counters
+            Console.WriteLine("Connexion avec le serveur Rapid - Adresse IP : " + remoteEP.Address + " - Port : " + remoteEP.Port);
 
             int timer = 0;
-            int RefTime = 0;
+            int RefTime = 0;    
 
             while (_exitThread == false && timer <= Program.Plot)
             {
-
+                //Momentary interruption if "ESC" is pressed
                 if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)  //Stops the program if esc key is pressed
                 {
                     Wait = true;
@@ -371,45 +422,39 @@ namespace EgmSmallTest
                     }
                 }
 
-                // get the message from robot
-
                 var data = _udpServer.Receive(ref remoteEP);
-
 
                 if (data != null)
                 {
                     timer++;
 
                     //Displays processing
-
-                    //if (timer % (Program.Plot / 20) == 0)
-                    //{
-                    //    int taux = timer * 20 / Program.Plot;
-                    //    string chaine = "";
-                    //    for (int i = 0; i < taux; i++)
-                    //    {
-                    //        chaine += ".";
-                    //    }
-                    //    for (int i = taux; i < 21; i++)
-                    //    {
-                    //        chaine += " ";
-                    //    }
-                    //    Console.SetCursorPosition(0, Console.CursorTop - 1);
-                    //    Console.Write(new String(' ', Console.BufferWidth));
-                    //    Console.SetCursorPosition(0, Console.CursorTop - 1);
-                    //    Console.WriteLine("Processing : " + chaine + (timer * 100 / Program.Plot).ToString() + "%");
-                    //}
-
+                    if (timer % (Program.Plot / 20) == 0)
+                    {
+                        int taux = timer * 20 / Program.Plot;
+                        string chaine = "";
+                        for (int i = 0; i < taux; i++)
+                        {
+                            chaine += ".";
+                        }
+                        for (int i = taux; i < 21; i++)
+                        {
+                            chaine += " ";
+                        }
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.Write(new String(' ', Console.BufferWidth));
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        Console.WriteLine("Processing : " + chaine + (timer * 100 / Program.Plot).ToString() + "%");
+                    }
 
                     // de-serialize inbound message from robot using Google Protocol Buffer
                     EgmRobot robot = EgmRobot.CreateBuilder().MergeFrom(data).Build();
 
+                    //Set the Rapid time of the first message recieved as the reference for synchronization
                     if (timer == 1)
                     {
                         RefTime = (int)robot.Header.Tm;
                     }
-
-                    //DisplayInboundMessage(robot);
 
                     // Get the robots X-position
                     _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
@@ -440,18 +485,18 @@ namespace EgmSmallTest
                     
                 }
             }
-
             _udpServer.Close();
 
             Abort = true;
             AbortI = true;
 
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(200);
 
             Plot(text);
 
             Console.WriteLine("Nombre de messages EGM :" + timer);
             
+            //Rebooting or aborting options
             bool flag = true;
             ConsoleKey key = new ConsoleKey();
 
@@ -489,10 +534,9 @@ namespace EgmSmallTest
 
         /////////////////////////// PATH PLANNING ///////////////////////////
 
-        double n = 0;
 
-        // Create a sensor message to send to the robot
-        void CreateSensorMessage(EgmSensor.Builder sensor, double x, double y, double z) //Replace double corr by a table
+        // Create a sensor message to send to the robot -> TO DO : Orientation modification !
+        void CreateSensorMessage(EgmSensor.Builder sensor, double x, double y, double z) 
         {
             // create a header
             EgmHeader.Builder hdr = new EgmHeader.Builder();
@@ -510,26 +554,21 @@ namespace EgmSmallTest
             EgmQuaternion.Builder pq = new EgmQuaternion.Builder();
             EgmCartesian.Builder pc = new EgmCartesian.Builder();
 
-            //Cartesians positions corrections
-
-            n++;
-
+            //New cartesian positions
             _y = -300 + (float)(y * 5);
             _z = 100 + (float)(z * 5);
             _x = 400 + (float)(x * 5);
-
-            //n+=2*Math.PI/(Program.Plot-200);
 
             pc.SetX(_x)
               .SetY(_y)
               .SetZ(_z);
 
-            pq.SetU0(0.0)   //To check, but seems to be vertical
+            pq.SetU0(0.0)   
               .SetU1(0.0)
               .SetU2(0.0)
               .SetU3(0.0);
 
-            pos.SetPos(pc)  //pose definition
+            pos.SetPos(pc)  
                 .SetOrient(pq);
 
             // bind pos object to planned
@@ -555,7 +594,7 @@ namespace EgmSmallTest
         /////////////////////////// STOP & START ///////////////////////////
 
 
-        // Start a thread to listen on inbound messages
+        //Thread starting procedures
         public void Start()
         {
             text.Clear();
@@ -580,7 +619,7 @@ namespace EgmSmallTest
             _inputThread.Start();
         }
 
-        // Stop and exit thread
+        //Thread stopping procedures
         public void Stop(bool reboot)
         {
             _exitThread = true;
