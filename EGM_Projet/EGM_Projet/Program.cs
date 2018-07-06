@@ -108,6 +108,13 @@ namespace EgmSmallTest
         private float _z;
 
 
+        //Robot's initial position
+
+        private float x0;
+        private float y0;
+        private float z0;
+
+
         //Robot's position
 
         private int _robotX;
@@ -127,9 +134,13 @@ namespace EgmSmallTest
         public Sensor()
         {
             //Robot's initial position
-            _x = 400;
-            _y = -300;
-            _z = 100;
+            x0 = 400;
+            y0 = -200;
+            z0 = 0;
+
+            _x = 0;
+            _y = 0;
+            _z = 0;
 
             _robotX = 0;
             _robotY = 0;
@@ -509,10 +520,10 @@ namespace EgmSmallTest
 
             if (key == ConsoleKey.N) { flag = false; }
             else if (key == ConsoleKey.Y) { }
-            
-            Stop(flag);
+
             StopT(flag);
             StopI(flag);
+            Stop(flag);
         }
 
         // Display message from robot
@@ -555,10 +566,10 @@ namespace EgmSmallTest
             EgmCartesian.Builder pc = new EgmCartesian.Builder();
 
             //New cartesian positions
-            _y = -300 + (float)(y * 5);
-            _z = 100 + (float)(z * 5);
-            _x = 400 + (float)(x * 5);
-
+            _x = x0+(float)(x);
+            _y = y0+(float)(y);
+            _z = z0+(float)(z);
+            
             pc.SetX(_x)
               .SetY(_y)
               .SetZ(_z);
@@ -645,7 +656,7 @@ namespace EgmSmallTest
         public void StopI(bool reboot)
         {
             AbortI = !reboot;
-            Program.events[1].Set();
+            Program.events[2].Set();
             if(!reboot)
             {
                 _inputThread.Abort();
