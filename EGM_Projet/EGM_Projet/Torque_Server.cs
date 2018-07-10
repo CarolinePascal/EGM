@@ -25,8 +25,9 @@ namespace EGM_Projet
 
         public override void Parsing(string returnData)
         {
-            returnData = returnData.Replace('.', ',');
             String[] substrings = returnData.Split(' ');
+            returnData = returnData.Replace('.', ',');
+            String[] substrings2 = returnData.Split(' ');
             int temps = Int32.Parse(substrings[0]);
 
             if (temps % 4 == 0 && temps != check)
@@ -34,7 +35,8 @@ namespace EGM_Projet
                 check = temps;
                 for (int i=0;i<6;i++)
                 {
-                    torques[i] = double.Parse(substrings[i + 1]);
+                    torques[i] = double.Parse(substrings2[i + 1]);
+                    Program.plot.FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0]);
                 }
             }
         }

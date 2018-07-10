@@ -18,9 +18,9 @@ namespace EGM_Projet
             returnData = null;
         }
 
-        public override int Main()
+        public override void Main(out int n)
         {
-            int n = 0;
+            n = 0;
             var remoteEP = new IPEndPoint(IPAddress.Any, Port);
 
             while (exit==false)
@@ -37,11 +37,8 @@ namespace EGM_Projet
                     n++;
                     returnData = Encoding.ASCII.GetString(data);
                     Parsing(returnData);
-
                 }
             }
-            
-            return(n);
         }
 
         public override void Counter(int n)

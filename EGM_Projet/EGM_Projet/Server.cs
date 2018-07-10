@@ -86,7 +86,9 @@ namespace EGM_Projet
 
             Console.WriteLine("Connexion avec le serveur - Port : " + Port);
 
-            int n = Main();
+            int n;
+
+            Main(out n);
 
             Counter(n);
             Stop();
@@ -94,6 +96,6 @@ namespace EGM_Projet
 
         public abstract void Counter(int n);
 
-        public abstract int Main();
+        public abstract void Main(out int n);
     }
 }

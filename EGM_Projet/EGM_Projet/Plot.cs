@@ -10,15 +10,21 @@ namespace EGM_Projet
 {
     public class Plot
     {
-        // usefull Paths
+        /// <summary>
+        /// .py file path to write in
+        /// </summary>
         private string filePath = "C:/Users/carol/Desktop/Stage_1/plot.py";
-        private string python = "C:/Users/carol/appdata/local/programs/python/python36-32/python.exe";
 
-        //.txt file for the Python script - plotting purposes
+        /// <summary>
+        /// python.exe file path
+        /// </summary>
+        private string python = "C:/Users/carol/appdata/local/programs/python/python36-32/python.exe";
 
         private StringBuilder text;
 
-        //Constructor - Initializes the header of the plotting python script
+        /// <summary>
+        /// Plot class constructor - Creates the StringBuilder text and initializes the header of the python script
+        /// </summary>
         public Plot()
         {
             text = new StringBuilder();
@@ -43,7 +49,13 @@ namespace EGM_Projet
             text.AppendLine(" ");
         }
 
-        //Writes the recorded positions values in the python script
+        /// <summary>
+        /// Writes the recorded positions values in text
+        /// </summary>
+        /// <param name="x">x position</param>
+        /// <param name="y">y position</param>
+        /// <param name="z">z position</param>
+        /// <param name="t">time from the EGM message header</param>
         public void Fill(string x, string y, string z, string t)
         {
             var newLine = string.Format("X.append({0})", x);
@@ -56,7 +68,16 @@ namespace EGM_Projet
             text.AppendLine(newLine);
         }
 
-        //Writes the recorded torques values in the python script
+        /// <summary>
+        /// Writes the recorded torques values in text
+        /// </summary>
+        /// <param name="t1">axis 1 torque</param>
+        /// <param name="t2">axis 2 torque</param>
+        /// <param name="t3">axis 3 torque</param>
+        /// <param name="t4">axis 4 torque</param>
+        /// <param name="t5">axis 5 torque</param>
+        /// <param name="t6">axis 6 torque</param>
+        /// <param name="t">time from the recieved message</param>
         public void FillTorque(string t1, string t2, string t3, string t4, string t5, string t6, string t)
         {
             var newLine = string.Format("T1.append({0})", t1);
@@ -75,7 +96,9 @@ namespace EGM_Projet
             text.AppendLine(newLine);
         }
 
-        //Writes the plotting instructions in the python script and executes it
+        /// <summary>
+        /// Writes the plotting instructions in the python script and executes it
+        /// </summary>
         public void Trace()
         {
             text.AppendLine(" ");
@@ -150,6 +173,9 @@ namespace EGM_Projet
             Process process = Process.Start(start);
         }
 
+        /// <summary>
+        /// Clears the StringBuilder text
+        /// </summary>
         public void Clear()
         {
             text.Clear();

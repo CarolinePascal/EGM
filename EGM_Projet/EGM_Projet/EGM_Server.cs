@@ -56,9 +56,9 @@ namespace EGM_Projet
         }
 
        
-        public override int Main()
+        public override void Main(out int n)
         {
-            int n = 0;
+            n = 0;
             var remoteEP = new IPEndPoint(IPAddress.Any, Port);
 
             while (exit == false && n<countMax)
@@ -116,6 +116,8 @@ namespace EGM_Projet
                     _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
                     _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
 
+                    Program.plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-refTime).ToString());
+
                     EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
 
                     CreateSensorMessage(sensor, servers);
@@ -142,11 +144,12 @@ namespace EGM_Projet
                 server.wait = true;
             }
 
+            Program.plot.Trace();
 
             ConsoleKey key = new ConsoleKey();
             do
             {
-                Console.WriteLine("Reboot the procedure ? Yes [Y] No [N]");
+                Console.WriteLine("Reboot the procedure (Close all the python figures before rebooting) ? Yes [Y] No [N]");
                 key = Console.ReadKey(true).Key;
 
             } while (key != ConsoleKey.Y && key != ConsoleKey.N);
@@ -173,9 +176,7 @@ namespace EGM_Projet
             {
                 server.exit = true;
                 server.wait = false;
-            }
-
-            return (n);            
+            }      
         }
 
         public override void Counter(int n)
