@@ -8,11 +8,17 @@ namespace EGM_Projet
 {
     class Torque_Server : Input_Server
     {
-        //6 Torques
+        /// <summary>
+        /// 6 motor torques values
+        /// </summary>
         double[] torques = new double[6];
 
         int check;
 
+        /// <summary>
+        /// Default contructor for a Torque_Server instance with UDP port argument
+        /// </summary>
+        /// <param name="IPport">Port of the UDP communication different from 6510</param>
         public Torque_Server(int IPport):base(IPport)
         {
             for (int i=0;i<6;i++)
@@ -23,6 +29,10 @@ namespace EGM_Projet
 
         }
 
+        /// <summary>
+        /// Parses and records the recieved messages containing the torques values : Time Taxis1 Taxis2 Taxis3 Taxis4 Taxis5 Taxis6
+        /// </summary>
+        /// <param name="returnData">Recieved message as a string</param>
         public override void Parsing(string returnData)
         {
             String[] substrings = returnData.Split(' ');

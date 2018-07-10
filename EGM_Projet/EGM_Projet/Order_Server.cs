@@ -8,11 +8,15 @@ namespace EGM_Projet
 {
     public class Order_Server : Input_Server
     {
-        //Ordered position
+        //Ordered robot's position
         public float x;
         public float y;
         public float z;
 
+        /// <summary>
+        /// Default contructor for a Order_Server instance with UDP port argument
+        /// </summary>
+        /// <param name="IPport">Port of the UDP communication different from 6510</param>
         public Order_Server(int IPport) : base(IPport)
         {
             x = 0;
@@ -20,6 +24,10 @@ namespace EGM_Projet
             z = 0;
         }
 
+        /// <summary>
+        /// Parses and records the recieved messages containing the ordered positions : X Y Z
+        /// </summary>
+        /// <param name="returnData">Recieved message as a string</param>
         public override void Parsing(string returnData)
         {
             returnData = returnData.Replace('.', ',');

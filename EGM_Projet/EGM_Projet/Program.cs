@@ -51,7 +51,6 @@ namespace EGM_Projet
 
                 WaitHandle.WaitAll(events);
                 plot.Clear();
-
             }
         }
     }

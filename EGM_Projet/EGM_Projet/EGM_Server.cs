@@ -13,16 +13,24 @@ namespace EGM_Projet
 {
     public class EGM_Server : Server   //Also stands for main server 
     {
-        List<Server> servers;    //List of all the servers connected to the EGM main sevrer
+        /// <summary>
+        /// List of all the Input_Servers connected to the EGM "Main" Server
+        /// </summary>
+        List<Server> servers;    
 
+        /// <summary>
+        /// Maximum number of plotted positions
+        /// </summary>
         int countMax;
 
-        //Feedback position
-
+        // Feebacked robot's positions
         float _robotX;
         float _robotY;
         float _robotZ;
 
+        /// <summary>
+        /// Default constructor of a EGM_Server instance -The UDP Port is necessarely 6510
+        /// </summary>
         public EGM_Server() : base()
         {
             servers = null;
@@ -37,10 +45,10 @@ namespace EGM_Projet
         }
 
         /// <summary>
-        /// Describt fuunction
+        /// Constructor of a EGM_Server instance with the list of the connected servers and the plot number
         /// </summary>
-        /// <param name="liste">This do that</param>
-        /// <param name="n"></param>
+        /// <param name="liste">List of all the Input_Servers connected to the EGM "Main" Server</param>
+        /// <param name="n"> Maximum number of plotted positions</param>
         /// <remarks></remarks>
         public EGM_Server(List<Server> liste, int n) : base()
         {
@@ -55,7 +63,13 @@ namespace EGM_Projet
             Port = 6510;
         }
 
-       
+        /// <summary>
+        /// Main loop for EGM_Server :
+        /// - Key Reading for pausing, rebooting and stopping the execution
+        /// - Recieving EGM feedback messages from the Motion Control
+        /// - Sending EGM order messages to the Motion Control
+        /// </summary>
+        /// <param name="n">Number of recieved EGM messages</param>
         public override void Main(out int n)
         {
             n = 0;
@@ -179,11 +193,20 @@ namespace EGM_Projet
             }      
         }
 
+        /// <summary>
+        /// Displays the number n of recieved EGM messages
+        /// </summary>
+        /// <param name="n">Number of recieved EGM messages</param>
         public override void Counter(int n)
         {
             Console.WriteLine("Messages EGM : " + n);
         }
 
+        /// <summary>
+        /// Creates an EGM message to send to the Motion Control with the ordered robot position
+        /// </summary>
+        /// <param name="sensor">abb.egm type created in the Main loop</param>
+        /// <param name="servers">List of all the Input_Servers connected to the EGM "Main" Server - Especially the servers providing the position to reach !</param>
         public void CreateSensorMessage(EgmSensor.Builder sensor, List<Server> servers)
         {
             // create a header
@@ -237,6 +260,11 @@ namespace EGM_Projet
             return;
         }
 
+        /// <summary>
+        /// Displays the number and the time of a feedback message recieved from the Motion Control
+        /// </summary>
+        /// <param name="robot">abb.egm type containing the feebback message</param>
+        /// <returns></returns>
         int DisplayInboundMessage(EgmRobot robot)
         {
             int time = 0;

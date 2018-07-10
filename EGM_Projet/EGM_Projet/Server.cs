@@ -12,9 +12,13 @@ namespace EGM_Projet
 {
     public abstract class Server
     {
+
         private Thread thread;
 
         protected UdpClient udpClient;
+        /// <summary>
+        /// Port of the UDP communication
+        /// </summary>
         protected int Port;
 
         public bool exit;
@@ -27,6 +31,9 @@ namespace EGM_Projet
 
         public ManualResetEvent stop;
 
+        /// <summary>
+        /// Default constructor of a Server instance
+        /// </summary>
         public Server()
         {
             thread = null;
@@ -43,6 +50,10 @@ namespace EGM_Projet
             stop = new ManualResetEvent(false);
         }
 
+        /// <summary>
+        /// Constructor of a Server instance with UDP port argument
+        /// </summary>
+        /// <param name="IPport">Port of the UDP communication</param>
         public Server(int IPport)
         {
             thread = null;
@@ -59,6 +70,9 @@ namespace EGM_Projet
             stop = new ManualResetEvent(false);
         }
 
+        /// <summary>
+        /// Starts the server thread 
+        /// </summary>
         public void Start()
         {
             exit = false;
@@ -70,6 +84,9 @@ namespace EGM_Projet
             thread.Start();
         }
 
+        /// <summary>
+        /// Stops the server thread and the UDP communication
+        /// </summary>
         public void Stop()
         {
             exit = true;
@@ -80,6 +97,9 @@ namespace EGM_Projet
             if (!reboot) { thread.Abort(); }
         }
 
+        /// <summary>
+        /// Creates the UDPClient, Main loop and Stop()
+        /// </summary>
         public void Init()
         {
             udpClient = new UdpClient(Port);
@@ -94,8 +114,16 @@ namespace EGM_Projet
             Stop();
         }
 
+        /// <summary>
+        /// Displays the number n of recieved messages
+        /// </summary>
+        /// <param name="n">Number of recieved messages</param>
         public abstract void Counter(int n);
 
+        /// <summary>
+        /// Main loop of the server thread
+        /// </summary>
+        /// <param name="n">Number of recieved messages</param>
         public abstract void Main(out int n);
     }
 }
