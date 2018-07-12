@@ -8,46 +8,46 @@ using System.Net.Sockets;
 using System.Net;
 
 
-namespace EGM_Projet
+namespace EGMProjet
 {
     public abstract class Server
     {
 
-        private Thread thread;
+        private Thread _thread;
 
-        protected UdpClient udpClient;
+        protected UdpClient _udpClient;
         /// <summary>
         /// Port of the UDP communication
         /// </summary>
-        protected int Port;
+        protected int _port;
 
-        public bool exit;
-        public bool wait;
-        public bool reboot;
+        public bool Exit { get; set; }
+        public bool Wait { get; set; }
+        public bool Reboot { get; set; }
 
-        protected int seqNumber;
+        protected int _seqNumber;
 
-        protected int refTime;
+        protected int _refTime;
 
-        public ManualResetEvent stop;
+        public ManualResetEvent Stop { get; set; }
 
         /// <summary>
         /// Default constructor of a Server instance
         /// </summary>
         public Server()
         {
-            thread = null;
+            _thread = null;
 
-            udpClient = null;
-            Port = 0;
+            _udpClient = null;
+            _port = 0;
 
-            exit = false;
-            wait = false;
-            reboot = true;
+            Exit = false;
+            Wait = false;
+            Reboot = true;
 
-            refTime = 0;
+            _refTime = 0;
 
-            stop = new ManualResetEvent(false);
+            Stop = new ManualResetEvent(false);
         }
 
         /// <summary>
@@ -56,45 +56,45 @@ namespace EGM_Projet
         /// <param name="IPport">Port of the UDP communication</param>
         public Server(int IPport)
         {
-            thread = null;
+            _thread = null;
 
-            udpClient = null;
-            Port = IPport;
+            _udpClient = null;
+            _port = IPport;
 
-            exit = false;
-            wait = false;
-            reboot = false;
+            Exit = false;
+            Wait = false;
+            Reboot = false;
 
-            refTime = 0;
+            _refTime = 0;
 
-            stop = new ManualResetEvent(false);
+            Stop = new ManualResetEvent(false);
         }
 
         /// <summary>
         /// Starts the server thread 
         /// </summary>
-        public void Start()
+        public void StartServer()
         {
-            exit = false;
-            wait = false;
+            Exit = false;
+            Wait = false;
 
-            stop.Reset();
+            Stop.Reset();
 
-            thread = new Thread(new ThreadStart(Init));
-            thread.Start();
+            _thread = new Thread(new ThreadStart(Init));
+            _thread.Start();
         }
 
         /// <summary>
         /// Stops the server thread and the UDP communication
         /// </summary>
-        public void Stop()
+        public void StopServer()
         {
-            exit = true;
-            udpClient.Close();
+            Exit = true;
+            _udpClient.Close();
 
-            stop.Set();
+            Stop.Set();
 
-            if (!reboot) { thread.Abort(); }
+            if (!Reboot) { _thread.Abort(); }
         }
 
         /// <summary>
@@ -102,16 +102,16 @@ namespace EGM_Projet
         /// </summary>
         public void Init()
         {
-            udpClient = new UdpClient(Port);
+            _udpClient = new UdpClient(_port);
 
-            Console.WriteLine("Connexion avec le serveur - Port : " + Port);
+            Console.WriteLine("Connexion avec le serveur - Port : " + _port);
 
             int n;
 
             Main(out n);
 
             Counter(n);
-            Stop();
+            StopServer();
         }
 
         /// <summary>

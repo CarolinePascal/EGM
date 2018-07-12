@@ -5,30 +5,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace EGM_Projet
+namespace EGMProjet
 {
-    class Torque_Server : Input_Server
+    class TorqueServer : InputServer
     {
         /// <summary>
         /// 6 motor torques values
         /// </summary>
-        public List<double>[] torques;   //A voir poir le 20 en fonction de la fréquence d'acquisition
+        private List<double>[] _torques;
 
         /// <summary>
         /// Default contructor for a Torque_Server instance with UDP port argument
         /// </summary>
         /// <param name="IPport">Port of the UDP communication different from 6510</param>
-        public Torque_Server(int IPport):base(IPport)
+        public TorqueServer(int ipPort):base(ipPort)
         {
-            InitTorque(ref torques);
+            InitTorque();
         }
 
-        private void InitTorque(ref List<double>[] torques)
+        private void InitTorque()
         {
-            torques = new List<double>[6];
+            _torques = new List<double>[6];
             for (int i=0;i<6;i++)
             {
-                torques[i] = new List<double>();
+                _torques[i] = new List<double>();
             }
         }
 
@@ -45,7 +45,7 @@ namespace EGM_Projet
 
                 for (int i=0;i<6;i++)
                 {
-                    torques[i].Add(double.Parse(substrings2[i + 1]));
+                    _torques[i].Add(double.Parse(substrings2[i + 1]));
                     //Program.plot.FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0]);
                 }
             
@@ -61,7 +61,7 @@ namespace EGM_Projet
             string str = System.String.Empty;
             for (int i=0;i<6;i++)
             {
-                results[i] = torques[i].Average();
+                results[i] = _torques[i].Average();
                 str += results[i].ToString() + " ";
             }
             Console.WriteLine(str);

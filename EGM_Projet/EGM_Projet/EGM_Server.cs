@@ -9,39 +9,39 @@ using abb.egm;
 using System.IO;
 using System.Threading;
 
-namespace EGM_Projet
+namespace EGMProjet
 {
-    public class EGM_Server : Server   //Also stands for main server 
+    public class EGMServer : Server   //Also stands for main server 
     {
         /// <summary>
         /// List of all the Input_Servers connected to the EGM "Main" Server
         /// </summary>
-        List<Server> servers;    
-
+        private List<Server> _servers;
+        
         /// <summary>
         /// Maximum number of plotted positions
         /// </summary>
-        int countMax;
+        private int _countMax { get; set; }
 
         // Feebacked robot's positions
-        float _robotX;
-        float _robotY;
-        float _robotZ;
+        private float _robotX;
+        private float _robotY;
+        private float _robotZ;
 
         /// <summary>
         /// Default constructor of a EGM_Server instance -The UDP Port is necessarely 6510
         /// </summary>
-        public EGM_Server() : base()
+        public EGMServer() : base()
         {
-            servers = null;
+            _servers = null;
 
-            countMax = 0;
+            _countMax = 0;
 
             _robotX = 0;
             _robotY = 0;
             _robotZ = 0;
 
-            Port = 6510;
+            _port = 6510;
         }
 
         /// <summary>
@@ -50,17 +50,17 @@ namespace EGM_Projet
         /// <param name="liste">List of all the Input_Servers connected to the EGM "Main" Server</param>
         /// <param name="n"> Maximum number of plotted positions</param>
         /// <remarks></remarks>
-        public EGM_Server(List<Server> liste, int n) : base()
+        public EGMServer(List<Server> liste, int n) : base()
         {
-            servers = liste;
+            _servers = liste;
 
-            countMax = n;
+            _countMax = n;
 
             _robotX = 0;
             _robotY = 0;
             _robotZ = 0;
 
-            Port = 6510;
+            _port = 6510;
         }
 
         /// <summary>
@@ -73,16 +73,16 @@ namespace EGM_Projet
         public override void Main(out int n)
         {
             n = 0;
-            var remoteEP = new IPEndPoint(IPAddress.Any, Port);
+            var remoteEP = new IPEndPoint(IPAddress.Any, _port);
 
-            while (exit == false && n<countMax)
+            while (Exit == false && n<_countMax)
             {
 
                 if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
                 {
-                    foreach (Server server in servers)
+                    foreach (Server server in _servers)
                     {
-                        server.wait = true;
+                        server.Wait = true;
                     }
 
                     ConsoleKey key2 = new ConsoleKey();
@@ -95,9 +95,9 @@ namespace EGM_Projet
 
                     if (key2 == ConsoleKey.Y)
                     {
-                        foreach (Server server in servers)
+                        foreach (Server server in _servers)
                         {
-                            exit=true;
+                            Exit=true;
                         }
                         break;
 
@@ -105,15 +105,15 @@ namespace EGM_Projet
 
                     else if (key2 == ConsoleKey.N)
                     {
-                        foreach (Server server in servers)
+                        foreach (Server server in _servers)
                         {
-                            server.wait = false;
+                            server.Wait = false;
                         }
                         continue;
                     }
                 }
 
-                var data = udpClient.Receive(ref remoteEP);
+                var data = _udpClient.Receive(ref remoteEP);
 
                 if (data != null)
                 {
@@ -123,18 +123,18 @@ namespace EGM_Projet
 
                     if (n == 1)
                     {
-                        refTime = (int)robot.Header.Tm;
+                        _refTime = (int)robot.Header.Tm;
                     }
 
                     _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
                     _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
                     _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
 
-                    //Program.plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-refTime).ToString());
+                    //Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-refTime).ToString());
 
                     EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
 
-                    CreateSensorMessage(sensor, servers);
+                    CreateSensorMessage(sensor);
 
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
@@ -142,7 +142,7 @@ namespace EGM_Projet
                         sensorMessage.WriteTo(memoryStream);
 
                         // send the UDP message to the robot
-                        int bytesSent = udpClient.Send(memoryStream.ToArray(),
+                        int bytesSent = _udpClient.Send(memoryStream.ToArray(),
                                                         (int)memoryStream.Length, remoteEP);
                         
                         if (bytesSent < 0)
@@ -153,12 +153,12 @@ namespace EGM_Projet
                 }
             }
 
-            foreach(Server server in servers)
+            foreach(Server server in _servers)
             { 
-                server.wait = true;
+                server.Wait = true;
             }
 
-            //Program.plot.Trace();
+            //Program.Plot.Trace();
 
             ConsoleKey key = new ConsoleKey();
             do
@@ -170,26 +170,26 @@ namespace EGM_Projet
 
             if (key == ConsoleKey.N)
             {
-                foreach (Server server in servers)
+                foreach (Server server in _servers)
                 {
-                    server.reboot = false;
-                    reboot = false;
+                    server.Reboot = false;
+                    Reboot = false;
                 }
             }
             
             else if (key == ConsoleKey.Y)
             {
-                foreach (Server server in servers)
+                foreach (Server server in _servers)
                 {
-                    server.reboot = true;
-                    reboot = true;
+                    server.Reboot = true;
+                    Reboot = true;
                 }
             }
 
-            foreach (Server server in servers)
+            foreach (Server server in _servers)
             {
-                server.exit = true;
-                server.wait = false;
+                server.Exit = true;
+                server.Wait = false;
             }      
         }
 
@@ -207,11 +207,11 @@ namespace EGM_Projet
         /// </summary>
         /// <param name="sensor">abb.egm type created in the Main loop</param>
         /// <param name="servers">List of all the Input_Servers connected to the EGM "Main" Server - Especially the servers providing the position to reach !</param>
-        public void CreateSensorMessage(EgmSensor.Builder sensor, List<Server> servers)
+        private void CreateSensorMessage(EgmSensor.Builder sensor)
         {
             // create a header
             EgmHeader.Builder hdr = new EgmHeader.Builder();
-            hdr.SetSeqno((uint)seqNumber++)
+            hdr.SetSeqno((uint)_seqNumber++)
                //Timestamp in milliseconds (can be used for monitoring delays)
                .SetTm((uint)DateTime.Now.Ticks)
                //Sent by sensor, MSGTYPE_DATA if sent from robot controller
@@ -221,39 +221,39 @@ namespace EGM_Projet
 
             // create some sensor data
             EgmPlanned.Builder planned = new EgmPlanned.Builder();
-            EgmPose.Builder pos = new EgmPose.Builder();
-            EgmQuaternion.Builder pq = new EgmQuaternion.Builder();
-            EgmCartesian.Builder pc = new EgmCartesian.Builder();
+            EgmPose.Builder pose = new EgmPose.Builder();
+            EgmQuaternion.Builder quaternion = new EgmQuaternion.Builder();
+            EgmCartesian.Builder cartesian = new EgmCartesian.Builder();
 
-            float _x = 0;
-            float _y = 0;
-            float _z = 0;
+            float x = 0;
+            float y = 0;
+            float z = 0;
 
-            foreach(Server server in servers)
+            foreach(Server server in _servers)
             {
-                if(server is Order_Server)
+                if(server is OrderServer)
                 {
-                    Order_Server Oserver = (Order_Server)server;
-                    _x += Oserver.x;
-                    _y += Oserver.y;
-                    _z += Oserver.z;
+                    OrderServer serverO = (OrderServer)server;
+                    x += serverO.X;
+                    y += serverO.Y;
+                    z += serverO.Z;
                 }
             }
 
-            pc.SetX(_x)
-              .SetY(_y)
-              .SetZ(_z);
+            cartesian.SetX(x)
+              .SetY(y)
+              .SetZ(z);
 
-            pq.SetU0(0.0)
+            quaternion.SetU0(0.0)
               .SetU1(0.0)
               .SetU2(0.0)
               .SetU3(0.0);
 
-            pos.SetPos(pc)
-                .SetOrient(pq);
+            pose.SetPos(cartesian)
+                .SetOrient(quaternion);
 
             // bind pos object to planned
-            planned.SetCartesian(pos);
+            planned.SetCartesian(pose);
             // bind planned to sensor object
             sensor.SetPlanned(planned);
 
@@ -265,19 +265,16 @@ namespace EGM_Projet
         /// </summary>
         /// <param name="robot">abb.egm type containing the feebback message</param>
         /// <returns></returns>
-        int DisplayInboundMessage(EgmRobot robot)
+        private void DisplayInboundMessage(EgmRobot robot)
         {
-            int time = 0;
             if (robot.HasHeader && robot.Header.HasSeqno && robot.Header.HasTm)
             {
-                time = (int)robot.Header.Tm;
                 Console.WriteLine("Seq={0} tm={1}", robot.Header.Seqno.ToString(), robot.Header.Tm.ToString()); //Uncomment to display
             }
             else
             {
                 Console.WriteLine("No header in robot message");  //Uncomment to display
             }
-            return (time);
         }
 
         /// <summary>

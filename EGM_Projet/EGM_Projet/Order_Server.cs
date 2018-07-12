@@ -4,24 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EGM_Projet
+namespace EGMProjet
 {
-    public class Order_Server : Input_Server
+    public class OrderServer : InputServer
     {
         //Ordered robot's position
-        public float x;
-        public float y;
-        public float z;
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
 
         /// <summary>
         /// Default contructor for a Order_Server instance with UDP port argument
         /// </summary>
         /// <param name="IPport">Port of the UDP communication different from 6510</param>
-        public Order_Server(int IPport) : base(IPport)
+        public OrderServer(int ipPort) : base(ipPort)
         {
-            x = 0;
-            y = 0;
-            z = 0;
+            X = 0;
+            Y = 0;
+            Z = 0;
         }
 
         /// <summary>
@@ -33,14 +33,14 @@ namespace EGM_Projet
             returnData = returnData.Replace('.', ',');
             String[] substrings = returnData.Split(' ');
 
-            x = float.Parse(substrings[0]);
-            y = float.Parse(substrings[1]);
-            z = float.Parse(substrings[2]);
+            X = float.Parse(substrings[0]);
+            Y = float.Parse(substrings[1]);
+            Z = float.Parse(substrings[2]);
         }
         
         public override string GetState()
         {
-            string str = x.ToString() + " " + y.ToString() + " " + z.ToString();
+            string str = X.ToString() + " " + Y.ToString() + " " + Z.ToString();
             Console.WriteLine(str);
             return (str);
         }

@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 
-namespace EGM_Projet
+namespace EGMProjet
 {
-    public abstract class Input_Server : Server
+    public abstract class InputServer : Server
     {
         /// <summary>
         /// Recieved data as a string
         /// </summary>
-        string returnData;
+        private string _returnData;
 
         /// <summary>
         /// Constructor of a Input_Server instance with UDP port argument
         /// </summary>
         /// <param name="IPport">Port of the UDP communication</param>
-        public Input_Server(int IPport) : base(IPport)
+        public InputServer(int ipPort) : base(ipPort)
         {
-            returnData = null;
+            _returnData = null;
         }
 
         /// <summary>
@@ -33,22 +33,22 @@ namespace EGM_Projet
         public override void Main(out int n)
         {
             n = 0;
-            var remoteEP = new IPEndPoint(IPAddress.Any, Port);
+            var remoteEP = new IPEndPoint(IPAddress.Any, _port);
 
-            while (exit==false)
+            while (Exit==false)
             {
                 do
                 {
-                    if (exit) { break; }
-                } while (wait);
+                    if (Exit) { break; }
+                } while (Wait);
 
-                var data = udpClient.Receive(ref remoteEP);
+                var data = _udpClient.Receive(ref remoteEP);
 
                 if (data != null)
                 {
                     n++;
-                    returnData = Encoding.ASCII.GetString(data);
-                    Parsing(returnData);
+                    _returnData = Encoding.ASCII.GetString(data);
+                    Parsing(_returnData);
                 }
             }
         }
