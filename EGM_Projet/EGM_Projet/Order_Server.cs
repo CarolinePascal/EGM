@@ -37,7 +37,13 @@ namespace EGM_Projet
             y = float.Parse(substrings[1]);
             z = float.Parse(substrings[2]);
         }
-
+        
+        public override string GetState()
+        {
+            string str = x.ToString() + " " + y.ToString() + " " + z.ToString();
+            Console.WriteLine(str);
+            return (str);
+        }
 
     }
 }

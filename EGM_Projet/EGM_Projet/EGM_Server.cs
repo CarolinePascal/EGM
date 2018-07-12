@@ -130,7 +130,7 @@ namespace EGM_Projet
                     _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
                     _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
 
-                    Program.plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-refTime).ToString());
+                    //Program.plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-refTime).ToString());
 
                     EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
 
@@ -158,7 +158,7 @@ namespace EGM_Projet
                 server.wait = true;
             }
 
-            Program.plot.Trace();
+            //Program.plot.Trace();
 
             ConsoleKey key = new ConsoleKey();
             do
@@ -278,6 +278,17 @@ namespace EGM_Projet
                 Console.WriteLine("No header in robot message");  //Uncomment to display
             }
             return (time);
+        }
+
+        /// <summary>
+        /// Returns the feedbacked robot's position as a string
+        /// </summary>
+        /// <returns></returns>
+        public override string GetState()
+        {
+            string str = _robotX.ToString() + " " + _robotY.ToString() + " " + _robotZ.ToString();
+            Console.WriteLine(str);
+            return (str);
         }
     }
 }

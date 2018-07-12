@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace EGM_Projet
 {
@@ -11,9 +12,7 @@ namespace EGM_Projet
         /// <summary>
         /// 6 motor torques values
         /// </summary>
-        double[] torques = new double[6];
-
-        int check;
+        public List<double>[] torques;   //A voir poir le 20 en fonction de la fréquence d'acquisition
 
         /// <summary>
         /// Default contructor for a Torque_Server instance with UDP port argument
@@ -21,12 +20,16 @@ namespace EGM_Projet
         /// <param name="IPport">Port of the UDP communication different from 6510</param>
         public Torque_Server(int IPport):base(IPport)
         {
+            InitTorque(ref torques);
+        }
+
+        private void InitTorque(ref List<double>[] torques)
+        {
+            torques = new List<double>[6];
             for (int i=0;i<6;i++)
             {
-                torques[i] = 0;
+                torques[i] = new List<double>();
             }
-            check = 1;
-
         }
 
         /// <summary>
@@ -40,15 +43,29 @@ namespace EGM_Projet
             String[] substrings2 = returnData.Split(' ');
             int temps = Int32.Parse(substrings[0]);
 
-            if (temps % 4 == 0 && temps != check)
-            {
-                check = temps;
                 for (int i=0;i<6;i++)
                 {
-                    torques[i] = double.Parse(substrings2[i + 1]);
-                    Program.plot.FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0]);
+                    torques[i].Add(double.Parse(substrings2[i + 1]));
+                    //Program.plot.FillTorque(substrings[1], substrings[2], substrings[3], substrings[4], substrings[5], substrings[6], substrings[0]);
                 }
+            
+        }
+
+        /// <summary>
+        /// Returns the 6 averaged torque values position as a string
+        /// </summary>
+        /// <returns></returns>
+        public override string GetState()
+        {
+            double[] results = new double[6];
+            string str = System.String.Empty;
+            for (int i=0;i<6;i++)
+            {
+                results[i] = torques[i].Average();
+                str += results[i].ToString() + " ";
             }
+            Console.WriteLine(str);
+            return (str);          
         }
     }
 }
