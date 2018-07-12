@@ -125,5 +125,11 @@ namespace EGM_Projet
         /// </summary>
         /// <param name="n">Number of recieved messages</param>
         public abstract void Main(out int n);
+
+        /// <summary>
+        /// Returns the interest value of the server as a string
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetState();
     }
 }
