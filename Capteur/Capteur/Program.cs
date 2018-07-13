@@ -10,8 +10,10 @@ namespace Capteur
     {
         static void Main(string[] args)
         {
-            SensorServer s = new SensorServer("127.0.0.1");
-
+            SensorServer s = new SensorServer("192.168.1.1");
+            s.Start();
+            s.Main();
+            s.Stop();
         }
     }
 }

@@ -5,3 +5,10 @@ c:\users\carol\source\repos\Capteur\Capteur\obj\Debug\Capteur.csprojAssemblyRefe
 c:\users\carol\source\repos\Capteur\Capteur\obj\Debug\Capteur.csproj.CoreCompileInputs.cache
 c:\users\carol\source\repos\Capteur\Capteur\obj\Debug\Capteur.exe
 c:\users\carol\source\repos\Capteur\Capteur\obj\Debug\Capteur.pdb
+C:\Users\carol\Desktop\Stage_1\EGM\Capteur\Capteur\bin\Debug\Capteur.exe.config
+C:\Users\carol\Desktop\Stage_1\EGM\Capteur\Capteur\bin\Debug\Capteur.exe
+C:\Users\carol\Desktop\Stage_1\EGM\Capteur\Capteur\bin\Debug\Capteur.pdb
+C:\Users\carol\Desktop\Stage_1\EGM\Capteur\Capteur\obj\Debug\Capteur.csprojAssemblyReference.cache
+C:\Users\carol\Desktop\Stage_1\EGM\Capteur\Capteur\obj\Debug\Capteur.csproj.CoreCompileInputs.cache
+C:\Users\carol\Desktop\Stage_1\EGM\Capteur\Capteur\obj\Debug\Capteur.exe
+C:\Users\carol\Desktop\Stage_1\EGM\Capteur\Capteur\obj\Debug\Capteur.pdb

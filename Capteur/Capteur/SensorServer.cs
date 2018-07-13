@@ -20,7 +20,9 @@ namespace Capteur
 
         private UdpClient _udpClient;
         private const int _port = 49152;
-        public IPAddress IPAddress { get; set; }
+        private IPAddress _ipAddress;
+        private IPEndPoint _remoteEP;
+
         
         private const double _gain = 1000000.0;
 
@@ -30,7 +32,7 @@ namespace Capteur
         {
             _isConnected = false;
             InitEfforts();
-            IPAddress = IPAddress.Parse(address);
+            _ipAddress = IPAddress.Parse(address);
         }
 
         public void InitEfforts()
@@ -44,8 +46,9 @@ namespace Capteur
 
         public void Start()
         {
-            var remoteEP = new IPEndPoint(IPAddress, _port);
-            _udpClient = new UdpClient(remoteEP);
+            _udpClient = new UdpClient(_port);
+            _remoteEP = new IPEndPoint(_ipAddress, _port);
+            _udpClient.Connect(_remoteEP);
 
             if (!_isConnected)
             {
@@ -57,7 +60,8 @@ namespace Capteur
                 BitConverter.GetBytes(order).CopyTo(_message, 2);
                 BitConverter.GetBytes(time).CopyTo(_message, 4);
 
-                Console.WriteLine(BitConverter.ToString(_message));
+                _udpClient.Send(_message, _messageLength);
+
             }
 
             _isConnected = true;
@@ -93,6 +97,21 @@ namespace Capteur
             }
         }
 
+        public void Main()
+        {
+            int n = 0;
+            while (n <= 50000000)
+            {
+                _answer = _udpClient.Receive(ref _remoteEP);
+                Parse();
+                n++;
+                if(n%50==0)
+                {
+                    GetState();
+                }
+            }
+        }
+
         public double[] GetState()
         {
             string str = String.Empty;
@@ -107,34 +126,5 @@ namespace Capteur
             InitEfforts();
             return (results);
         }
-
-        public void Test()
-        {
-            int header1 = IPAddress.HostToNetworkOrder((int)0);
-            int header2 = IPAddress.HostToNetworkOrder((int)0);
-            int header3 = IPAddress.HostToNetworkOrder((int)0);
-            int Fx = IPAddress.HostToNetworkOrder((int)123456);
-            int Fy = IPAddress.HostToNetworkOrder((int)0);
-            int Fz = IPAddress.HostToNetworkOrder((int)123456789);
-            int Mx = IPAddress.HostToNetworkOrder((int)123456);
-            int My = IPAddress.HostToNetworkOrder((int)0);
-            int Mz = IPAddress.HostToNetworkOrder((int)123456789);
-
-
-            BitConverter.GetBytes(header1).CopyTo(_answer, 0);
-            BitConverter.GetBytes(header2).CopyTo(_answer, 4);
-            BitConverter.GetBytes(header3).CopyTo(_answer, 8);
-            BitConverter.GetBytes(Fx).CopyTo(_answer, 12);
-            BitConverter.GetBytes(Fy).CopyTo(_answer, 16);
-            BitConverter.GetBytes(Fz).CopyTo(_answer, 20);
-            BitConverter.GetBytes(Mx).CopyTo(_answer, 24);
-            BitConverter.GetBytes(My).CopyTo(_answer, 28);
-            BitConverter.GetBytes(Mz).CopyTo(_answer, 32);
-        }
-
-
-
-
-
     }
 }
