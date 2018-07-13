@@ -1,0 +1,7 @@
+c:\users\carol\source\repos\Capteur\Capteur\bin\Debug\Capteur.exe.config
+c:\users\carol\source\repos\Capteur\Capteur\bin\Debug\Capteur.exe
+c:\users\carol\source\repos\Capteur\Capteur\bin\Debug\Capteur.pdb
+c:\users\carol\source\repos\Capteur\Capteur\obj\Debug\Capteur.csprojAssemblyReference.cache
+c:\users\carol\source\repos\Capteur\Capteur\obj\Debug\Capteur.csproj.CoreCompileInputs.cache
+c:\users\carol\source\repos\Capteur\Capteur\obj\Debug\Capteur.exe
+c:\users\carol\source\repos\Capteur\Capteur\obj\Debug\Capteur.pdb
