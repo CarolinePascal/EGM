@@ -31,7 +31,7 @@ namespace EGMProjet
         /// <summary>
         /// Default constructor of a EGM_Server instance -The UDP Port is necessarely 6510
         /// </summary>
-        public EGMServer() : base()
+        public EGMServer(string ipAddress) : base(ipAddress)
         {
             _servers = null;
 
@@ -42,6 +42,7 @@ namespace EGMProjet
             _robotZ = 0;
 
             _port = 6510;
+            _ipAddress = ipAddress;
         }
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace EGMProjet
         /// <param name="liste">List of all the Input_Servers connected to the EGM "Main" Server</param>
         /// <param name="n"> Maximum number of plotted positions</param>
         /// <remarks></remarks>
-        public EGMServer(List<Server> liste, int n) : base()
+        public EGMServer(List<Server> liste, int n, string ipAddress) : base(ipAddress)
         {
             _servers = liste;
 
@@ -70,11 +71,10 @@ namespace EGMProjet
         /// - Sending EGM order messages to the Motion Control
         /// </summary>
         /// <param name="n">Number of recieved EGM messages</param>
-        public override void Main(out int n)
+        public override void Main(out int n, IPEndPoint remoteEP)
         {
             n = 0;
-            var remoteEP = new IPEndPoint(IPAddress.Any, _port);
-
+            
             while (Exit == false && n<_countMax)
             {
 
@@ -132,13 +132,17 @@ namespace EGMProjet
 
                     //Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-refTime).ToString());
 
-                    EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
+                    //EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
+                    EgmSensorPathCorr.Builder sensor = EgmSensorPathCorr.CreateBuilder();
 
-                    CreateSensorMessage(sensor);
+                    //CreateSensorMessage(sensor);
+                    CreateCorrectionMessage(sensor);
 
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
-                        EgmSensor sensorMessage = sensor.Build();
+                        //EgmSensor sensorMessage = sensor.Build();
+                        EgmSensorPathCorr sensorMessage = sensor.Build();
+
                         sensorMessage.WriteTo(memoryStream);
 
                         // send the UDP message to the robot
@@ -203,10 +207,42 @@ namespace EGMProjet
         }
 
         /// <summary>
+        /// Creates an EGM message to send to the Motion Control in Path Correction mode
+        /// </summary>
+        /// <param name="sensor">abb.egm type created in the Main loop</param>
+        private void CreateCorrectionMessage(EgmSensorPathCorr.Builder sensor)
+        {
+            // create a header
+            EgmHeader.Builder hdr = new EgmHeader.Builder();
+            hdr.SetSeqno((uint)_seqNumber++)
+               //Timestamp in milliseconds (can be used for monitoring delays)
+               .SetTm((uint)DateTime.Now.Ticks)
+               //Sent by sensor, MSGTYPE_DATA if sent from robot controller
+               .SetMtype(EgmHeader.Types.MessageType.MSGTYPE_PATH_CORRECTION);   //What are the main differencies between those messages types ?
+
+            sensor.SetHeader(hdr);
+
+            // create some correction data
+            EgmPathCorr.Builder correction = new EgmPathCorr.Builder();
+            EgmCartesian.Builder cartesian = new EgmCartesian.Builder();
+
+            cartesian.SetX(0)
+                .SetY(0)
+                .SetZ(0);
+
+            correction.SetPos(cartesian);
+            correction.SetAge(0);
+
+            sensor.SetPathCorr(correction);
+
+            return;
+        }
+
+
+        /// <summary>
         /// Creates an EGM message to send to the Motion Control with the ordered robot position
         /// </summary>
         /// <param name="sensor">abb.egm type created in the Main loop</param>
-        /// <param name="servers">List of all the Input_Servers connected to the EGM "Main" Server - Especially the servers providing the position to reach !</param>
         private void CreateSensorMessage(EgmSensor.Builder sensor)
         {
             // create a header

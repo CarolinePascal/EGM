@@ -19,7 +19,7 @@ namespace EGMProjet
         /// Constructor of a Input_Server instance with UDP port argument
         /// </summary>
         /// <param name="IPport">Port of the UDP communication</param>
-        public InputServer(int ipPort) : base(ipPort)
+        public InputServer(int ipPort, string ipAddress) : base(ipPort, ipAddress)
         {
             _returnData = null;
         }
@@ -30,10 +30,9 @@ namespace EGMProjet
         /// - Recieving and parsing input data
         /// </summary>
         /// <param name="n">Number of recieved messages</param>
-        public override void Main(out int n)
+        public override void Main(out int n, IPEndPoint remoteEP)
         {
             n = 0;
-            var remoteEP = new IPEndPoint(IPAddress.Any, _port);
 
             while (Exit==false)
             {

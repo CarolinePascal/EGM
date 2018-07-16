@@ -18,7 +18,7 @@ namespace EGMProjet
         /// Default contructor for a Torque_Server instance with UDP port argument
         /// </summary>
         /// <param name="IPport">Port of the UDP communication different from 6510</param>
-        public TorqueServer(int ipPort):base(ipPort)
+        public TorqueServer(int ipPort, string ipAddress):base(ipPort, ipAddress)
         {
             InitTorque();
         }

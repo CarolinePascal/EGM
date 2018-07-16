@@ -20,7 +20,8 @@ namespace EGMProjet
         /// Port of the UDP communication
         /// </summary>
         protected int _port;
-
+        protected string _ipAddress;
+        
         public bool Exit { get; set; }
         public bool Wait { get; set; }
         public bool Reboot { get; set; }
@@ -40,6 +41,7 @@ namespace EGMProjet
 
             _udpClient = null;
             _port = 0;
+            _ipAddress = "127.0.0.1";
 
             Exit = false;
             Wait = false;
@@ -54,20 +56,43 @@ namespace EGMProjet
         /// Constructor of a Server instance with UDP port argument
         /// </summary>
         /// <param name="IPport">Port of the UDP communication</param>
-        public Server(int IPport)
+        public Server(int IPport, string IPAddress)
         {
             _thread = null;
 
             _udpClient = null;
             _port = IPport;
+            _ipAddress = IPAddress;
 
             Exit = false;
             Wait = false;
-            Reboot = false;
+            Reboot = true;
 
             _refTime = 0;
 
             Stop = new ManualResetEvent(false);
+        }
+
+        /// <summary>
+        /// Constructor of a Server instance with IP Address argument
+        /// </summary>
+        /// <param name="IPAddress">IP Address of the UDP communication as a string</param>
+        public Server(string IPAddress)
+        {
+            _thread = null;
+
+            _udpClient = null;
+            _port = 0;
+            _ipAddress = IPAddress;
+
+            Exit = false;
+            Wait = false;
+            Reboot = true;
+
+            _refTime = 0;
+
+            Stop = new ManualResetEvent(false);
+
         }
 
         /// <summary>
@@ -102,13 +127,14 @@ namespace EGMProjet
         /// </summary>
         public void Init()
         {
-            _udpClient = new UdpClient(_port);
+            var remoteEP = new IPEndPoint(IPAddress.Parse(_ipAddress), _port);
+            _udpClient = new UdpClient(remoteEP);
 
             Console.WriteLine("Connexion avec le serveur - Port : " + _port);
 
             int n;
 
-            Main(out n);
+            Main(out n, remoteEP);
 
             Counter(n);
             StopServer();
@@ -124,7 +150,7 @@ namespace EGMProjet
         /// Main loop of the server thread
         /// </summary>
         /// <param name="n">Number of recieved messages</param>
-        public abstract void Main(out int n);
+        public abstract void Main(out int n, IPEndPoint remoteEP);
 
         /// <summary>
         /// Returns the interest value of the server as a string

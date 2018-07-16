@@ -22,8 +22,8 @@ namespace EGMProjet
         public static void Main(string[] args)
         {
             //Non-EGM Servers
-            TorqueServer serverT = new TorqueServer(5000);
-            OrderServer serverO = new OrderServer(4000);
+            TorqueServer serverT = new TorqueServer(5000,"127.0.0.1");
+            OrderServer serverO = new OrderServer(4000,"127.0.0.1");
 
             // Add all the servers which are not EGM servers
             List<Server> servers = new List<Server>();
@@ -31,7 +31,7 @@ namespace EGMProjet
             servers.Add(serverT);
 
             //EGM Server
-            EGMServer serverMain = new EGMServer(servers,1000);
+            EGMServer serverMain = new EGMServer(servers,1000,"127.0.0.1");
 
             //Event table : the events are set when the servers's threads ends
             ManualResetEvent[] events = new ManualResetEvent[servers.Count+1];

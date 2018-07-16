@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 
-namespace EGM_Projet
+namespace EGMProjet
 {
     public class Plot
     {

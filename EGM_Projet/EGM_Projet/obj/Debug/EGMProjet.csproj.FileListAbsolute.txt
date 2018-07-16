@@ -1,0 +1,16 @@
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\EGM_Projet.exe.config
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\EGM_Projet.exe
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\EGM_Projet.pdb
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\CsvHelper.dll
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\Google.ProtocolBuffers.dll
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\Google.ProtocolBuffers.Serialization.dll
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot.dll
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\CsvHelper.xml
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\Google.ProtocolBuffers.xml
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\Google.ProtocolBuffers.Serialization.xml
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot.pdb
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\bin\Debug\OxyPlot.xml
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\obj\Debug\EGMProjet.csproj.CoreCompileInputs.cache
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\obj\Debug\EGMProjet.csproj.CopyComplete
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\obj\Debug\EGM_Projet.exe
+C:\Users\carol\Desktop\Stage_1\EGM\EGM_Projet\EGM_Projet\obj\Debug\EGM_Projet.pdb
