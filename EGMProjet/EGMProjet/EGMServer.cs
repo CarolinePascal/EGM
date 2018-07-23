@@ -71,8 +71,9 @@ namespace EGMProjet
         /// - Sending EGM order messages to the Motion Control
         /// </summary>
         /// <param name="n">Number of recieved EGM messages</param>
-        public override void Main(out int n, IPEndPoint remoteEP)
+        public override void Main(out int n)
         {
+            var remoteEP = new IPEndPoint(IPAddress.Parse(_ipAddress), _port);
             n = 0;
             
             while (Exit == false && n<_countMax)
@@ -130,30 +131,29 @@ namespace EGMProjet
                     _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
                     _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
 
-                    //Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-refTime).ToString());
+                    Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-_refTime).ToString());
 
-                    //EgmSensor.Builder sensor = EgmSensor.CreateBuilder();
-                    EgmSensorPathCorr.Builder sensor = EgmSensorPathCorr.CreateBuilder();
+                    MessageBuilder sensor = new MessageBuilder();
 
-                    //CreateSensorMessage(sensor);
-                    CreateCorrectionMessage(sensor);
+                    sensor.MakeHeader(ref _seqNumber);
 
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        //EgmSensor sensorMessage = sensor.Build();
-                        EgmSensorPathCorr sensorMessage = sensor.Build();
+                    double[] coordinates = new double[] {300,-300+n,100};
 
-                        sensorMessage.WriteTo(memoryStream);
+                    //double t = Math.PI/1000;
 
-                        // send the UDP message to the robot
-                        int bytesSent = _udpClient.Send(memoryStream.ToArray(),
-                                                        (int)memoryStream.Length, remoteEP);
-                        
-                        if (bytesSent < 0)
-                        {
-                            Console.WriteLine("Error send to robot");
-                        }
-                    }
+                    //double[] orientation = new double[4] {Math.Cos(t*n/1000), 0,Math.Sin(t * n / 1000), 0 };
+
+                    double[] orientation = new double[4] { 1, 0, 0, 0 };
+
+                    sensor.MovePoseQuaternion(coordinates, orientation);
+                    
+                    //double[] speeds = new double[] {0, 0,0, 500, 500, 500 };
+                    //sensor.SpeedCartesian(speeds);
+
+                    byte[] message = sensor.Build();
+
+
+                    _udpClient.Send(message.ToArray(), (int)message.Length, remoteEP);
                 }
             }
 
@@ -162,7 +162,7 @@ namespace EGMProjet
                 server.Wait = true;
             }
 
-            //Program.Plot.Trace();
+            Program.Plot.Trace();
 
             ConsoleKey key = new ConsoleKey();
             do
@@ -204,96 +204,6 @@ namespace EGMProjet
         public override void Counter(int n)
         {
             Console.WriteLine("Messages EGM : " + n);
-        }
-
-        /// <summary>
-        /// Creates an EGM message to send to the Motion Control in Path Correction mode
-        /// </summary>
-        /// <param name="sensor">abb.egm type created in the Main loop</param>
-        private void CreateCorrectionMessage(EgmSensorPathCorr.Builder sensor)
-        {
-            // create a header
-            EgmHeader.Builder hdr = new EgmHeader.Builder();
-            hdr.SetSeqno((uint)_seqNumber++)
-               //Timestamp in milliseconds (can be used for monitoring delays)
-               .SetTm((uint)DateTime.Now.Ticks)
-               //Sent by sensor, MSGTYPE_DATA if sent from robot controller
-               .SetMtype(EgmHeader.Types.MessageType.MSGTYPE_PATH_CORRECTION);   //What are the main differencies between those messages types ?
-
-            sensor.SetHeader(hdr);
-
-            // create some correction data
-            EgmPathCorr.Builder correction = new EgmPathCorr.Builder();
-            EgmCartesian.Builder cartesian = new EgmCartesian.Builder();
-
-            cartesian.SetX(0)
-                .SetY(0)
-                .SetZ(0);
-
-            correction.SetPos(cartesian);
-            correction.SetAge(0);
-
-            sensor.SetPathCorr(correction);
-
-            return;
-        }
-
-
-        /// <summary>
-        /// Creates an EGM message to send to the Motion Control with the ordered robot position
-        /// </summary>
-        /// <param name="sensor">abb.egm type created in the Main loop</param>
-        private void CreateSensorMessage(EgmSensor.Builder sensor)
-        {
-            // create a header
-            EgmHeader.Builder hdr = new EgmHeader.Builder();
-            hdr.SetSeqno((uint)_seqNumber++)
-               //Timestamp in milliseconds (can be used for monitoring delays)
-               .SetTm((uint)DateTime.Now.Ticks)
-               //Sent by sensor, MSGTYPE_DATA if sent from robot controller
-               .SetMtype(EgmHeader.Types.MessageType.MSGTYPE_CORRECTION);   //What are the main differencies between those messages types ?
-
-            sensor.SetHeader(hdr);
-
-            // create some sensor data
-            EgmPlanned.Builder planned = new EgmPlanned.Builder();
-            EgmPose.Builder pose = new EgmPose.Builder();
-            EgmQuaternion.Builder quaternion = new EgmQuaternion.Builder();
-            EgmCartesian.Builder cartesian = new EgmCartesian.Builder();
-
-            float x = 0;
-            float y = 0;
-            float z = 0;
-
-            foreach(Server server in _servers)
-            {
-                if(server is OrderServer)
-                {
-                    OrderServer serverO = (OrderServer)server;
-                    x += serverO.X;
-                    y += serverO.Y;
-                    z += serverO.Z;
-                }
-            }
-
-            cartesian.SetX(x)
-              .SetY(y)
-              .SetZ(z);
-
-            quaternion.SetU0(0.0)
-              .SetU1(0.0)
-              .SetU2(0.0)
-              .SetU3(0.0);
-
-            pose.SetPos(cartesian)
-                .SetOrient(quaternion);
-
-            // bind pos object to planned
-            planned.SetCartesian(pose);
-            // bind planned to sensor object
-            sensor.SetPlanned(planned);
-
-            return;
         }
 
         /// <summary>
