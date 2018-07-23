@@ -127,14 +127,13 @@ namespace EGMProjet
         /// </summary>
         public void Init()
         {
-            var remoteEP = new IPEndPoint(IPAddress.Parse(_ipAddress), _port);
-            _udpClient = new UdpClient(remoteEP);
+            _udpClient = new UdpClient(_port);
 
             Console.WriteLine("Connexion avec le serveur - Port : " + _port);
 
             int n;
 
-            Main(out n, remoteEP);
+            Main(out n);
 
             Counter(n);
             StopServer();
@@ -150,7 +149,7 @@ namespace EGMProjet
         /// Main loop of the server thread
         /// </summary>
         /// <param name="n">Number of recieved messages</param>
-        public abstract void Main(out int n, IPEndPoint remoteEP);
+        public abstract void Main(out int n);
 
         /// <summary>
         /// Returns the interest value of the server as a string
