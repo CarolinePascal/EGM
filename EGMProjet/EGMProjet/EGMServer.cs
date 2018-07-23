@@ -131,7 +131,11 @@ namespace EGMProjet
                     _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
                     _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
 
-                    Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-_refTime).ToString());
+                    double[] eulerangles = new double[] { Convert.ToInt32(robot.FeedBack.Cartesian.Euler.X), Convert.ToInt32(robot.FeedBack.Cartesian.Euler.Y), Convert.ToInt32(robot.FeedBack.Cartesian.Euler.Z) };
+
+                    Console.WriteLine(eulerangles[0] + " " + eulerangles[1] + " " + eulerangles[2]);
+
+                    //Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-_refTime).ToString());
 
                     MessageBuilder sensor = new MessageBuilder();
 
@@ -145,7 +149,9 @@ namespace EGMProjet
 
                     double[] orientation = new double[4] { 1, 0, 0, 0 };
 
-                    sensor.MovePoseQuaternion(coordinates, orientation);
+                    double[] euler = new double[3] { -180, n/10, n/10} ;
+
+                    sensor.MovePoseEuler(coordinates, euler);
                     
                     //double[] speeds = new double[] {0, 0,0, 500, 500, 500 };
                     //sensor.SpeedCartesian(speeds);
@@ -162,7 +168,7 @@ namespace EGMProjet
                 server.Wait = true;
             }
 
-            Program.Plot.Trace();
+            //Program.Plot.Trace();
 
             ConsoleKey key = new ConsoleKey();
             do
