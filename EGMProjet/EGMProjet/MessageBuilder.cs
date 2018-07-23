@@ -226,7 +226,8 @@ namespace EGMProjet
         {
             EgmPlanned.Builder planned = new EgmPlanned.Builder();
 
-            planned.SetCartesian(PoseBuilder(CartesianBuilder(coordinates), QuaterionBuilder(angles)));
+            planned.SetCartesian(PoseBuilder(CartesianBuilder(coordinates), EulerBuilder(angles)));
+            _sensor.SetPlanned(planned);
         }
 
         /// <summary>
