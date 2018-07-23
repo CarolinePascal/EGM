@@ -296,7 +296,7 @@ namespace EGMProjet
         /// <summary>
         /// Fills the message with a cartesian speed command
         /// </summary>
-        /// <param name="speeds">6 speed reference values in mm/s or degrees/s</param>
+        /// <param name="speeds">6 speed reference values in mm/s (3 firsts - x,y,z) and degrees/s (3 lasts - Euler angles psi, theta, phi)</param>
         public void SpeedCartesian(double[] speeds)
         {
             EgmSpeedRef.Builder speed = new EgmSpeedRef.Builder();
