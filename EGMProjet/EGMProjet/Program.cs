@@ -22,13 +22,13 @@ namespace EGMProjet
         public static void Main(string[] args)
         {
             //Non-EGM Servers
-            TorqueServer serverT = new TorqueServer(5000,"127.0.0.1");
-            OrderServer serverO = new OrderServer(4000,"127.0.0.1");
+            //TorqueServer serverT = new TorqueServer(5000,"127.0.0.1");
+            //OrderServer serverO = new OrderServer(4000,"127.0.0.1");
 
             // Add all the servers which are not EGM servers
             List<Server> servers = new List<Server>();
-            servers.Add(serverO);
-            servers.Add(serverT);
+            //servers.Add(serverO);
+            //servers.Add(serverT);
 
             //EGM Server
             EGMServer serverMain = new EGMServer(servers,1000,"127.0.0.1");
@@ -45,8 +45,8 @@ namespace EGMProjet
             while (serverMain.Reboot)
             {
                 //Plot = new Plot();
-                serverO.StartServer();
-                serverT.StartServer();
+                //serverO.StartServer();
+                //serverT.StartServer();
                 serverMain.StartServer();
 
                 WaitHandle.WaitAll(events);
