@@ -30,8 +30,9 @@ namespace EGMProjet
         /// - Recieving and parsing input data
         /// </summary>
         /// <param name="n">Number of recieved messages</param>
-        public override void Main(out int n, IPEndPoint remoteEP)
+        public override void Main(out int n)
         {
+            var remoteEP = new IPEndPoint(IPAddress.Parse(_ipAddress), _port);
             n = 0;
 
             while (Exit==false)
