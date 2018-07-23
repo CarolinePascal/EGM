@@ -73,6 +73,7 @@
     <Compile Include="Egm.cs" />
     <Compile Include="EGMServer.cs" />
     <Compile Include="InputServer.cs" />
+    <Compile Include="MessageBuilder.cs" />
     <Compile Include="OrderServer.cs" />
     <Compile Include="Plot.cs" />
     <Compile Include="Program.cs" />
