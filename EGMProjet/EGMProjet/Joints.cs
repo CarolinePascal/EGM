@@ -36,5 +36,15 @@ namespace EGMProjet
             Rotations = new double[6];
             Rotations = rotations;
         }
+
+        public override string ToString()
+        {
+            string str = string.Empty;
+            for(int i=0;i<6;i++)
+            {
+                str += Rotations[i].ToString() + " ";
+            }
+            return (str);
+        }
     }
 }
