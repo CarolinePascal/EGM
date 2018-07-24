@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using abb.egm;
 using System.IO;
+using System.Windows.Media.Media3D; //Add referernce : PresentationCore.dll
 
 namespace EGMProjet
 {
@@ -28,7 +29,7 @@ namespace EGMProjet
         ///  - The time stamp of the mesage
         ///  - The type of the message
         /// </summary>
-        /// <param name="seqNumber">Identifier of the last message sent by the ordering server</param>
+        /// <param name="seqNumber">Identifier of the last EGM message sent to the robot</param>
         public void MakeHeader(ref int seqNumber)
         {
             EgmHeader.Builder header = new EgmHeader.Builder();
@@ -45,76 +46,57 @@ namespace EGMProjet
         /// <summary>
         /// Builds a translation command
         /// </summary>
-        /// <param name="coordinates">3 translation components as an array</param>
+        /// <param name="vector">Translation vector as a Vector3D</param>
         /// <returns></returns>
-        public EgmCartesian.Builder CartesianBuilder(double[] coordinates)
+        public EgmCartesian.Builder CartesianBuilder(Vector3D vector)
         {
-            EgmCartesian.Builder cartesian = new EgmCartesian.Builder();
+            EgmCartesian.Builder translation = new EgmCartesian.Builder();
 
-            cartesian.SetX(coordinates[0])
-                     .SetY(coordinates[1])
-                     .SetZ(coordinates[2]);
+            translation.SetX(vector.X)
+                       .SetY(vector.Y)
+                       .SetZ(vector.Z);
 
-            return (cartesian);
+            return (translation);
         }
 
         /// <summary>
         /// Builds a rotation command from a quaternion
         /// </summary>
-        /// <param name="orientation">4 quaternion components as an array</param>
+        /// <param name="quaternion">Rotation quaternion as a Quaternion</param>
         /// <returns></returns>
-        public EgmQuaternion.Builder QuaterionBuilder(double[] orientation)
+        public EgmQuaternion.Builder QuaterionBuilder(Quaternion quaternion)
         {
-            EgmQuaternion.Builder quaternion = new EgmQuaternion.Builder();
+            EgmQuaternion.Builder rotation = new EgmQuaternion.Builder();
 
-            quaternion.SetU0(orientation[0])
-                      .SetU1(orientation[1])
-                      .SetU2(orientation[2])
-                      .SetU3(orientation[3]);
+            rotation.SetU0(quaternion.W)
+                    .SetU1(quaternion.X)
+                    .SetU2(quaternion.Y)
+                    .SetU3(quaternion.Z);
 
-            return (quaternion);
-        }
-
-        /// <summary>
-        /// Builds a rotation command from a matrix
-        /// </summary>
-        /// <param name="matrix">3x3 rotation matrix as an array</param>
-        /// <returns></returns>
-        public EgmQuaternion.Builder QuaterionBuilder(double[,] matrix)
-        {
-            EgmQuaternion.Builder quaternion = new EgmQuaternion.Builder();
-
-            double qw = 2.0 * Math.Sqrt(1.0 + matrix[0, 0] + matrix[1, 1] + matrix[2, 2]);
-
-            quaternion.SetU0(qw / 4.0)
-                      .SetU1((matrix[2, 1] - matrix[1, 2]) / qw)
-                      .SetU2((matrix[0, 2] - matrix[2, 0]) / qw)
-                      .SetU3((matrix[1, 0] - matrix[0, 1]) / qw);
-
-            return (quaternion);
+            return (rotation);
         }
 
         /// <summary>
         /// Builds a rotation command from Euler angles
         /// </summary>
-        /// <param name="angles">3 Euler angles as an array</param>
+        /// <param name="angles">Rotation Euler angles as an EulerAngles</param>
         /// <returns></returns>
-        public EgmEuler.Builder EulerBuilder(double[] angles)
+        public EgmEuler.Builder EulerBuilder(EulerAngles angles)
         {
-            EgmEuler.Builder euler = new EgmEuler.Builder();
+            EgmEuler.Builder rotation = new EgmEuler.Builder();
 
-            euler.SetX(angles[0])
-                 .SetY(angles[1])
-                 .SetZ(angles[2]);
+            rotation.SetX(angles.Psi)
+                    .SetY(angles.Theta)
+                    .SetZ(angles.Phi);
 
-            return (euler);
+            return (rotation);
         }
 
         /// <summary>
         /// Builds a cartesian motion command from a translation command and a rotation command
         /// </summary>
         /// <param name="cartesian">Trasnlation command</param>
-        /// <param name="quaternion">Rotation command as a quaternion</param>
+        /// <param name="quaternion">Rotation command from a quaternion</param>
         /// <returns></returns>
         public EgmPose.Builder PoseBuilder(EgmCartesian.Builder cartesian, EgmQuaternion.Builder quaternion)
         {
@@ -131,7 +113,7 @@ namespace EGMProjet
         /// Builds a cartesian motion command from a transmation command and a rotation command
         /// </summary>
         /// <param name="cartesian">Translation command</param>
-        /// <param name="euler">Rotation command as Euler angles</param>
+        /// <param name="euler">Rotation command from Euler angles</param>
         /// <returns></returns>
         public EgmPose.Builder PoseBuilder(EgmCartesian.Builder cartesian, EgmEuler.Builder euler)
         {
@@ -146,35 +128,35 @@ namespace EGMProjet
         /// <summary>
         /// Builds a joints (internal or external) motion or speed command 
         /// </summary>
-        /// <param name="rotations">6 joints values as an array</param>
+        /// <param name="rotations">Motion joints values as a Joints</param>
         /// <returns></returns>
-        public EgmJoints.Builder JointsBuilder(double[] rotations)
+        public EgmJoints.Builder JointsBuilder(Joints joints)
         {
-            EgmJoints.Builder joints = new EgmJoints.Builder();
+            EgmJoints.Builder motion = new EgmJoints.Builder();
 
-            for (int i = 0; i < rotations.Length; i++)
+            for (int i = 0; i < 6; i++)
             {
-                joints.AddJoints(rotations[i]);
+                motion.AddJoints(joints.Rotations[i]);
             }
 
-            return (joints);
+            return (motion);
         }
 
         /// <summary>
         /// Builds a cartesian speed reference command 
         /// </summary>
-        /// <param name="speeds">6 speed reference values in mm/s or degrees/s</param>
+        /// <param name="speeds">Cartesian speed command as a CartesianSpeed</param>
         /// <returns></returns>
-        public EgmCartesianSpeed.Builder CartesianSpeedBuilder(double[] speeds)
+        public EgmCartesianSpeed.Builder CartesianSpeedBuilder(CartesianSpeed speed)
         {
-            EgmCartesianSpeed.Builder cartesian = new EgmCartesianSpeed.Builder();
+            EgmCartesianSpeed.Builder command = new EgmCartesianSpeed.Builder();
 
-            for (int i = 0; i < speeds.Length; i++)
+            for (int i = 0; i < 6; i++)
             {
-                cartesian.AddValue(speeds[i]);
+                command.AddValue(speed.Speed[i]);
             }
 
-            return (cartesian);
+            return (command);
         }
 
 
@@ -182,71 +164,34 @@ namespace EGMProjet
         /// <summary>
         /// Fills the message with a cartesian motion command
         /// </summary>
-        /// <param name="pose">Cartesian motion command</param>
-        public void MovePose(EgmPose.Builder pose)
+        /// <param name="vector">Translation vector as a Vector3D</param>
+        /// <param name="quaternion">Rotation quaternion as a Quaternion</param>
+        public void MovePose(Vector3D vector, Quaternion quaternion)
         {
             EgmPlanned.Builder planned = new EgmPlanned.Builder();
 
-            planned.SetCartesian(pose);
+            planned.SetCartesian(PoseBuilder(CartesianBuilder(vector), QuaterionBuilder(quaternion)));
             _sensor.SetPlanned(planned);
         }
 
         /// <summary>
         /// Fills the message with a cartesian motion command
         /// </summary>
-        /// <param name="coordinates">3 translation components as an array</param>
-        /// <param name="orientation">4 quaternion components as an array</param>
-        public void MovePoseQuaternion(double[] coordinates, double[] orientation)
+        /// <param name="vector">Translation vector as a Vector3D</param>
+        /// <param name="angles">Rotation Euler angles as an EulerAngles</param>
+        public void MovePose(Vector3D vector, EulerAngles angles)
         {
             EgmPlanned.Builder planned = new EgmPlanned.Builder();
 
-            planned.SetCartesian(PoseBuilder(CartesianBuilder(coordinates), QuaterionBuilder(orientation)));
-            _sensor.SetPlanned(planned);
-        }
-
-        /// <summary>
-        /// Fills the message with a cartesian motion command
-        /// </summary>
-        /// <param name="coordinates">3 translation components as an array</param>
-        /// <param name="orientation">3x3 rotation matrix as an array</param>
-        public void MovePoseQuaternion(double[] coordinates, double[,] matrix)
-        {
-            EgmPlanned.Builder planned = new EgmPlanned.Builder();
-
-            planned.SetCartesian(PoseBuilder(CartesianBuilder(coordinates), QuaterionBuilder(matrix)));
-            _sensor.SetPlanned(planned);
-        }
-
-        /// <summary>
-        /// Fills the message with a cartesian motion command
-        /// </summary>
-        /// <param name="coordiates">3 translation components as an array</param>
-        /// <param name="angles">3 Euler angles as an array</param>
-        public void MovePoseEuler(double[] coordinates, double[] angles)
-        {
-            EgmPlanned.Builder planned = new EgmPlanned.Builder();
-
-            planned.SetCartesian(PoseBuilder(CartesianBuilder(coordinates), EulerBuilder(angles)));
+            planned.SetCartesian(PoseBuilder(CartesianBuilder(vector), EulerBuilder(angles)));
             _sensor.SetPlanned(planned);
         }
 
         /// <summary>
         /// Fills the message with a joints motion command
         /// </summary>
-        /// <param name="joints">Joints motion command</param>
-        public void MoveJoints(EgmJoints.Builder joints)
-        {
-            EgmPlanned.Builder planned = new EgmPlanned.Builder();
-
-            planned.SetJoints(joints);
-            _sensor.SetPlanned(planned);
-        }
-
-        /// <summary>
-        /// Fills the message with a joints motion command
-        /// </summary>
-        /// <param name="joints">6 joints values as an array</param>
-        public void MoveJoints(double[] joints)
+        /// <param name="joints">Motion joints values as a Joints</param>
+        public void MoveJoints(Joints joints)
         {
             EgmPlanned.Builder planned = new EgmPlanned.Builder();
 
@@ -255,23 +200,10 @@ namespace EGMProjet
         }
 
         /// <summary>
-        /// Fills the message with an external joints motion command
-        /// </summary>
-        /// <param name="pose">External joints motion command</param>
-        public void MoveExternalJoints (EgmJoints.Builder extJoints)
-        {
-            EgmPlanned.Builder planned = new EgmPlanned.Builder();
-
-            planned.SetExternalJoints(extJoints);
-            _sensor.SetPlanned(planned);
-
-        }
-
-        /// <summary>
         /// Fills the message with a joints motion command
         /// </summary>
-        /// <param name="joints">6 joints values as an array</param>
-        public void MoveExternalJoints(double[] joints)
+        /// <param name="joints">Motion joints values as a Joints</param>
+        public void MoveExternalJoints(Joints joints)
         {
             EgmPlanned.Builder planned = new EgmPlanned.Builder();
 
@@ -284,44 +216,20 @@ namespace EGMProjet
         /// <summary>
         /// Fills the message with a cartesian speed command
         /// </summary>
-        /// <param name="cartesian">Caretsian speed command</param>
-        public void SpeedCartesian(EgmCartesianSpeed.Builder cartesian)
+        /// <param name="speed">Cartesian speed command as a CartesianSpeed</param>
+        public void SpeedCartesian(CartesianSpeed speed)
         {
-            EgmSpeedRef.Builder speed = new EgmSpeedRef.Builder();
+            EgmSpeedRef.Builder command = new EgmSpeedRef.Builder();
 
-            speed.SetCartesians(cartesian);
-            _sensor.SetSpeedRef(speed);
-        }
-
-        /// <summary>
-        /// Fills the message with a cartesian speed command
-        /// </summary>
-        /// <param name="speeds">6 speed reference values in mm/s (3 firsts - x,y,z) and degrees/s (3 lasts - Euler angles psi, theta, phi)</param>
-        public void SpeedCartesian(double[] speeds)
-        {
-            EgmSpeedRef.Builder speed = new EgmSpeedRef.Builder();
-
-            speed.SetCartesians(CartesianSpeedBuilder(speeds));
-            _sensor.SetSpeedRef(speed);
+            command.SetCartesians(CartesianSpeedBuilder(speed));
+            _sensor.SetSpeedRef(command);
         }
 
         /// <summary>
         /// Fills the message with a joints speed command
         /// </summary>
-        /// <param name="cartesian">Joints speed command</param>
-        public void SpeedJoints(EgmJoints.Builder joints)
-        {
-            EgmSpeedRef.Builder speed = new EgmSpeedRef.Builder();
-
-            speed.SetJoints(joints);
-            _sensor.SetSpeedRef(speed);
-        }
-
-        /// <summary>
-        /// Fills the message with a joints speed command
-        /// </summary>
-        /// <param name="joints">6 joints values as an array</param>
-        public void SpeedJoints(double[] joints)
+        /// <param name="joints">Speed joints values as a Joints</param>
+        public void SpeedJoints(Joints joints)
         {
             EgmSpeedRef.Builder speed = new EgmSpeedRef.Builder();
 
@@ -332,26 +240,15 @@ namespace EGMProjet
         /// <summary>
         /// Fills the message with an external joints speed command
         /// </summary>
-        /// <param name="cartesian">External joints speed command</param>
-        public void SpeedExtJoints(EgmJoints.Builder extJoints)
-        {
-            EgmSpeedRef.Builder speed = new EgmSpeedRef.Builder();
-
-            speed.SetExternalJoints(extJoints);
-            _sensor.SetSpeedRef(speed);
-        }
-
-        /// <summary>
-        /// Fills the message with an external joints speed command
-        /// </summary>
-        /// <param name="joints">6 joints values as an array</param>
-        public void SpeedExtJoints(double[] joints)
+        /// <param name="joints">Motion joints values as a Joints</param>
+        public void SpeedExtJoints(Joints joints)
         {
             EgmSpeedRef.Builder speed = new EgmSpeedRef.Builder();
 
             speed.SetExternalJoints(JointsBuilder(joints));
             _sensor.SetSpeedRef(speed);
         }
+
 
 
         /// <summary>
