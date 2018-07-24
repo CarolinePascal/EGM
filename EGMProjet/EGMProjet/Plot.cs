@@ -13,7 +13,7 @@ namespace EGMProjet
         /// <summary>
         /// .py file path to write in
         /// </summary>
-        private string _filePath = "C:/Users/carol/Desktop/Stage_1/plot.py";
+        private string _filePath = "C:/Users/carol/Desktop/Stage_1/plot1.py";
 
         /// <summary>
         /// python.exe file path
@@ -39,14 +39,14 @@ namespace EGMProjet
             _text.AppendLine("Z=[]");
             _text.AppendLine("TEGM=[]");
             _text.AppendLine(" ");
-            _text.AppendLine("T1=[]");
-            _text.AppendLine("T2=[]");
-            _text.AppendLine("T3=[]");
-            _text.AppendLine("T4=[]");
-            _text.AppendLine("T5=[]");
-            _text.AppendLine("T6=[]");
-            _text.AppendLine("T=[]");
-            _text.AppendLine(" ");
+            //_text.AppendLine("T1=[]");
+            //_text.AppendLine("T2=[]");
+            //_text.AppendLine("T3=[]");
+            //_text.AppendLine("T4=[]");
+            //_text.AppendLine("T5=[]");
+            //_text.AppendLine("T6=[]");
+            //_text.AppendLine("T=[]");
+            //_text.AppendLine(" ");
         }
 
         /// <summary>
@@ -129,31 +129,31 @@ namespace EGMProjet
 
             _text.AppendLine(" ");
 
-            _text.AppendLine("fig3=plt.figure()");
+            //_text.AppendLine("fig3=plt.figure()");
 
-            _text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
-            _text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
-            _text.AppendLine("plt.plot(T,T3,'--',label='Axe 3')");
-            _text.AppendLine("plt.plot(T,T4,'--',label='Axe 4')");
-            _text.AppendLine("plt.plot(T,T5,'--',label='Axe 5')");
-            _text.AppendLine("plt.plot(T,T6,'--',label='Axe 6')");
+            //_text.AppendLine("plt.plot(T,T1,'--',label='Axe 1')");
+            //_text.AppendLine("plt.plot(T,T2,'--',label='Axe 2')");
+            //_text.AppendLine("plt.plot(T,T3,'--',label='Axe 3')");
+            //_text.AppendLine("plt.plot(T,T4,'--',label='Axe 4')");
+            //_text.AppendLine("plt.plot(T,T5,'--',label='Axe 5')");
+            //_text.AppendLine("plt.plot(T,T6,'--',label='Axe 6')");
 
-            _text.AppendLine("plt.xlabel('Temps en ms')");
-            _text.AppendLine("plt.ylabel('Couples en Nm')");
+            //_text.AppendLine("plt.xlabel('Temps en ms')");
+            //_text.AppendLine("plt.ylabel('Couples en Nm')");
 
-            _text.AppendLine("plt.legend(loc='best')");
+            //_text.AppendLine("plt.legend(loc='best')");
 
-            _text.AppendLine(" ");
+            //_text.AppendLine(" ");
 
-            _text.AppendLine("if(T==TEGM):");  //Synchronisation condition
+            //_text.AppendLine("if(T==TEGM):");  //Synchronisation condition
 
-            _text.AppendLine("   fig4=plt.figure()");
-            _text.AppendLine("   plt.plot(Y,T1,label='Axe 1')");
+            //_text.AppendLine("   fig4=plt.figure()");
+            //_text.AppendLine("   plt.plot(Y,T1,label='Axe 1')");
 
-            _text.AppendLine("   plt.xlabel('Déplacement en Y en mm')");
-            _text.AppendLine("   plt.ylabel('Couple axe 1 en Nm')");
+            //_text.AppendLine("   plt.xlabel('Déplacement en Y en mm')");
+            //_text.AppendLine("   plt.ylabel('Couple axe 1 en Nm')");
 
-            _text.AppendLine("   plt.legend(loc='best')");
+            //_text.AppendLine("   plt.legend(loc='best')");
 
             _text.AppendLine("plt.show()");
 
