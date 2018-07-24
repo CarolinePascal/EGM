@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D; //Add referernce : PresentationCore.dll
+
 
 namespace EGMProjet
 {
     public class OrderServer : InputServer
     {
         //Ordered robot's position
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
+        public Vector3D Vector { get; set; }
+        public EulerAngles Angles { get; set; }
 
         /// <summary>
         /// Default contructor for a Order_Server instance with UDP port argument
@@ -19,9 +20,8 @@ namespace EGMProjet
         /// <param name="IPport">Port of the UDP communication different from 6510</param>
         public OrderServer(int ipPort, string ipAddress) : base(ipPort, ipAddress)
         {
-            X = 0;
-            Y = 0;
-            Z = 0;
+            Vector = new Vector3D(0, 0, 0);
+            Angles = new EulerAngles(0, 0, 0);
         }
 
         /// <summary>
@@ -33,14 +33,13 @@ namespace EGMProjet
             returnData = returnData.Replace('.', ',');
             String[] substrings = returnData.Split(' ');
 
-            X = float.Parse(substrings[0]);
-            Y = float.Parse(substrings[1]);
-            Z = float.Parse(substrings[2]);
+            Vector = new Vector3D(double.Parse(substrings[0]), double.Parse(substrings[1]), double.Parse(substrings[2]));
+            Angles = new EulerAngles(double.Parse(substrings[3]), double.Parse(substrings[4]), double.Parse(substrings[5]));
         }
         
         public override string GetState()
         {
-            string str = X.ToString() + " " + Y.ToString() + " " + Z.ToString();
+            string str = Vector.ToString() + " " + Angles.ToString();
             Console.WriteLine(str);
             return (str);
         }
