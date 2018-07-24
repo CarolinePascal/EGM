@@ -37,5 +37,16 @@ namespace EGMProjet
             Speed = speed;
         }
 
+        public override string ToString()
+        {
+            string str = string.Empty;
+
+            for (int i=0;i<6;i++)
+            {
+                str += Speed[i].ToString() + " ";
+            }
+            return (str);
+        }
+
     }
 }

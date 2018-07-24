@@ -35,5 +35,11 @@ namespace EGMProjet
             Theta = theta;
             Phi = phi;
         }
+
+        public override string ToString()
+        {
+            String str = Psi.ToString() + " " + Theta.ToString() + " " + Phi.ToString();
+            return str;
+        }
     }
 }
