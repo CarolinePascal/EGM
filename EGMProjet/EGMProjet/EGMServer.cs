@@ -8,6 +8,7 @@ using System.Net;
 using abb.egm;
 using System.IO;
 using System.Threading;
+using System.Windows.Media.Media3D; //Add referernce : PresentationCore.dll
 
 namespace EGMProjet
 {
@@ -133,31 +134,22 @@ namespace EGMProjet
 
                     double[] eulerangles = new double[] { Convert.ToInt32(robot.FeedBack.Cartesian.Euler.X), Convert.ToInt32(robot.FeedBack.Cartesian.Euler.Y), Convert.ToInt32(robot.FeedBack.Cartesian.Euler.Z) };
 
-                    Console.WriteLine(eulerangles[0] + " " + eulerangles[1] + " " + eulerangles[2]);
-
-                    //Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-_refTime).ToString());
+                    Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-_refTime).ToString());
 
                     MessageBuilder sensor = new MessageBuilder();
 
                     sensor.MakeHeader(ref _seqNumber);
 
-                    double[] coordinates = new double[] {300,-300+n,100};
+                    Vector3D coordinates = new Vector3D(300,0,100+ 40 * Math.Sin(2 * Math.PI * n / 500));
 
-                    //double t = Math.PI/1000;
+                    EulerAngles euler = new EulerAngles(-180, 0, 0);
 
-                    //double[] orientation = new double[4] {Math.Cos(t*n/1000), 0,Math.Sin(t * n / 1000), 0 };
+                    sensor.MovePose(coordinates, euler);
 
-                    double[] orientation = new double[4] { 1, 0, 0, 0 };
-
-                    double[] euler = new double[3] { -180, n/10, n/10} ;
-
-                    sensor.MovePoseEuler(coordinates, euler);
-                    
-                    //double[] speeds = new double[] {0, 0,0, 500, 500, 500 };
-                    //sensor.SpeedCartesian(speeds);
-
+                    CartesianSpeed speeds = new CartesianSpeed(0, 0, 0, 0, 0, 0);
+                    sensor.SpeedCartesian(speeds);
+ 
                     byte[] message = sensor.Build();
-
 
                     _udpClient.Send(message.ToArray(), (int)message.Length, remoteEP);
                 }
@@ -168,7 +160,7 @@ namespace EGMProjet
                 server.Wait = true;
             }
 
-            //Program.Plot.Trace();
+            Program.Plot.Trace();
 
             ConsoleKey key = new ConsoleKey();
             do
