@@ -266,6 +266,85 @@ namespace EGMProjet
             return (memoryStream.ToArray());
         }
 
+        /// <summary>
+        /// Displays the contents of the message to send
+        /// </summary>
+        public void DisplayOutboundMessage()
+        {
+            Console.WriteLine("Message envoyé :");
+
+            if(_sensor.HasHeader)
+            {
+                Console.WriteLine("Header : seqno = {0} ; tm = {1} ; MessageType = {2}", _sensor.Header.Seqno.ToString(), _sensor.Header.Tm.ToString(), _sensor.Header.Mtype.ToString());
+            }
+            else
+            {
+                Console.WriteLine("No Header");
+            }
+
+            if(_sensor.HasPlanned)
+            {
+                Console.WriteLine("Planned : ");
+                if(_sensor.Planned.HasJoints)
+                {
+                    Console.WriteLine("Joints :");
+                    Console.WriteLine("J1 = {0} ; J2 = {1} ; J3 = {2} ; J4 = {3} ; J5 = {4} ; J6={5}", _sensor.Planned.Joints.GetJoints(0), _sensor.Planned.Joints.GetJoints(1), _sensor.Planned.Joints.GetJoints(2), _sensor.Planned.Joints.GetJoints(3), _sensor.Planned.Joints.GetJoints(4), _sensor.Planned.Joints.GetJoints(5));
+                }
+                if(_sensor.Planned.HasExternalJoints)
+                {
+                    Console.WriteLine("External Joints :");
+                    Console.WriteLine("EJ1 = {0} ; EJ2 = {1} ; EJ3 = {2} ; EJ4 = {3} ; EJ5 = {4} ; EJ6={5}", _sensor.Planned.ExternalJoints.GetJoints(0), _sensor.Planned.ExternalJoints.GetJoints(1), _sensor.Planned.ExternalJoints.GetJoints(2), _sensor.Planned.ExternalJoints.GetJoints(3), _sensor.Planned.ExternalJoints.GetJoints(4), _sensor.Planned.ExternalJoints.GetJoints(5));
+                }
+                if(_sensor.Planned.HasCartesian)
+                {
+                    if(_sensor.Planned.Cartesian.HasPos)
+                    {
+                        Console.WriteLine("Pose :");
+                        Console.WriteLine("X = {0} ; Y = {1} ; Z ={2}", _sensor.Planned.Cartesian.Pos.X, _sensor.Planned.Cartesian.Pos.Y, _sensor.Planned.Cartesian.Pos.Z);
+                    }
+                    if(_sensor.Planned.Cartesian.HasEuler)
+                    {
+                        Console.WriteLine("Euler Angles :");
+                        Console.WriteLine("Psi = {0} ; Theta = {1} ; Phi = {2}", _sensor.Planned.Cartesian.Euler.X, _sensor.Planned.Cartesian.Euler.Y, _sensor.Planned.Cartesian.Euler.Z);
+                    }
+                    if(_sensor.Planned.Cartesian.HasOrient)
+                    {
+                        Console.WriteLine("Quaternion :");
+                        Console.WriteLine("Q1 = {0} ; Q2 = {1} ; Q3 = {2} ; Q4 = {3}", _sensor.Planned.Cartesian.Orient.U0, _sensor.Planned.Cartesian.Orient.U1, _sensor.Planned.Cartesian.Orient.U2, _sensor.Planned.Cartesian.Orient.U3);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No Planned");
+            }
+
+            if(_sensor.HasSpeedRef)
+            {
+                Console.WriteLine("SpeedRef :");
+                if(_sensor.SpeedRef.HasJoints)
+                {
+                    Console.WriteLine("Joints Speed :");
+                    Console.WriteLine("J1 = {0} ; J2 = {1} ; J3 = {2} ; J4 = {3} ; J5 = {4} ; J6={5}", _sensor.SpeedRef.Joints.GetJoints(0), _sensor.SpeedRef.Joints.GetJoints(1), _sensor.SpeedRef.Joints.GetJoints(2), _sensor.SpeedRef.Joints.GetJoints(3), _sensor.SpeedRef.Joints.GetJoints(4), _sensor.SpeedRef.Joints.GetJoints(5));
+                }
+                if (_sensor.SpeedRef.HasExternalJoints)
+                {
+                    Console.WriteLine("External Joints Speed :");
+                    Console.WriteLine("EJ1 = {0} ; EJ2 = {1} ; EJ3 = {2} ; EJ4 = {3} ; EJ5 = {4} ; EJ6={5}", _sensor.SpeedRef.ExternalJoints.GetJoints(0), _sensor.SpeedRef.ExternalJoints.GetJoints(1), _sensor.SpeedRef.ExternalJoints.GetJoints(2), _sensor.SpeedRef.ExternalJoints.GetJoints(3), _sensor.SpeedRef.ExternalJoints.GetJoints(4), _sensor.SpeedRef.ExternalJoints.GetJoints(5));
+                }
+                if(_sensor.SpeedRef.HasCartesians)
+                {
+                    Console.WriteLine("Cartesian Speed");
+                    Console.WriteLine("S1 = {0} ; S2 = {1} ; S3 = {2} ; S4 = {3} ; S5 = {4} ; S6={5}", _sensor.SpeedRef.Cartesians.GetValue(0), _sensor.SpeedRef.Cartesians.GetValue(1), _sensor.SpeedRef.Cartesians.GetValue(2), _sensor.SpeedRef.Cartesians.GetValue(3), _sensor.SpeedRef.Cartesians.GetValue(4), _sensor.SpeedRef.Cartesians.GetValue(5));
+                }
+            }
+            else
+            {
+                Console.WriteLine("No SpeedRef");
+            }
+
+        }
+
 
 
 
