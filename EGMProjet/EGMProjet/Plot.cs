@@ -13,7 +13,7 @@ namespace EGMProjet
         /// <summary>
         /// .py file path to write in
         /// </summary>
-        private string _filePath = "C:/Users/carol/Desktop/Stage_1/plot1.py";
+        private string _filePath = "C:/Users/carol/Desktop/Stage_1/plot.py";
 
         /// <summary>
         /// python.exe file path
@@ -37,7 +37,18 @@ namespace EGMProjet
             _text.AppendLine("X=[]");
             _text.AppendLine("Y=[]");
             _text.AppendLine("Z=[]");
+            _text.AppendLine("Psi=[]");
+            _text.AppendLine("Theta=[]");
+            _text.AppendLine("Phi=[]");
             _text.AppendLine("TEGM=[]");
+            _text.AppendLine(" ");
+            _text.AppendLine(" ");
+            _text.AppendLine("Xc=[]");
+            _text.AppendLine("Yc=[]");
+            _text.AppendLine("Zc=[]");
+            _text.AppendLine("Psic=[]");
+            _text.AppendLine("Thetac=[]");
+            _text.AppendLine("Phic=[]");
             _text.AppendLine(" ");
             //_text.AppendLine("T1=[]");
             //_text.AppendLine("T2=[]");
@@ -56,7 +67,7 @@ namespace EGMProjet
         /// <param name="y">y position</param>
         /// <param name="z">z position</param>
         /// <param name="t">time from the EGM message header</param>
-        public void Fill(string x, string y, string z, string t)
+        public void Fill(string x, string y, string z, string t, string psi, string theta, string phi)
         {
             var newLine = string.Format("X.append({0})", x);
             _text.AppendLine(newLine);
@@ -65,6 +76,28 @@ namespace EGMProjet
             newLine = string.Format("Z.append({0})", z);
             _text.AppendLine(newLine);
             newLine = string.Format("TEGM.append({0})", t);
+            _text.AppendLine(newLine);
+            newLine = string.Format("Psi.append({0})", psi);
+            _text.AppendLine(newLine);
+            newLine = string.Format("Theta.append({0})", theta);
+            _text.AppendLine(newLine);
+            newLine = string.Format("Phi.append({0})", phi);
+            _text.AppendLine(newLine);
+        }
+
+        public void FillCommand(string x, string y, string z, string psi, string theta, string phi)
+        {
+            var newLine = string.Format("Xc.append({0})", x);
+            _text.AppendLine(newLine);
+            newLine = string.Format("Yc.append({0})", y);
+            _text.AppendLine(newLine);
+            newLine = string.Format("Zc.append({0})", z);
+            _text.AppendLine(newLine);
+            newLine = string.Format("Psic.append({0})", psi);
+            _text.AppendLine(newLine);
+            newLine = string.Format("Thetac.append({0})", theta);
+            _text.AppendLine(newLine);
+            newLine = string.Format("Phic.append({0})", phi);
             _text.AppendLine(newLine);
         }
 
@@ -101,18 +134,18 @@ namespace EGMProjet
         /// </summary>
         public void Trace()
         {
-            _text.AppendLine(" ");
-            _text.AppendLine("fig=plt.figure()");
-            _text.AppendLine("ax=fig.gca(projection='3d')");
+            //_text.AppendLine(" ");
+            //_text.AppendLine("fig=plt.figure()");
+            //_text.AppendLine("ax=fig.gca(projection='3d')");
 
-            _text.AppendLine("ax.plot(X,Y,Z)");
+            //_text.AppendLine("ax.plot(X,Y,Z)");
 
-            _text.AppendLine("ax.set_xlabel('X')");
-            _text.AppendLine("ax.set_ylabel('Y')");
-            _text.AppendLine("ax.set_zlabel('Z')");
+            //_text.AppendLine("ax.set_xlabel('X')");
+            //_text.AppendLine("ax.set_ylabel('Y')");
+            //_text.AppendLine("ax.set_zlabel('Z')");
 
-            _text.AppendLine("plt.axis('equal')");
-            _text.AppendLine("plt.legend(loc='best')");
+            //_text.AppendLine("plt.axis('equal')");
+            //_text.AppendLine("plt.legend(loc='best')");
 
             _text.AppendLine(" ");
 
@@ -121,6 +154,23 @@ namespace EGMProjet
             _text.AppendLine("plt.plot(TEGM,X,label='x')");
             _text.AppendLine("plt.plot(TEGM,Y,label='y')");
             _text.AppendLine("plt.plot(TEGM,Z,label='z')");
+            _text.AppendLine("plt.plot(TEGM,Xc,'--',label='x')");
+            _text.AppendLine("plt.plot(TEGM,Yc,'--',label='y')");
+            _text.AppendLine("plt.plot(TEGM,Zc,'--',label='z')");
+
+            _text.AppendLine("plt.xlabel('Temps en ms')");
+            _text.AppendLine("plt.ylabel('Axes')");
+
+            _text.AppendLine("plt.legend(loc='best')");
+
+            _text.AppendLine("figc=plt.figure()");
+
+            _text.AppendLine("plt.plot(TEGM,Psi,label='psi')");
+            _text.AppendLine("plt.plot(TEGM,Theta,label='theta')");
+            _text.AppendLine("plt.plot(TEGM,Phi,label='phi')");
+            _text.AppendLine("plt.plot(TEGM,Psic,'--',label='psi')");
+            _text.AppendLine("plt.plot(TEGM,Thetac,'--',label='theta')");
+            _text.AppendLine("plt.plot(TEGM,Phic,'--',label='phi')");
 
             _text.AppendLine("plt.xlabel('Temps en ms')");
             _text.AppendLine("plt.ylabel('Axes')");
