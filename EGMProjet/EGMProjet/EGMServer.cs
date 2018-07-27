@@ -142,7 +142,7 @@ namespace EGMProjet
 
                     if (n>1)
                     {
-                        Program.Plot.Fill(_robotX.ToString().Replace(',', '.'), _robotY.ToString().Replace(',', '.'), _robotZ.ToString().Replace(',', '.'), (robot.Header.Tm - _refTime).ToString(), _robotPsi.ToString().Replace(',', '.'), _robotTheta.ToString().Replace(',', '.'), _robotPhi.ToString().Replace(',', '.'));
+                        //Program.Plot.Fill(_robotX.ToString().Replace(',', '.'), _robotY.ToString().Replace(',', '.'), _robotZ.ToString().Replace(',', '.'), (robot.Header.Tm - _refTime).ToString(), _robotPsi.ToString().Replace(',', '.'), _robotTheta.ToString().Replace(',', '.'), _robotPhi.ToString().Replace(',', '.'));
                         //Console.WriteLine("Mesure" + n);
                     }
 
@@ -152,45 +152,46 @@ namespace EGMProjet
 
                     sensor.MakeHeader(ref _seqNumber);
 
-                    //double x = 300 + 50 * Math.Sin(2 * Math.PI * n / 500);
-                    //double y = 10* Math.Sin(2 * Math.PI * n / 250);
-                    //double z = 200+50*Math.Sin(2*Math.PI*n/500);
+                    //double x = 300;
+                    //double y = 0;
+                    //double z = 200;
 
-                    double x = 300;
-                    double y = 0;
-                    double z = 200;
+                    //if (n > 99)
+                    //{ 
+                    //    z += 100;
+                    //}
 
-                    if (n > 99)
-                    { 
-                        z += 100;
-                    }
+                    double x = 300 + 50 * Math.Sin(2 * Math.PI * n / 500);
+                    double y = 10 * Math.Sin(2 * Math.PI * n / 250);
+                    double z = 200 + 50 * Math.Sin(2 * Math.PI * n / 500);
 
                     double psi = -180;
                     double theta = 0;
                     double phi = 0;
 
+                    //Commandes
                     Vector3D coordinates = new Vector3D(x,y,z);
 
                     EulerAngles euler = new EulerAngles(psi,theta,phi);
 
+                    Joints joints = new Joints(30, 0, 0, 0, 0, 0);
+
+                    //Ecriture
                     //sensor.MovePose(coordinates,euler);
-
-                    Joints joints = new Joints(30, 0, 0, 0, 0,0);
-
                     sensor.MoveJoints(joints);
 
-                    if (n < _countMax)
-                    {
-                        string commandX = x.ToString().Replace(',', '.');
-                        string commandY = y.ToString().Replace(',', '.');
-                        string commandZ = z.ToString().Replace(',', '.');
-                        string commandPsi = psi.ToString().Replace(',', '.');
-                        string commandTheta = theta.ToString().Replace(',', '.');
-                        string commandPhi = phi.ToString().Replace(',', '.');
+                    //if (n < _countMax)
+                    //{
+                    //    string commandX = x.ToString().Replace(',', '.');
+                    //    string commandY = y.ToString().Replace(',', '.');
+                    //    string commandZ = z.ToString().Replace(',', '.');
+                    //    string commandPsi = psi.ToString().Replace(',', '.');
+                    //    string commandTheta = theta.ToString().Replace(',', '.');
+                    //    string commandPhi = phi.ToString().Replace(',', '.');
 
-                        Program.Plot.FillCommand(commandX,commandY,commandZ,commandPsi,commandTheta,commandPhi);
-                        //Console.WriteLine("Ordre"+n);
-                    }
+                    //    Program.Plot.FillCommand(commandX,commandY,commandZ,commandPsi,commandTheta,commandPhi);
+                    //    Console.WriteLine("Ordre"+n);
+                    //}
 
                     byte[] message = sensor.Build();
 
@@ -201,8 +202,6 @@ namespace EGMProjet
                     Console.WriteLine(Convert.ToBase64String(message));
 
                     sensor.DisplayOutboundMessage();
-
-
                 }
             }
 
@@ -211,7 +210,7 @@ namespace EGMProjet
                 server.Wait = true;
             }
 
-            Program.Plot.Trace();
+            //Program.Plot.Trace();
 
             ConsoleKey key = new ConsoleKey();
             do

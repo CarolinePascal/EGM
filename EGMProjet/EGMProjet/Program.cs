@@ -17,7 +17,7 @@ namespace EGMProjet
 {
     class Program
     {
-        public static Plot Plot;
+        //public static Plot Plot;
 
         public static void Main(string[] args)
         {
@@ -31,7 +31,7 @@ namespace EGMProjet
             //servers.Add(serverT);
 
             //EGM Server
-            EGMServer serverMain = new EGMServer(servers,750,"127.0.0.1");
+            EGMServer serverMain = new EGMServer(servers,5000,"127.0.0.1");
 
             //Event table : the events are set when the servers's threads ends
             ManualResetEvent[] events = new ManualResetEvent[servers.Count+1];
@@ -44,13 +44,13 @@ namespace EGMProjet
             //Main loop
             while (serverMain.Reboot)
             {
-                Plot = new Plot();
+                //Plot = new Plot();
                 //serverO.StartServer();
                 //serverT.StartServer();
                 serverMain.StartServer();
 
                 WaitHandle.WaitAll(events);
-                Plot.Clear();
+                //Plot.Clear();
                 
             }
         }
