@@ -25,9 +25,13 @@ namespace EGMProjet
         private int _countMax { get; set; }
 
         // Feebacked robot's positions
-        private float _robotX;
-        private float _robotY;
-        private float _robotZ;
+        private double _robotX;
+        private double _robotY;
+        private double _robotZ;
+        private double _robotPsi;
+        private double _robotTheta;
+        private double _robotPhi;
+
 
         /// <summary>
         /// Default constructor of a EGM_Server instance -The UDP Port is necessarely 6510
@@ -74,7 +78,7 @@ namespace EGMProjet
         /// <param name="n">Number of recieved EGM messages</param>
         public override void Main(out int n)
         {
-            var remoteEP = new IPEndPoint(IPAddress.Parse(_ipAddress), _port);
+            var remoteEP = new IPEndPoint(IPAddress.Parse(_ipAddress),_port);
             n = 0;
             
             while (Exit == false && n<_countMax)
@@ -128,30 +132,77 @@ namespace EGMProjet
                         _refTime = (int)robot.Header.Tm;
                     }
 
-                    _robotX = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.X));
-                    _robotY = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Y));
-                    _robotZ = Convert.ToInt32((robot.FeedBack.Cartesian.Pos.Z));
+                    _robotX = Convert.ToDouble((robot.FeedBack.Cartesian.Pos.X));
+                    _robotY = Convert.ToDouble((robot.FeedBack.Cartesian.Pos.Y));
+                    _robotZ = Convert.ToDouble((robot.FeedBack.Cartesian.Pos.Z));
+                    _robotPsi = Convert.ToDouble((robot.FeedBack.Cartesian.Euler.X));
+                    _robotTheta = Convert.ToDouble((robot.FeedBack.Cartesian.Euler.Y));
+                    _robotPhi = Convert.ToDouble((robot.FeedBack.Cartesian.Euler.Z));
+
+
+                    if (n>1)
+                    {
+                        Program.Plot.Fill(_robotX.ToString().Replace(',', '.'), _robotY.ToString().Replace(',', '.'), _robotZ.ToString().Replace(',', '.'), (robot.Header.Tm - _refTime).ToString(), _robotPsi.ToString().Replace(',', '.'), _robotTheta.ToString().Replace(',', '.'), _robotPhi.ToString().Replace(',', '.'));
+                        //Console.WriteLine("Mesure" + n);
+                    }
 
                     double[] eulerangles = new double[] { Convert.ToInt32(robot.FeedBack.Cartesian.Euler.X), Convert.ToInt32(robot.FeedBack.Cartesian.Euler.Y), Convert.ToInt32(robot.FeedBack.Cartesian.Euler.Z) };
-
-                    Program.Plot.Fill(_robotX.ToString(), _robotY.ToString(), _robotZ.ToString(), ((int)robot.Header.Tm-_refTime).ToString());
 
                     MessageBuilder sensor = new MessageBuilder();
 
                     sensor.MakeHeader(ref _seqNumber);
 
-                    Vector3D coordinates = new Vector3D(300,0,100+ 40 * Math.Sin(2 * Math.PI * n / 500));
+                    //double x = 300 + 50 * Math.Sin(2 * Math.PI * n / 500);
+                    //double y = 10* Math.Sin(2 * Math.PI * n / 250);
+                    //double z = 200+50*Math.Sin(2*Math.PI*n/500);
 
-                    EulerAngles euler = new EulerAngles(-180, 0, 0);
+                    double x = 300;
+                    double y = 0;
+                    double z = 200;
 
-                    sensor.MovePose(coordinates, euler);
+                    if (n > 99)
+                    { 
+                        z += 100;
+                    }
 
-                    CartesianSpeed speeds = new CartesianSpeed(0, 0, 0, 0, 0, 0);
-                    sensor.SpeedCartesian(speeds);
- 
+                    double psi = -180;
+                    double theta = 0;
+                    double phi = 0;
+
+                    Vector3D coordinates = new Vector3D(x,y,z);
+
+                    EulerAngles euler = new EulerAngles(psi,theta,phi);
+
+                    //sensor.MovePose(coordinates,euler);
+
+                    Joints joints = new Joints(30, 0, 0, 0, 0,0);
+
+                    sensor.MoveJoints(joints);
+
+                    if (n < _countMax)
+                    {
+                        string commandX = x.ToString().Replace(',', '.');
+                        string commandY = y.ToString().Replace(',', '.');
+                        string commandZ = z.ToString().Replace(',', '.');
+                        string commandPsi = psi.ToString().Replace(',', '.');
+                        string commandTheta = theta.ToString().Replace(',', '.');
+                        string commandPhi = phi.ToString().Replace(',', '.');
+
+                        Program.Plot.FillCommand(commandX,commandY,commandZ,commandPsi,commandTheta,commandPhi);
+                        //Console.WriteLine("Ordre"+n);
+                    }
+
                     byte[] message = sensor.Build();
 
-                    _udpClient.Send(message.ToArray(), (int)message.Length, remoteEP);
+                    //System.Threading.Thread.Sleep(5000);
+
+                    _udpClient.Send(message, (int)message.Length, remoteEP);
+
+                    Console.WriteLine(Convert.ToBase64String(message));
+
+                    sensor.DisplayOutboundMessage();
+
+
                 }
             }
 
