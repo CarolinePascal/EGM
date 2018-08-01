@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>HAL.ENPC</name>
+  </assembly>
+  <members>
+    <member name="M:HAL.ENPC.API.Robot.SensorServer(HAL.ENPC.Sensoring.SensorController@,System.String,System.Collections.Generic.List{HAL.Control.IControllableObject},System.Collections.Generic.List{HAL.Procedures.Procedure},System.Collections.Generic.List{HAL.Communications.ElectricSignal},System.Collections.Generic.List{HAL.ENPC.Sensoring.ISensor},HAL.ENPC.Sensoring.ISensor,System.Boolean,System.Boolean,HAL.ENPC.Sensoring.SensorController@)">
+      <summary>Create a sensor  server for communication and sensor synchronization.</summary>
+    </member>
+    <member name="M:HAL.ENPC.API.Robot.SensorServer(HAL.ENPC.Sensoring.SensorController@,System.String,System.Collections.Generic.List{HAL.ENPC.Sensoring.ISensor},HAL.ENPC.Sensoring.ISensor,System.Boolean,System.Boolean,HAL.ENPC.Sensoring.SensorController@)">
+      <summary>Create a sensor  server for communication and sensor synchronization.</summary>
+    </member>
+    <member name="M:HAL.ENPC.API.Robot.RunCommunication(HAL.ENPC.Sensoring.SensorController,System.Boolean)">
+      <summary>Run sensor controller all communications. </summary>
+    </member>
+    <member name="M:HAL.ENPC.Monitoring.Messages.Create(System.Int32,System.Object,System.Int32,HAL.ENPC.Monitoring.EnqueuableMessage@)">
+      <summary>Creates a server message.</summary>
+      <param name="actionCode">Action code.</param>
+      <param name="payload">Message payload.</param>
+      <param name="responseCode">Code to await in response.</param>
+      <param name="message">Message.</param>
+    </member>
+  </members>
+</doc>

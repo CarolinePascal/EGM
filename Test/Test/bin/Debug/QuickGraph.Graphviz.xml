@@ -1,0 +1,197 @@
+﻿<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>QuickGraph.Graphviz</name>
+  </assembly>
+  <members>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Cmap">
+      <summary>
+            Client-side imagemaps
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Hpgl">
+      <summary>
+            HP-GL/2 format
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Imap">
+      <summary>
+            Server-side imagemaps
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Mif">
+      <summary>
+            FrameMaker MIF format
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Mp">
+      <summary>
+            MetaPost
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Pcl">
+      <summary>
+            PCL format
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Pic">
+      <summary>
+            PIC format
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.PlainText">
+      <summary>
+            plain text format
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Png">
+      <summary>
+            Portable Network Graphics format
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Ps">
+      <summary>
+            Postscript
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Ps2">
+      <summary>
+            PostScript for PDF
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Svg">
+      <summary>
+            Scalable Vector Graphics
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Svgz">
+      <summary>
+            Scalable Vector Graphics, gzipped
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Vrml">
+      <summary>
+            VRML
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Vtx">
+      <summary>
+            Visual Thought format
+            </summary>
+    </member>
+    <member name="F:QuickGraph.Graphviz.Dot.GraphvizImageType.Wbmp">
+      <summary>
+            Wireless BitMap format
+            </summary>
+    </member>
+    <member name="P:QuickGraph.Graphviz.FormatEdgeEventArgs`2.EdgeFormatter">
+      <summary>
+            Edge formatter
+            </summary>
+    </member>
+    <member name="T:QuickGraph.Graphviz.GraphvizAlgorithm`2">
+      <summary>
+            An algorithm that renders a graph to the Graphviz DOT format.
+            </summary>
+      <typeparam name="TVertex">type of the vertices</typeparam>
+      <typeparam name="TEdge">type of the edges</typeparam>
+    </member>
+    <member name="P:QuickGraph.Graphviz.GraphvizAlgorithm`2.Output">
+      <summary>
+            Dot output stream.
+            </summary>
+    </member>
+    <member name="P:QuickGraph.Graphviz.GraphvizAlgorithm`2.ImageType">
+      <summary>
+            Current image output type
+            </summary>
+    </member>
+    <member name="T:QuickGraph.Graphviz.GraphvizExtensions">
+      <summary>
+            Helper extensions to render graphs to graphviz
+            </summary>
+    </member>
+    <member name="M:QuickGraph.Graphviz.GraphvizExtensions.ToGraphviz``2(QuickGraph.IEdgeListGraph{``0,``1})">
+      <summary>
+            Renders a graph to the Graphviz DOT format.
+            </summary>
+      <typeparam name="TVertex" />
+      <typeparam name="TEdge" />
+      <param name="graph" />
+      <returns />
+    </member>
+    <member name="M:QuickGraph.Graphviz.GraphvizExtensions.ToGraphviz``2(QuickGraph.IEdgeListGraph{``0,``1},System.Action{QuickGraph.Graphviz.GraphvizAlgorithm{``0,``1}})">
+      <summary>
+            Renders a graph to the Graphviz DOT format.
+            </summary>
+      <typeparam name="TVertex" />
+      <typeparam name="TEdge" />
+      <param name="graph" />
+      <param name="initialization">delegate that initializes the algorithm</param>
+      <returns />
+    </member>
+    <member name="M:QuickGraph.Graphviz.GraphvizAlgorithm`2.#ctor(QuickGraph.IEdgeListGraph{`0,`1},System.String,QuickGraph.Graphviz.Dot.GraphvizImageType)">
+      <requires csharp="g != null" vb="g &lt;&gt; Nothing">g != null</requires>
+      <requires csharp="!string.IsNullOrEmpty(path)" vb="Not System.String.IsNullOrEmpty(path)">!string.IsNullOrEmpty(path)</requires>
+    </member>
+    <member name="M:QuickGraph.Graphviz.GraphvizAlgorithm`2.Generate(QuickGraph.Graphviz.IDotEngine,System.String)">
+      <requires csharp="dot != null" vb="dot &lt;&gt; Nothing">dot != null</requires>
+      <requires csharp="!string.IsNullOrEmpty(outputFileName)" vb="Not System.String.IsNullOrEmpty(outputFileName)">!string.IsNullOrEmpty(outputFileName)</requires>
+    </member>
+    <member name="M:QuickGraph.Graphviz.GraphvizAlgorithm`2.WriteVertices(System.Collections.Generic.IDictionary{`0,QuickGraph.GraphColor},System.Collections.Generic.IEnumerable{`0})">
+      <requires csharp="colors != null" vb="colors &lt;&gt; Nothing">colors != null</requires>
+      <requires csharp="vertices != null" vb="vertices &lt;&gt; Nothing">vertices != null</requires>
+    </member>
+    <member name="M:QuickGraph.Graphviz.GraphvizAlgorithm`2.WriteEdges(System.Collections.Generic.IDictionary{`1,QuickGraph.GraphColor},System.Collections.Generic.IEnumerable{`1})">
+      <requires csharp="edgeColors != null" vb="edgeColors &lt;&gt; Nothing">edgeColors != null</requires>
+      <requires csharp="edges != null" vb="edges &lt;&gt; Nothing">edges != null</requires>
+    </member>
+    <member name="P:QuickGraph.Graphviz.GraphvizAlgorithm`2.VisitedGraph">
+      <setter>
+        <requires csharp="value != null" vb="value &lt;&gt; Nothing">value != null</requires>
+      </setter>
+    </member>
+    <member name="M:QuickGraph.Graphviz.Dot.GraphvizRecordEscaper.Escape(System.String)">
+      <requires csharp="text != null" vb="text &lt;&gt; Nothing">text != null</requires>
+    </member>
+    <member name="M:QuickGraph.Graphviz.Dot.GraphvizSizeF.#ctor(System.Single,System.Single)">
+      <requires csharp="width &gt;= 0f" vb="width &gt;= 0">width &gt;= 0f</requires>
+      <requires csharp="height &gt;= 0f" vb="height &gt;= 0">height &gt;= 0f</requires>
+    </member>
+    <member name="M:QuickGraph.Graphviz.Dot.GraphvizFont.#ctor(System.String,System.Single)">
+      <requires csharp="!string.IsNullOrEmpty(name)" vb="Not System.String.IsNullOrEmpty(name)">!string.IsNullOrEmpty(name)</requires>
+      <requires csharp="sizeInPoints &gt; 0f" vb="sizeInPoints &gt; 0">sizeInPoints &gt; 0f</requires>
+    </member>
+    <member name="M:QuickGraph.Graphviz.Dot.GraphvizLayer.#ctor(System.String)">
+      <requires csharp="!string.IsNullOrEmpty(name)" vb="Not System.String.IsNullOrEmpty(name)">!string.IsNullOrEmpty(name)</requires>
+    </member>
+    <member name="P:QuickGraph.Graphviz.Dot.GraphvizLayer.Name">
+      <setter>
+        <requires csharp="!string.IsNullOrEmpty(value)" vb="Not System.String.IsNullOrEmpty(value)">!string.IsNullOrEmpty(value)</requires>
+      </setter>
+    </member>
+    <member name="M:QuickGraph.Graphviz.Dot.GraphvizEdgeExtremity.AddParameters(System.Collections.Generic.IDictionary{System.String,System.Object})">
+      <requires csharp="dic != null" vb="dic &lt;&gt; Nothing">dic != null</requires>
+    </member>
+    <member name="P:QuickGraph.Graphviz.Dot.GraphvizLayerCollection.Separators">
+      <setter>
+        <requires csharp="!string.IsNullOrEmpty(value)" vb="Not System.String.IsNullOrEmpty(value)">!string.IsNullOrEmpty(value)</requires>
+      </setter>
+    </member>
+    <member name="M:QuickGraph.Graphviz.Dot.GraphvizSize.#ctor(System.Int32,System.Int32)">
+      <requires csharp="width &gt;= 0" vb="width &gt;= 0">width &gt;= 0</requires>
+      <requires csharp="height &gt;= 0" vb="height &gt;= 0">height &gt;= 0</requires>
+    </member>
+    <member name="M:QuickGraph.Graphviz.Dot.GraphvizColor.#ctor(System.Byte,System.Byte,System.Byte,System.Byte)">
+      <requires csharp="a &gt;= 0" vb="a &gt;= 0">a &gt;= 0</requires>
+      <requires csharp="r &gt;= 0" vb="r &gt;= 0">r &gt;= 0</requires>
+      <requires csharp="g &gt;= 0" vb="g &gt;= 0">g &gt;= 0</requires>
+      <requires csharp="b &gt;= 0" vb="b &gt;= 0">b &gt;= 0</requires>
+    </member>
+    <member name="M:QuickGraph.Graphviz.IDotEngine.Run(QuickGraph.Graphviz.Dot.GraphvizImageType,System.String,System.String)">
+      <requires csharp="!string.IsNullOrEmpty(dot)" vb="Not System.String.IsNullOrEmpty(dot)">!string.IsNullOrEmpty(dot)</requires>
+      <requires csharp="!string.IsNullOrEmpty(outputFileName)" vb="Not System.String.IsNullOrEmpty(outputFileName)">!string.IsNullOrEmpty(outputFileName)</requires>
+      <ensures csharp="!string.IsNullOrEmpty(Contract.Result&lt;string&gt;())" vb="Not System.String.IsNullOrEmpty(Contract.Result(Of String)())">!string.IsNullOrEmpty(result)</ensures>
+    </member>
+  </members>
+</doc>

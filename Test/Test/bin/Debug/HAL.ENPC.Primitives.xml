@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>HAL.ENPC.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:HAL.ENPC.Messaging.MessageCode">
+      <summary>Defines the message header indices for the ENPC communication system.</summary>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.#ctor">
+      <summary>
+            Default contructor - Creates a new message builder to fill
+            </summary>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MakeHeader(System.Int32@)">
+      <summary>
+            Creates and fill the message header with 
+             - The identifier of the message
+             - The time stamp of the mesage
+             - The type of the message
+            </summary>
+      <param name="seqNumber">Identifier of the last EGM message sent to the robot</param>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.CartesianBuilder(HAL.ENPC.Sensoring.SensorData.Position)">
+      <summary>
+            Builds a translation command
+            </summary>
+      <param name="vector">Translation vector as a Vector3D</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.QuaterionBuilder(HAL.ENPC.Sensoring.SensorData.Quaternion)">
+      <summary>
+            Builds a rotation command from a quaternion
+            </summary>
+      <param name="quaternion">Rotation quaternion as a Quaternion</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.EulerBuilder(HAL.ENPC.Sensoring.SensorData.EulerAngles)">
+      <summary>
+            Builds a rotation command from Euler angles
+            </summary>
+      <param name="angles">Rotation Euler angles as an EulerAngles</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.PoseBuilder(HAL.ENPC.Messaging.Server.ABB.EgmCartesian.Builder,HAL.ENPC.Messaging.Server.ABB.EgmQuaternion.Builder)">
+      <summary>
+            Builds a cartesian motion command from a translation command and a rotation command
+            </summary>
+      <param name="cartesian">Trasnlation command</param>
+      <param name="quaternion">Rotation command from a quaternion</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.PoseBuilder(HAL.ENPC.Messaging.Server.ABB.EgmCartesian.Builder,HAL.ENPC.Messaging.Server.ABB.EgmEuler.Builder)">
+      <summary>
+            Builds a cartesian motion command from a transmation command and a rotation command
+            </summary>
+      <param name="cartesian">Translation command</param>
+      <param name="euler">Rotation command from Euler angles</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.JointsBuilder(HAL.ENPC.Sensoring.SensorData.Joints)">
+      <summary>
+            Builds a joints (internal or external) motion or speed command 
+            </summary>
+      <param name="rotations">Motion joints values as a Joints</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.CartesianSpeedBuilder(HAL.ENPC.Sensoring.SensorData.CartesianSpeed)">
+      <summary>
+            Builds a cartesian speed reference command 
+            </summary>
+      <param name="speeds">Cartesian speed command as a CartesianSpeed</param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MovePose(HAL.ENPC.Sensoring.SensorData.Position,HAL.ENPC.Sensoring.SensorData.Quaternion)">
+      <summary>
+            Fills the message with a cartesian motion command
+            </summary>
+      <param name="vector">Translation vector as a Vector3D</param>
+      <param name="quaternion">Rotation quaternion as a Quaternion</param>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MovePose(HAL.ENPC.Sensoring.SensorData.Position,HAL.ENPC.Sensoring.SensorData.EulerAngles)">
+      <summary>
+            Fills the message with a cartesian motion command
+            </summary>
+      <param name="vector">Translation vector as a Vector3D</param>
+      <param name="angles">Rotation Euler angles as an EulerAngles</param>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MoveJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
+      <summary>
+            Fills the message with a joints motion command
+            </summary>
+      <param name="joints">Motion joints values as a Joints</param>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MoveExternalJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
+      <summary>
+            Fills the message with a joints motion command
+            </summary>
+      <param name="joints">Motion joints values as a Joints</param>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.SpeedCartesian(HAL.ENPC.Sensoring.SensorData.CartesianSpeed)">
+      <summary>
+            Fills the message with a cartesian speed command
+            </summary>
+      <param name="speed">Cartesian speed command as a CartesianSpeed</param>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.SpeedJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
+      <summary>
+            Fills the message with a joints speed command
+            </summary>
+      <param name="joints">Speed joints values as a Joints</param>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.SpeedExtJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
+      <summary>
+            Fills the message with an external joints speed command
+            </summary>
+      <param name="joints">Motion joints values as a Joints</param>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.Build">
+      <summary>
+            Builds the message to send
+            </summary>
+      <returns>Message to send as a bytes array</returns>
+    </member>
+    <member name="T:HAL.ENPC.Messaging.Server.ATI.ForceSensorServer">
+      <summary>
+            **SENSOR CONNECTION**
+            
+            1) Unplug the Ethernet cable from the LAN port on the computer
+            2) Set the IPV4 IP Address on "192.168.1.100"
+            3) Set the subnet mask on "255.255.255.0"
+            4) Plug the Ethernet cable back again
+            
+            The sensor is now accessible on the following IP Address : "192.168.1.1"
+                -&gt; This IP Address can be modified on the sensor interface, but only if the switch 9 of the Netbox is off
+            </summary>
+    </member>
+    <member name="P:HAL.ENPC.Messaging.Server.ResponseRequest.Persistent">
+      <summary>Whether the response request should live on beyond its first execution</summary>
+    </member>
+    <member name="T:HAL.ENPC.Sensoring.ISensor">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.ENPC.Sensoring.SensorController.OnSensorEvent(System.Object,System.EventArgs)">
+      <summary> Sensors fusion event based rooting function. </summary>
+      <param name="sender">
+      </param>
+      <param name="e">
+      </param>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.CartesianSpeed.Speed">
+      <summary>
+            Cartesian speed values array
+            </summary>
+    </member>
+    <member name="M:HAL.ENPC.Sensoring.SensorData.CartesianSpeed.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+      <summary>
+            CartesianSpeed instance values constructor
+            </summary>
+      <param name="vx">Speed on the X axis in mm/s</param>
+      <param name="vy">Speed on the Y axis in mm/s</param>
+      <param name="vz">Speed on the Z axis in mm/s</param>
+      <param name="vpsi">Speed according to the first Euler angle in degrees/mm</param>
+      <param name="vtheta">Speed according to the second Euler angle in degrees/mm</param>
+      <param name="vphi">Speed according to the third Euler angle in degrees/mm</param>
+    </member>
+    <member name="M:HAL.ENPC.Sensoring.SensorData.CartesianSpeed.#ctor(System.Double[])">
+      <summary>
+            CartesianSpeed instance array constructor
+            </summary>
+      <param name="speed">6 speed values as an array - The 3 first are in mm/s on the X,Y,Z axis ans the 3 last are in degrees/s on the Euler angles axis</param>
+    </member>
+    <member name="M:HAL.ENPC.Sensoring.SensorData.EulerAngles.#ctor(System.Double,System.Double,System.Double)">
+      <summary>
+            EulerAngles instance constructor
+            </summary>
+      <param name="psi">First Euler angle - Precession angle</param>
+      <param name="theta">Second Euler angle - Nutation angle</param>
+      <param name="phi">Third Euler angle - Intrinsic rotation angle</param>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.EulerAngles.Psi">
+      <summary>
+            First Euler Angle - Precession angle
+            </summary>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.EulerAngles.Theta">
+      <summary>
+            Second Euler angle - Nutation angle
+            </summary>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.EulerAngles.Phi">
+      <summary>
+            Third Euler angle - Intrinsic rotation angle
+            </summary>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.Quaternion.Values">
+      <summary>Quaternion components, in the Real, X, Y, Z order.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.Quaternion.Real">
+      <summary>Real (W) part of the quaternion.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.Quaternion.X">
+      <summary>Imaginary X part (coefficient of complex I) of the quaternion.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.Quaternion.Y">
+      <summary>Imaginary Y part (coefficient of complex J) of the quaternion.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Sensoring.SensorData.Quaternion.Z">
+      <summary>Imaginary Z part (coefficient of complex K) of the quaternion.</summary>
+    </member>
+  </members>
+</doc>
