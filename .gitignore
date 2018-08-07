@@ -15,6 +15,7 @@ ForceSensor/.vs
 *.pdb
 *.ide-shm
 *.ide-wal
+*.ide
 
 
 
