@@ -4,15 +4,66 @@
     <name>HAL.ENPC.Primitives</name>
   </assembly>
   <members>
+    <member name="M:HAL.ENPC.Control.ABB.Egm.JointControl(HAL.ENPC.Sensoring.SensorData.Joints)">
+      <summary> Control task of the joints. </summary>
+      <param name="joints">Command</param>
+      <returns>Completed task.</returns>
+    </member>
+    <member name="M:HAL.ENPC.Control.ABB.Egm.CartesianControl(HAL.ENPC.Sensoring.SensorData.Orientation)">
+      <summary> Orientation control task. </summary>
+      <param name="orientation">Command</param>
+      <returns>Completed task.</returns>
+    </member>
+    <member name="T:HAL.ENPC.Control.ControlStrategy">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.ENPC.Control.ControlStrategy.JointControl(HAL.ENPC.Sensoring.SensorData.Joints)">
+      <summary> Control task of the joints. </summary>
+      <param name="joints">Command</param>
+      <returns>Completed task.</returns>
+    </member>
+    <member name="M:HAL.ENPC.Control.ControlStrategy.CartesianControl(HAL.ENPC.Sensoring.SensorData.Orientation)">
+      <summary> Orientation control task. </summary>
+      <param name="orientation">Command</param>
+      <returns>Completed task.</returns>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.Create(HAL.ENPC.Control.RealTimeController@,System.String,System.Collections.Generic.List{HAL.Control.IControllableObject},System.Collections.Generic.List{HAL.Procedures.Procedure},System.Collections.Generic.List{HAL.Communications.ElectricSignal},System.Collections.Generic.List{HAL.ENPC.Control.RealTimeController},HAL.ENPC.Control.ControlStrategy,HAL.ENPC.Control.RealTimeController@)">
+      <summary>Create a sensor  server for communication and sensor synchronization.</summary>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.Create(HAL.ENPC.Control.RealTimeController@,System.String,System.Collections.Generic.List{HAL.ENPC.Control.RealTimeController},HAL.ENPC.Control.ControlStrategy,HAL.ENPC.Control.RealTimeController@)">
+      <summary>Create a sensor  server for communication and sensor synchronization.</summary>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.Run(HAL.ENPC.Control.RealTimeController,System.Boolean)">
+      <summary>Run sensor controller all communications. </summary>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.AddSubController(HAL.ENPC.Control.RealTimeController)">
+      <summary> Add a sub real time controller to this real time controller. This can be a sensor as well. </summary>
+      <param name="controller">Controller to add.</param>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.RemoveSubController(HAL.ENPC.Control.RealTimeController)">
+      <summary> Remove a sub real time controller to this real time controller. This can be a sensor as well. </summary>
+      <param name="controller">Controller to remove.</param>
+      <remarks>This will terminate and remove the real time controller and sub classes contained by the removed controller.</remarks>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.ConnectSensor(HAL.ENPC.Control.RealTimeController)">
+      <summary> Connect a sensor and start listening to it : add messages to the Message Queue. </summary>
+      <param name="controller">
+      </param>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.DisconnectSensor(HAL.ENPC.Control.RealTimeController)">
+      <summary> Disconnect a sensor and stop listening to it : stop adding messages to the Message Queue. </summary>
+      <param name="controller">
+      </param>
+    </member>
     <member name="T:HAL.ENPC.Messaging.MessageCode">
       <summary>Defines the message header indices for the ENPC communication system.</summary>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.#ctor">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.#ctor">
       <summary>
             Default contructor - Creates a new message builder to fill
             </summary>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MakeHeader(System.Int32@)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.MakeHeader(System.Int32@)">
       <summary>
             Creates and fill the message header with 
              - The identifier of the message
@@ -21,7 +72,7 @@
             </summary>
       <param name="seqNumber">Identifier of the last EGM message sent to the robot</param>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.CartesianBuilder(HAL.ENPC.Sensoring.SensorData.Position)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.CartesianBuilder(HAL.ENPC.Sensoring.SensorData.Translation)">
       <summary>
             Builds a translation command
             </summary>
@@ -29,7 +80,7 @@
       <returns>
       </returns>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.QuaterionBuilder(HAL.ENPC.Sensoring.SensorData.Quaternion)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.QuaterionBuilder(HAL.ENPC.Sensoring.SensorData.Quaternion)">
       <summary>
             Builds a rotation command from a quaternion
             </summary>
@@ -37,7 +88,7 @@
       <returns>
       </returns>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.EulerBuilder(HAL.ENPC.Sensoring.SensorData.EulerAngles)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.EulerBuilder(HAL.ENPC.Sensoring.SensorData.EulerAngles)">
       <summary>
             Builds a rotation command from Euler angles
             </summary>
@@ -45,7 +96,7 @@
       <returns>
       </returns>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.PoseBuilder(HAL.ENPC.Messaging.Server.ABB.EgmCartesian.Builder,HAL.ENPC.Messaging.Server.ABB.EgmQuaternion.Builder)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.PoseBuilder(HAL.ENPC.Messaging.Server.ABB.EgmCartesian.Builder,HAL.ENPC.Messaging.Server.ABB.EgmQuaternion.Builder)">
       <summary>
             Builds a cartesian motion command from a translation command and a rotation command
             </summary>
@@ -54,7 +105,7 @@
       <returns>
       </returns>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.PoseBuilder(HAL.ENPC.Messaging.Server.ABB.EgmCartesian.Builder,HAL.ENPC.Messaging.Server.ABB.EgmEuler.Builder)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.PoseBuilder(HAL.ENPC.Messaging.Server.ABB.EgmCartesian.Builder,HAL.ENPC.Messaging.Server.ABB.EgmEuler.Builder)">
       <summary>
             Builds a cartesian motion command from a transmation command and a rotation command
             </summary>
@@ -63,7 +114,7 @@
       <returns>
       </returns>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.JointsBuilder(HAL.ENPC.Sensoring.SensorData.Joints)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.JointsBuilder(HAL.ENPC.Sensoring.SensorData.Joints)">
       <summary>
             Builds a joints (internal or external) motion or speed command 
             </summary>
@@ -71,7 +122,7 @@
       <returns>
       </returns>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.CartesianSpeedBuilder(HAL.ENPC.Sensoring.SensorData.CartesianSpeed)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.CartesianSpeedBuilder(HAL.ENPC.Sensoring.SensorData.CartesianSpeed)">
       <summary>
             Builds a cartesian speed reference command 
             </summary>
@@ -79,68 +130,91 @@
       <returns>
       </returns>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MovePose(HAL.ENPC.Sensoring.SensorData.Position,HAL.ENPC.Sensoring.SensorData.Quaternion)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.MovePose(HAL.ENPC.Sensoring.SensorData.Translation,HAL.ENPC.Sensoring.SensorData.Quaternion)">
       <summary>
             Fills the message with a cartesian motion command
             </summary>
       <param name="vector">Translation vector as a Vector3D</param>
       <param name="quaternion">Rotation quaternion as a Quaternion</param>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MovePose(HAL.ENPC.Sensoring.SensorData.Position,HAL.ENPC.Sensoring.SensorData.EulerAngles)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.MovePose(HAL.ENPC.Sensoring.SensorData.Translation,HAL.ENPC.Sensoring.SensorData.EulerAngles)">
       <summary>
             Fills the message with a cartesian motion command
             </summary>
       <param name="vector">Translation vector as a Vector3D</param>
       <param name="angles">Rotation Euler angles as an EulerAngles</param>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MoveJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.MoveJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
       <summary>
             Fills the message with a joints motion command
             </summary>
       <param name="joints">Motion joints values as a Joints</param>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.MoveExternalJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.MoveExternalJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
       <summary>
             Fills the message with a joints motion command
             </summary>
       <param name="joints">Motion joints values as a Joints</param>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.SpeedCartesian(HAL.ENPC.Sensoring.SensorData.CartesianSpeed)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.SpeedCartesian(HAL.ENPC.Sensoring.SensorData.CartesianSpeed)">
       <summary>
             Fills the message with a cartesian speed command
             </summary>
       <param name="speed">Cartesian speed command as a CartesianSpeed</param>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.SpeedJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.SpeedJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
       <summary>
             Fills the message with a joints speed command
             </summary>
       <param name="joints">Speed joints values as a Joints</param>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.SpeedExtJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.SpeedExtJoints(HAL.ENPC.Sensoring.SensorData.Joints)">
       <summary>
             Fills the message with an external joints speed command
             </summary>
       <param name="joints">Motion joints values as a Joints</param>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.ABB.MessageBuilder.Build">
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.Build">
       <summary>
             Builds the message to send
             </summary>
       <returns>Message to send as a bytes array</returns>
     </member>
-    <member name="T:HAL.ENPC.Messaging.Server.ATI.ForceSensorServer">
-      <summary>
-            **SENSOR CONNECTION**
-            
-            1) Unplug the Ethernet cable from the LAN port on the computer
-            2) Set the IPV4 IP Address on "192.168.1.100"
-            3) Set the subnet mask on "255.255.255.0"
-            4) Plug the Ethernet cable back again
-            
-            The sensor is now accessible on the following IP Address : "192.168.1.1"
-                -&gt; This IP Address can be modified on the sensor interface, but only if the switch 9 of the Netbox is off
-            </summary>
+    <member name="P:HAL.ENPC.Messaging.Server.ABB.EgmServer.EgmIterator">
+      <summary> EGM iterator for sending control message. </summary>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmServer.JointMonitoring(HAL.ENPC.Messaging.IMessage)">
+      <summary> Update the sensor data only with the joints' values from EGM feedback.  </summary>
+      <param name="message">The message containing feedback data. </param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmServer.TcpRotationMonitoring(HAL.ENPC.Messaging.IMessage)">
+      <summary> Update the sensor data only with the flange rotation from EGM feedback.  </summary>
+      <param name="message">The message containing feedback data. </param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmServer.TcpPositionMonitoring(HAL.ENPC.Messaging.IMessage)">
+      <summary> Update the sensor data only with the flange position from EGM feedback.  </summary>
+      <param name="message">The message containing feedback data. </param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmServer.TcpOrientationMonitoring(HAL.ENPC.Messaging.IMessage)">
+      <summary> Update the sensor data only with the flange orientation from EGM feedback.  </summary>
+      <param name="message">The message containing feedback data. </param>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Messaging.Server.ISensorServer.UpdateSensor(HAL.ENPC.Messaging.IMessage)">
+      <summary> Update paired sensor received message queue.
+            Receive message queue can belong either to this paired sensor or to the real controller that old this sensors.
+            <see cref="M:HAL.ENPC.Control.RealTimeController.ConnectAll" /></summary>
+      <param name="message">Update message.</param>
+      <returns>Task completed.</returns>
+      <remarks>
+      </remarks>
     </member>
     <member name="P:HAL.ENPC.Messaging.Server.ResponseRequest.Persistent">
       <summary>Whether the response request should live on beyond its first execution</summary>
@@ -148,11 +222,14 @@
     <member name="T:HAL.ENPC.Sensoring.ISensor">
       <inheritdoc />
     </member>
-    <member name="M:HAL.ENPC.Sensoring.SensorController.OnSensorEvent(System.Object,System.EventArgs)">
-      <summary> Sensors fusion event based rooting function. </summary>
-      <param name="sender">
+    <member name="M:HAL.ENPC.Sensoring.Sensor.ConnectSensor(HAL.ENPC.Control.RealTimeController)">
+      <summary> Connect a sensor and start listening to it : add messages to the Message Queue. </summary>
+      <param name="controller">
       </param>
-      <param name="e">
+    </member>
+    <member name="M:HAL.ENPC.Sensoring.Sensor.DisconnectSensor(HAL.ENPC.Control.RealTimeController)">
+      <summary> Disconnect a sensor and stop listening to it : stop adding messages to the Message Queue. </summary>
+      <param name="controller">
       </param>
     </member>
     <member name="P:HAL.ENPC.Sensoring.SensorData.CartesianSpeed.Speed">
@@ -170,12 +247,6 @@
       <param name="vpsi">Speed according to the first Euler angle in degrees/mm</param>
       <param name="vtheta">Speed according to the second Euler angle in degrees/mm</param>
       <param name="vphi">Speed according to the third Euler angle in degrees/mm</param>
-    </member>
-    <member name="M:HAL.ENPC.Sensoring.SensorData.CartesianSpeed.#ctor(System.Double[])">
-      <summary>
-            CartesianSpeed instance array constructor
-            </summary>
-      <param name="speed">6 speed values as an array - The 3 first are in mm/s on the X,Y,Z axis ans the 3 last are in degrees/s on the Euler angles axis</param>
     </member>
     <member name="M:HAL.ENPC.Sensoring.SensorData.EulerAngles.#ctor(System.Double,System.Double,System.Double)">
       <summary>

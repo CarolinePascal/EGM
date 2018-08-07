@@ -247,12 +247,13 @@
       <param name="nickname">Parameter nickname.</param>
       <param name="description">Parameter description.</param>
     </member>
-    <member name="M:HAL.Attributes.HAL_Parameter.#ctor(System.String,System.String,System.String,System.Object)">
+    <member name="M:HAL.Attributes.HAL_Parameter.#ctor(System.String,System.String,System.String,System.Object,System.String)">
       <summary>Marks a parameter or property to be used as an optional parameter in HAL client applications.</summary>
-      <param name="defaultValue">Default value of this optional parameter.</param>
       <param name="name">Parameter name. If no name is provided, it will be extracted from the assembly xml documentation.</param>
       <param name="nickname">Parameter nickname. If no nickname is provided, it will generated from the parameter name.</param>
       <param name="description">Parameter description. If no description is provided, it will be extracted from the assembly xml documentation.</param>
+      <param name="defaultValue">Default value of this optional parameter.</param>
+      <param name="defaultValueMethodName">Method to be called to retrieve the default value of this parameter. This method must be public and static.</param>
     </member>
     <member name="M:HAL.Attributes.HAL_Parameter.#ctor(System.Boolean,System.Boolean,System.String,System.String,System.String,System.Object)">
       <summary>Marks a property to be used as an optional parameter in HAL client applications.</summary>
@@ -278,6 +279,12 @@
     <member name="P:HAL.Attributes.HAL_Parameter.DefaultValue">
       <summary>If <see cref="P:HAL.Attributes.HAL_Parameter.IsOptional" />, default value of the parameter.</summary>
     </member>
+    <member name="P:HAL.Attributes.HAL_Parameter.DefaultValueMethod">
+      <summary>If <see cref="P:HAL.Attributes.HAL_Parameter.IsOptional" />, method to retrieve the default value of the parameter.</summary>
+    </member>
+    <member name="P:HAL.Attributes.HAL_Parameter.DefaultValueMethodName">
+      <summary>If <see cref="P:HAL.Attributes.HAL_Parameter.IsOptional" />, name of the method to retrieve the default value of the parameter.</summary>
+    </member>
     <member name="P:HAL.Attributes.HAL_Parameter.HasDefaultValue">
       <summary>If <see cref="P:HAL.Attributes.HAL_Parameter.IsOptional" /> optional, indicates if the default value of the parameter i s explicitly set.</summary>
     </member>
@@ -286,6 +293,15 @@
     </member>
     <member name="P:HAL.Attributes.HAL_Parameter.Settable">
       <summary>For public properties only: overrides write access.</summary>
+    </member>
+    <member name="M:HAL.Attributes.HAL_Parameter.ResolveDefaultValueMethod(System.Type)">
+      <summary>Resolves the default value retrieval method.</summary>
+      <param name="type">Type in which the method is declared.</param>
+      <returns>Whether the method was found.</returns>
+    </member>
+    <member name="M:HAL.Attributes.HAL_Parameter.GetRuntimeDefaultValue(System.Object@)">
+      <summary>Retrieves a default value a runtime using the specified retrieval method..</summary>
+      <returns>Retrieved value.</returns>
     </member>
     <member name="T:HAL.Attributes.HAL_Template">
       <summary>Marks a class or a method to be used as templated content in HAL client applications.</summary>
@@ -2284,10 +2300,11 @@
     <member name="M:HAL.Extensibility.HAL_ExpressionContainer.EvaluateSyntax">
       <summary>Extracts an evaluable expression from a textual representation.</summary>
     </member>
-    <member name="M:HAL.Extensibility.HAL_ExpressionContainer.ExpressionFromSyntax(System.String,HAL.Serialization.HAL_ParseException@)">
+    <member name="M:HAL.Extensibility.HAL_ExpressionContainer.ExpressionFromSyntax(System.String,HAL.Serialization.HAL_ParseException@,System.Boolean)">
       <summary>Extracts an evaluable expression from a textual representation.</summary>
       <param name="expression">The textual representation of the expression.</param>
       <param name="exception">The exception thrown by the parsing, <c>null</c> if completed successfully.</param>
+      <param name="allowVariables">Whether variables should be accepted.</param>
       <returns>An evaluable expression representative of the textual input, <c>null</c> if the syntax is invalid.</returns>
     </member>
     <member name="T:HAL.Extensibility.HAL_ExpressionManager">
@@ -2642,6 +2659,11 @@
       <param name="subgraph">The vertex and edge structure to add.</param>
       <returns>Successful addition of all the vertices.</returns>
     </member>
+    <member name="M:HAL.Graphs.Graph`3.RemoveFrom(`0)">
+      <summary>Removes the given vertex and all its children.</summary>
+      <param name="vertex">Vertex.</param>
+      <returns>Whether all vertices were successfully removed.</returns>
+    </member>
     <member name="M:HAL.Graphs.Graph`3.CreateDefaultEdge(`0,`0)">
       <summary>Creates a default implementation of a graph edge.</summary>
       <param name="source">The start vertex of the edge.</param>
@@ -2660,6 +2682,10 @@
       <param name="replacement">The vertex that should be placed instead.</param>
       <returns>
         <c>true</c> is the replacement was successful.</returns>
+    </member>
+    <member name="M:HAL.Graphs.Graph`3.RemoveIsolatedVertices">
+      <summary>Removes all isolated vertices (those with no associated edges) from the graph.</summary>
+      <returns>Number of vertices removed.</returns>
     </member>
     <member name="M:HAL.Graphs.Graph`3.AddEdge(`1)">
       <summary>Adds the edge to the graph.</summary>
@@ -3376,6 +3402,9 @@
     <member name="P:HAL.Linguistics.Definition.LanguageSettings.FileStructure">
       <summary>The structure of files required for a machine to interpret a program in this language.</summary>
     </member>
+    <member name="P:HAL.Linguistics.Definition.LanguageSettings.ProcedureCallTemplate">
+      <summary>The template required to call a procedure.</summary>
+    </member>
     <member name="T:HAL.Linguistics.Definition.MachineLanguage">
       <summary>Complete description of a machine language.</summary>
     </member>
@@ -3593,6 +3622,9 @@
     <member name="P:HAL.Linguistics.Export.CodeBlock.Identity">
       <summary>Object identity.</summary>
     </member>
+    <member name="P:HAL.Linguistics.Export.CodeBlock.IsTemplated">
+      <summary>Whether the value is a template nd should have values assigned.</summary>
+    </member>
     <member name="P:HAL.Linguistics.Export.CodeBlock.Bindings">
       <summary>A list of bindings that contain this as either the source or target of the binding.</summary>
     </member>
@@ -3729,6 +3761,9 @@
       <summary>Renders the given action graph to code in the language already defined and writes it to disk at the path specified.</summary>
       <param name="actionGraph">The action graph to write.</param>
       <param name="mode">The declaration mode for variables during the export. See <see cref="T:HAL.Linguistics.Export.DeclarationMode" /> for options.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Export.LanguageExportGraph.EnsureSyntaxCaches">
+      <summary>Ensures that all cached syntax blocks exist in the graph and clears those that are not.</summary>
     </member>
     <member name="M:HAL.Linguistics.Export.LanguageExportGraph.SumEdges(System.Collections.Generic.IEnumerable{HAL.Linguistics.Definition.LanguageGraphVertex},HAL.Linguistics.Definition.LanguageGraph)">
       <summary>Calculates the weight of a group of vertices based on the edges entering them.</summary>
@@ -5432,6 +5467,10 @@
     <member name="M:HAL.Linguistics.Helpers.AsInteger(System.Enum)">
       <summary>Converts any enum into an integer.</summary>
       <param name="value">The value to be converted.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Helpers.IsPredeclaration(HAL.Linguistics.Export.DeclarationMode)">
+      <summary>Tests whether a declaration mode is predeclaration.</summary>
+      <param name="mode">Mode to test.</param>
     </member>
     <member name="M:HAL.Linguistics.Helpers.InverseLocationInWorld(HAL.Objects.Reference)">
       <summary>Finds the transformation necessary to move the reference back to the world.</summary>
@@ -8676,6 +8715,11 @@
       <param name="context">The ANTLR context in which this method was called.</param>
       <returns>A subtraction expression.</returns>
     </member>
+    <member name="M:HAL.Numerics.HAL_ExpressionVisitor.VisitMeasurement(HAL.Numerics.HAL_ExpressionGrammarParser.MeasurementContext)">
+      <summary>Extracts a measurement from syntax.</summary>
+      <param name="context">The ANTLR context in which this method was called.</param>
+      <returns>A unitized value.</returns>
+    </member>
     <member name="M:HAL.Numerics.HAL_ExpressionVisitor.VisitAtomic(HAL.Numerics.HAL_ExpressionGrammarParser.AtomicContext)">
       <summary>Extracts an atomic expression from syntax and ensures appropriate negation.</summary>
       <param name="context">The ANTLR context in which this method was called.</param>
@@ -9786,6 +9830,18 @@
             </summary>
       <param name="context">The parse tree.</param>
     </member>
+    <member name="M:HAL.Numerics.IHAL_ExpressionGrammarListener.EnterMeasurement(HAL.Numerics.HAL_ExpressionGrammarParser.MeasurementContext)">
+      <summary>
+            Enter a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.measurement" />.
+            </summary>
+      <param name="context">The parse tree.</param>
+    </member>
+    <member name="M:HAL.Numerics.IHAL_ExpressionGrammarListener.ExitMeasurement(HAL.Numerics.HAL_ExpressionGrammarParser.MeasurementContext)">
+      <summary>
+            Exit a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.measurement" />.
+            </summary>
+      <param name="context">The parse tree.</param>
+    </member>
     <member name="M:HAL.Numerics.IHAL_ExpressionGrammarListener.EnterAtomic(HAL.Numerics.HAL_ExpressionGrammarParser.AtomicContext)">
       <summary>
             Enter a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.atomic" />.
@@ -10345,6 +10401,18 @@
             <para>The default implementation does nothing.</para></summary>
       <param name="context">The parse tree.</param>
     </member>
+    <member name="M:HAL.Numerics.HAL_ExpressionGrammarBaseListener.EnterMeasurement(HAL.Numerics.HAL_ExpressionGrammarParser.MeasurementContext)">
+      <summary>
+            Enter a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.measurement" />.
+            <para>The default implementation does nothing.</para></summary>
+      <param name="context">The parse tree.</param>
+    </member>
+    <member name="M:HAL.Numerics.HAL_ExpressionGrammarBaseListener.ExitMeasurement(HAL.Numerics.HAL_ExpressionGrammarParser.MeasurementContext)">
+      <summary>
+            Exit a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.measurement" />.
+            <para>The default implementation does nothing.</para></summary>
+      <param name="context">The parse tree.</param>
+    </member>
     <member name="M:HAL.Numerics.HAL_ExpressionGrammarBaseListener.EnterAtomic(HAL.Numerics.HAL_ExpressionGrammarParser.AtomicContext)">
       <summary>
             Enter a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.atomic" />.
@@ -10774,6 +10842,13 @@
       <param name="context">The parse tree.</param>
       <return>The visitor result.</return>
     </member>
+    <member name="M:HAL.Numerics.IHAL_ExpressionGrammarVisitor`1.VisitMeasurement(HAL.Numerics.HAL_ExpressionGrammarParser.MeasurementContext)">
+      <summary>
+            Visit a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.measurement" />.
+            </summary>
+      <param name="context">The parse tree.</param>
+      <return>The visitor result.</return>
+    </member>
     <member name="M:HAL.Numerics.IHAL_ExpressionGrammarVisitor`1.VisitAtomic(HAL.Numerics.HAL_ExpressionGrammarParser.AtomicContext)">
       <summary>
             Visit a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.atomic" />.
@@ -11180,6 +11255,16 @@
     <member name="M:HAL.Numerics.HAL_ExpressionGrammarBaseVisitor`1.VisitSubInput(HAL.Numerics.HAL_ExpressionGrammarParser.SubInputContext)">
       <summary>
             Visit a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.subInput" />.
+            <para>
+            The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)" />
+            on <paramref name="context" />.
+            </para></summary>
+      <param name="context">The parse tree.</param>
+      <return>The visitor result.</return>
+    </member>
+    <member name="M:HAL.Numerics.HAL_ExpressionGrammarBaseVisitor`1.VisitMeasurement(HAL.Numerics.HAL_ExpressionGrammarParser.MeasurementContext)">
+      <summary>
+            Visit a parse tree produced by <see cref="M:HAL.Numerics.HAL_ExpressionGrammarParser.measurement" />.
             <para>
             The default implementation returns the result of calling <see cref="M:Antlr4.Runtime.Tree.AbstractParseTreeVisitor`1.VisitChildren(Antlr4.Runtime.Tree.IRuleNode)" />
             on <paramref name="context" />.
@@ -12486,28 +12571,6 @@
       <param name="body">
         <see cref="T:HAL.Objects.Mechanisms.Tools.Grasping.VacuumGripper" /> components, starting from its base.</param>
     </member>
-    <member name="T:HAL.Objects.Mechanisms.Tools.IProportionalMeasurement">
-      <summary>Qualifies a proportional measurement.</summary>
-    </member>
-    <member name="P:HAL.Objects.Mechanisms.Tools.IProportionalMeasurement.ProportionalValue">
-      <summary>Factor to be applied.</summary>
-    </member>
-    <member name="P:HAL.Objects.Mechanisms.Tools.IProportionalMeasurement.ExplicitValue">
-      <summary>Explicit measurement value. Discarded if a factor is specified.</summary>
-    </member>
-    <member name="M:HAL.Objects.Mechanisms.Tools.IProportionalMeasurement.ApplyTo``1(``0)">
-      <summary>Computes the proportional value of a measurement by taking into account the specified factor.</summary>
-      <typeparam name="T">Measurement type.</typeparam>
-      <param name="measurement">Measurement.</param>
-      <returns>Updated measurement.</returns>
-    </member>
-    <member name="T:HAL.Objects.Mechanisms.Tools.IProportionalMeasurement`1">
-      <summary>Qualifies a proportional measurement.</summary>
-      <typeparam name="TMeasurement">Measurement type.</typeparam>
-    </member>
-    <member name="P:HAL.Objects.Mechanisms.Tools.IProportionalMeasurement`1.Measurement">
-      <summary>Explicit measurement value, if any. Discarded if a factor is specified.</summary>
-    </member>
     <member name="T:HAL.Objects.Mechanisms.Tools.IToolEffect">
       <summary>Qualifies a tool effect.</summary>
     </member>
@@ -12541,19 +12604,6 @@
     </member>
     <member name="P:HAL.Objects.Mechanisms.Tools.IToolState.OrientationAcceleration">
       <summary>Orientation acceleration of end point.</summary>
-    </member>
-    <member name="T:HAL.Objects.Mechanisms.Tools.ProportionalMeasurement`1">
-      <summary>Proportional measurement.</summary>
-      <typeparam name="T">Measurement type.</typeparam>
-    </member>
-    <member name="P:HAL.Objects.Mechanisms.Tools.ProportionalMeasurement`1.ProportionalValue">
-      <summary>Factor to be applied.</summary>
-    </member>
-    <member name="P:HAL.Objects.Mechanisms.Tools.ProportionalMeasurement`1.ExplicitValue">
-      <summary>Explicit measurement value. Discarded if a factor is specified.</summary>
-    </member>
-    <member name="P:HAL.Objects.Mechanisms.Tools.ProportionalMeasurement`1.Measurement">
-      <summary>Explicit measurement value, if any. Discarded if a factor is specified.</summary>
     </member>
     <member name="T:HAL.Objects.Mechanisms.Tools.Tool">
       <summary>Base implementation of a tool.</summary>
@@ -13169,7 +13219,7 @@
     <member name="T:HAL.Procedures.Actions.ActionSet">
       <summary>A class for collecting HAL_Actions for organizational reasons, simplified flow control or reuse.</summary>
     </member>
-    <member name="M:HAL.Procedures.Actions.ActionSet.Expression(HAL.Procedures.Procedure@,System.String,System.String,System.Collections.Generic.List{HAL.Procedures.Procedure},HAL.Procedures.Procedure@)">
+    <member name="M:HAL.Procedures.Actions.ActionSet.OverrideExport(HAL.Procedures.Procedure@,System.String,System.String,HAL.Procedures.Procedure,HAL.Procedures.Procedure@)">
       <summary>Wraps a literal expression as a custom action.</summary>
       <param name="instance">Existing instance.</param>
       <param name="alias">Action alias.</param>
@@ -14375,6 +14425,25 @@
       <summary>Clones this object.</summary>
       <returns>Shallow copy of the original object.</returns>
     </member>
+    <member name="M:HAL.Procedures.Applications.Grasping.Picking.Pick(HAL.Procedures.Procedure@,HAL.Objects.Mechanisms.Tools.Grasping.Gripper,HAL.Objects.Parts.Part,HAL.Spatial.MatrixFrame,System.Boolean,HAL.Procedures.Procedure,HAL.Procedures.Procedure@)">
+      <summary>Picks a part.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="gripper">Gripper to be used to pick the part.</param>
+      <param name="part">Part to be picked.</param>
+      <param name="location">Picking location.</param>
+      <param name="isRelative">Whether the picking location is relative to the part (true) or the world (false) reference.</param>
+      <param name="procedure">Procedure executed to actuate the gripper.</param>
+      <param name="action">Pick action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Applications.Grasping.Picking.Place(HAL.Procedures.Procedure@,HAL.Objects.Mechanisms.Tools.Grasping.Gripper,HAL.Objects.Parts.Part,HAL.Spatial.MatrixFrame,HAL.Procedures.Procedure,HAL.Procedures.Procedure@)">
+      <summary>Places a part.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="gripper">Gripper to be used to place the part.</param>
+      <param name="part">Part to be placed.</param>
+      <param name="location">Placing location.</param>
+      <param name="procedure">Procedure executed to actuate the gripper.</param>
+      <param name="action">Place action.</param>
+    </member>
     <member name="T:HAL.Procedures.EvaluableEdgeSettings">
       <summary>Contains the settings for an evaluable action graph edge.</summary>
     </member>
@@ -14963,6 +15032,11 @@
               Looks up a localized string similar to The following action could not be rendered. Please check that the language supports it..
             </summary>
     </member>
+    <member name="P:HAL.Resources.Linguistic.AsLibrary">
+      <summary>
+              Looks up a localized string similar to AsLibrary.
+            </summary>
+    </member>
     <member name="P:HAL.Resources.Linguistic.BlockNameSeparatorCharacter">
       <summary>
               Looks up a localized string similar to ..
@@ -14976,6 +15050,16 @@
     <member name="P:HAL.Resources.Linguistic.DeclarationBlockName">
       <summary>
               Looks up a localized string similar to Declaration.
+            </summary>
+    </member>
+    <member name="P:HAL.Resources.Linguistic.DeclarationMode">
+      <summary>
+              Looks up a localized string similar to DeclarationMode.
+            </summary>
+    </member>
+    <member name="P:HAL.Resources.Linguistic.DefaultProcedureName">
+      <summary>
+              Looks up a localized string similar to HALProcedure.
             </summary>
     </member>
     <member name="P:HAL.Resources.Linguistic.ExecutionBlockName">
@@ -15031,6 +15115,21 @@
     <member name="P:HAL.Resources.Linguistic.PreSyntaxCodeBlockName">
       <summary>
               Looks up a localized string similar to PreOriginalString.
+            </summary>
+    </member>
+    <member name="P:HAL.Resources.Linguistic.ProcedureBlockName">
+      <summary>
+              Looks up a localized string similar to Procedures.
+            </summary>
+    </member>
+    <member name="P:HAL.Resources.Linguistic.ProcedureName">
+      <summary>
+              Looks up a localized string similar to ProcedureName.
+            </summary>
+    </member>
+    <member name="P:HAL.Resources.Linguistic.ProcedureTemplateRootName">
+      <summary>
+              Looks up a localized string similar to Procedure.
             </summary>
     </member>
     <member name="P:HAL.Resources.Linguistic.UnitAngle">
@@ -19227,6 +19326,12 @@
       <param name="u">First orthonormal output.</param>
       <param name="v">Second orthonormal output.</param>
     </member>
+    <member name="M:HAL.Spatial.Vector3D.AreColinear(HAL.Spatial.Vector3D@,HAL.Spatial.Vector3D@,HAL.Spatial.Vector3D@)">
+      <summary>Tests 3 vectors for colinearity by testing the lengths between each pair of points.</summary>
+      <param name="v1">First vector.</param>
+      <param name="v2">Second vector.</param>
+      <param name="v3">Third vector.</param>
+    </member>
     <member name="M:HAL.Spatial.Vector3D.ToString">
       <summary>Cast to string.</summary>
       <returns>Returns a string representation of the object.</returns>
@@ -19731,6 +19836,21 @@
     <member name="M:HAL.Units.IMeasurement.SetToMin">
       <summary>Sets the value of this measurement to the minimum value of its allowable range.</summary>
     </member>
+    <member name="T:HAL.Units.IProportionalMeasurement">
+      <summary>Qualifies a proportional measurement.</summary>
+    </member>
+    <member name="P:HAL.Units.IProportionalMeasurement.Factor">
+      <summary>Factor to be applied.</summary>
+    </member>
+    <member name="P:HAL.Units.IProportionalMeasurement.Measurement">
+      <summary>Explicit measurement value. Discarded if a factor is specified.</summary>
+    </member>
+    <member name="M:HAL.Units.IProportionalMeasurement.ApplyTo``1(``0)">
+      <summary>Computes the proportional value of a measurement by taking into account the specified factor.</summary>
+      <typeparam name="T">Measurement type.</typeparam>
+      <param name="measurement">Measurement.</param>
+      <returns>Updated measurement.</returns>
+    </member>
     <member name="T:HAL.Units.IUnitizedValue">
       <summary>Low-level interface, wrapping a measured value.</summary>
     </member>
@@ -20019,6 +20139,34 @@
       <summary>Calculates a factor of the value with respect to its range.</summary>
       <param name="measurement">Measurement to convert.</param>
       <returns>A value between 0 and 1 denoting the ratio of the range taken by the value.</returns>
+    </member>
+    <member name="T:HAL.Units.ProportionalMeasurement`1">
+      <summary>Proportional measurement.</summary>
+      <typeparam name="T">Measurement type.</typeparam>
+    </member>
+    <member name="M:HAL.Units.ProportionalMeasurement`1.#ctor(System.Nullable{System.Double})">
+      <summary>Creates a proportional measurement.</summary>
+      <param name="factor">Factor to be applied.</param>
+    </member>
+    <member name="M:HAL.Units.ProportionalMeasurement`1.#ctor(`0)">
+      <summary>Creates a proportional measurement.</summary>
+      <param name="measurement">Wrapped measurement.</param>
+    </member>
+    <member name="P:HAL.Units.ProportionalMeasurement`1.Factor">
+      <summary>Factor to be applied.</summary>
+    </member>
+    <member name="P:HAL.Units.ProportionalMeasurement`1.Measurement">
+      <summary>Explicit measurement value, if any. Discarded if a factor is specified.</summary>
+    </member>
+    <member name="M:HAL.Units.ProportionalMeasurement`1.ApplyTo``1(``0)">
+      <summary>Computes the proportional value of a measurement by taking into account the specified factor.</summary>
+      <typeparam name="TMeasurement">Measurement type.</typeparam>
+      <param name="measurement">Measurement.</param>
+      <returns>Updated measurement.</returns>
+    </member>
+    <member name="M:HAL.Units.ProportionalMeasurement`1.Clone">
+      <summary>Clones this object.</summary>
+      <returns>Shallow copy of the original object.</returns>
     </member>
     <member name="T:HAL.Units.UnitizedInterval`1">
       <summary>Interval, as a continuous domain between two bounds stored in a given unit.</summary>
@@ -41032,7 +41180,7 @@
       <param name="object1">The item to be divided.</param>
       <param name="object2">The divisor.</param>
     </member>
-    <member name="M:HAL.Units.Volume.Volume.op_Implicit(HAL.Units.Volume.μL)~HAL.Units.Volume.Volume">
+    <member name="M:HAL.Units.Volume.Volume.op_Implicit(HAL.Units.Volume.uL)~HAL.Units.Volume.Volume">
       <summary>Implicit conversion from a value in Microlitre.</summary>
       <param name="value">Unitized value to store in the current measurement.</param>
     </member>
@@ -41079,195 +41227,195 @@
     <member name="T:HAL.Units.Volume.IVolume">
       <summary>Implement this class if you wish to add a(n) Volume measurement unit.</summary>
     </member>
-    <member name="T:HAL.Units.Volume.μL">
+    <member name="T:HAL.Units.Volume.uL">
       <summary>Microlitre unit.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.#ctor(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.#ctor(System.Double)">
       <summary>Stores a numeric value in the current unit.</summary>
       <param name="number">Numeric value.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.#ctor(HAL.Units.Volume.IVolume)">
+    <member name="M:HAL.Units.Volume.uL.#ctor(HAL.Units.Volume.IVolume)">
       <summary>Stores a system value in the current unit.</summary>
       <param name="measurement">Numeric value.</param>
     </member>
-    <member name="P:HAL.Units.Volume.μL.Value">
+    <member name="P:HAL.Units.Volume.uL.Value">
       <summary>Value of the measurement, in system unit.</summary>
     </member>
-    <member name="P:HAL.Units.Volume.μL.ConversionFactor">
+    <member name="P:HAL.Units.Volume.uL.ConversionFactor">
       <summary>The conversion factor necessary to convert this to system units.</summary>
     </member>
-    <member name="P:HAL.Units.Volume.μL.Suffix">
+    <member name="P:HAL.Units.Volume.uL.Suffix">
       <summary>The suffix used to denote this unit.</summary>
     </member>
-    <member name="P:HAL.Units.Volume.μL.IsValid">
+    <member name="P:HAL.Units.Volume.uL.IsValid">
       <summary>Whether the value is valid.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Implicit(System.Double)~HAL.Units.Volume.μL">
+    <member name="M:HAL.Units.Volume.uL.op_Implicit(System.Double)~HAL.Units.Volume.uL">
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Explicit(HAL.Units.Volume.μL)~HAL.Units.Volume.mL">
+    <member name="M:HAL.Units.Volume.uL.op_Explicit(HAL.Units.Volume.uL)~HAL.Units.Volume.mL">
       <summary>Implicit conversion to mL.</summary>
       <param name="measurement">Measurement in the current unit to convert to mL.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Explicit(HAL.Units.Volume.μL)~HAL.Units.Volume.cL">
+    <member name="M:HAL.Units.Volume.uL.op_Explicit(HAL.Units.Volume.uL)~HAL.Units.Volume.cL">
       <summary>Implicit conversion to cL.</summary>
       <param name="measurement">Measurement in the current unit to convert to cL.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Explicit(HAL.Units.Volume.μL)~HAL.Units.Volume.dL">
+    <member name="M:HAL.Units.Volume.uL.op_Explicit(HAL.Units.Volume.uL)~HAL.Units.Volume.dL">
       <summary>Implicit conversion to dL.</summary>
       <param name="measurement">Measurement in the current unit to convert to dL.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Explicit(HAL.Units.Volume.μL)~HAL.Units.Volume.L">
+    <member name="M:HAL.Units.Volume.uL.op_Explicit(HAL.Units.Volume.uL)~HAL.Units.Volume.L">
       <summary>Implicit conversion to L.</summary>
       <param name="measurement">Measurement in the current unit to convert to L.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Explicit(HAL.Units.Volume.μL)~HAL.Units.Volume.mm3">
+    <member name="M:HAL.Units.Volume.uL.op_Explicit(HAL.Units.Volume.uL)~HAL.Units.Volume.mm3">
       <summary>Implicit conversion to mm3.</summary>
       <param name="measurement">Measurement in the current unit to convert to mm3.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Explicit(HAL.Units.Volume.μL)~HAL.Units.Volume.cm3">
+    <member name="M:HAL.Units.Volume.uL.op_Explicit(HAL.Units.Volume.uL)~HAL.Units.Volume.cm3">
       <summary>Implicit conversion to cm3.</summary>
       <param name="measurement">Measurement in the current unit to convert to cm3.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Explicit(HAL.Units.Volume.μL)~HAL.Units.Volume.dm3">
+    <member name="M:HAL.Units.Volume.uL.op_Explicit(HAL.Units.Volume.uL)~HAL.Units.Volume.dm3">
       <summary>Implicit conversion to dm3.</summary>
       <param name="measurement">Measurement in the current unit to convert to dm3.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_Explicit(HAL.Units.Volume.μL)~HAL.Units.Volume.m3">
+    <member name="M:HAL.Units.Volume.uL.op_Explicit(HAL.Units.Volume.uL)~HAL.Units.Volume.m3">
       <summary>Implicit conversion to m3.</summary>
       <param name="measurement">Measurement in the current unit to convert to m3.</param>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_UnaryPlus(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.op_UnaryPlus(HAL.Units.Volume.uL)">
       <summary>Positive unary operator. Serves strictly no purpose but balances the unary negative.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.op_UnaryNegation(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.op_UnaryNegation(HAL.Units.Volume.uL)">
       <summary>Negative unary operator. Negates the value of this measurement.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.InSystemUnits">
+    <member name="M:HAL.Units.Volume.uL.InSystemUnits">
       <summary>Returns a value equivalent to this in system units.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.ReassignClone(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.ReassignClone(System.Double)">
       <summary>Creates a clone of the original measurement with a new value.</summary>
       <param name="newValue">The value that the new measurement should now have.</param>
       <returns>A new measurement with a modified value.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.Clone">
+    <member name="M:HAL.Units.Volume.uL.Clone">
       <summary>Duplicates this measurement.</summary>
       <returns>A copy of this measurement.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#ReassignClone(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#ReassignClone(System.Double)">
       <summary>Creates a clone of the original measurement with a new value.</summary>
       <param name="newValue">The value that the new measurement should now have.</param>
       <returns>A new measurement with a modified value.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#Clone">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#Clone">
       <summary>Duplicates this measurement.</summary>
       <returns>A copy of this measurement.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.ToString">
+    <member name="M:HAL.Units.Volume.uL.ToString">
       <summary>Returns a string representation of the measurement in the current unit.</summary>
       <returns>[Value][Unit] concatenated string.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.ToString(System.Int32)">
+    <member name="M:HAL.Units.Volume.uL.ToString(System.Int32)">
       <summary>Returns a string representation of the measurement in the current unit with the number of decimal places given.</summary>
       <returns>[Value][Unit] concatenated string.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#Add(HAL.Units.IUnitizedValue)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#Add(HAL.Units.IUnitizedValue)">
       <summary>Adds a given value to this.</summary>
       <param name="addend">The value that will be added to this.</param>
       <returns>The sum of the two values.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#Subtract(HAL.Units.IUnitizedValue)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#Subtract(HAL.Units.IUnitizedValue)">
       <summary>Subtracts a given value from this.</summary>
       <param name="subtrahend">The value that will be subtracted from this.</param>
       <returns>The subtraction of the two values.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#Multiply(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#Multiply(System.Double)">
       <summary>Multiplies this by a given value.</summary>
       <param name="multiplier">The value that this will be multiplied by.</param>
       <returns>The multiplication of the two values.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#Divide(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#Divide(System.Double)">
       <summary>Divides this by a given value.</summary>
       <param name="divisor">The value that this will be divided by.</param>
       <returns>The division of the two values.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.Add(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.Add(HAL.Units.Volume.uL)">
       <summary>Adds a given value to this.</summary>
       <param name="addend">The value that will be added to this.</param>
       <returns>The sum of the two values.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.Subtract(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.Subtract(HAL.Units.Volume.uL)">
       <summary>Subtracts a given value from this.</summary>
       <param name="subtrahend">The value that will be subtracted from this.</param>
       <returns>The subtraction of the two values.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.Multiply(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.Multiply(System.Double)">
       <summary>Multiplies this by a given value.</summary>
       <param name="multiplier">The value that this will be multiplied by.</param>
       <returns>The multiplication of the two values.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.Divide(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.Divide(System.Double)">
       <summary>Divides this by a given value.</summary>
       <param name="divisor">The value that this will be divided by.</param>
       <returns>The division of the two values.</returns>
     </member>
-    <member name="M:HAL.Units.Volume.μL.Equals(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.Equals(System.Double)">
       <summary>Whether values are equal.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.NotEqual(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.NotEqual(System.Double)">
       <summary>Whether  values are not the same.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.LessThan(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.LessThan(System.Double)">
       <summary>Whether first value is less than the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.LessThanOrEqual(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.LessThanOrEqual(System.Double)">
       <summary>Whether first value is less than or equal to the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.GreaterThan(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.GreaterThan(System.Double)">
       <summary>Whether first value is greater than the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.GreaterThanOrEqual(System.Double)">
+    <member name="M:HAL.Units.Volume.uL.GreaterThanOrEqual(System.Double)">
       <summary>Whether first value is greater than or equal to the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.Equals(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.Equals(HAL.Units.Volume.uL)">
       <summary>Whether values are equal.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.NotEqual(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.NotEqual(HAL.Units.Volume.uL)">
       <summary>Whether  values are not the same.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.LessThan(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.LessThan(HAL.Units.Volume.uL)">
       <summary>Whether first value is less than the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.LessThanOrEqual(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.LessThanOrEqual(HAL.Units.Volume.uL)">
       <summary>Whether first value is less than or equal to the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.GreaterThan(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.GreaterThan(HAL.Units.Volume.uL)">
       <summary>Whether first value is greater than the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.GreaterThanOrEqual(HAL.Units.Volume.μL)">
+    <member name="M:HAL.Units.Volume.uL.GreaterThanOrEqual(HAL.Units.Volume.uL)">
       <summary>Whether first value is greater than or equal to the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.Equals(HAL.Units.Volume.IVolume)">
+    <member name="M:HAL.Units.Volume.uL.Equals(HAL.Units.Volume.IVolume)">
       <summary>Whether values are equal.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#Equals(HAL.Units.IUnitizedValue)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#Equals(HAL.Units.IUnitizedValue)">
       <summary>Whether values are equal.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#NotEqual(HAL.Units.IUnitizedValue)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#NotEqual(HAL.Units.IUnitizedValue)">
       <summary>Whether  values are not the same.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#LessThan(HAL.Units.IUnitizedValue)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#LessThan(HAL.Units.IUnitizedValue)">
       <summary>Whether first value is less than the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#LessThanOrEqual(HAL.Units.IUnitizedValue)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#LessThanOrEqual(HAL.Units.IUnitizedValue)">
       <summary>Whether first value is less than or equal to the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#GreaterThan(HAL.Units.IUnitizedValue)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#GreaterThan(HAL.Units.IUnitizedValue)">
       <summary>Whether first value is greater than the second.</summary>
     </member>
-    <member name="M:HAL.Units.Volume.μL.HAL#Units#IUnitizedValue#GreaterThanOrEqual(HAL.Units.IUnitizedValue)">
+    <member name="M:HAL.Units.Volume.uL.HAL#Units#IUnitizedValue#GreaterThanOrEqual(HAL.Units.IUnitizedValue)">
       <summary>Whether first value is greater than or equal to the second.</summary>
     </member>
     <member name="T:HAL.Units.Volume.mL">
@@ -41297,9 +41445,9 @@
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.mL.op_Explicit(HAL.Units.Volume.mL)~HAL.Units.Volume.μL">
-      <summary>Implicit conversion to μL.</summary>
-      <param name="measurement">Measurement in the current unit to convert to μL.</param>
+    <member name="M:HAL.Units.Volume.mL.op_Explicit(HAL.Units.Volume.mL)~HAL.Units.Volume.uL">
+      <summary>Implicit conversion to uL.</summary>
+      <param name="measurement">Measurement in the current unit to convert to uL.</param>
     </member>
     <member name="M:HAL.Units.Volume.mL.op_Explicit(HAL.Units.Volume.mL)~HAL.Units.Volume.cL">
       <summary>Implicit conversion to cL.</summary>
@@ -41488,9 +41636,9 @@
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.cL.op_Explicit(HAL.Units.Volume.cL)~HAL.Units.Volume.μL">
-      <summary>Implicit conversion to μL.</summary>
-      <param name="measurement">Measurement in the current unit to convert to μL.</param>
+    <member name="M:HAL.Units.Volume.cL.op_Explicit(HAL.Units.Volume.cL)~HAL.Units.Volume.uL">
+      <summary>Implicit conversion to uL.</summary>
+      <param name="measurement">Measurement in the current unit to convert to uL.</param>
     </member>
     <member name="M:HAL.Units.Volume.cL.op_Explicit(HAL.Units.Volume.cL)~HAL.Units.Volume.mL">
       <summary>Implicit conversion to mL.</summary>
@@ -41679,9 +41827,9 @@
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.dL.op_Explicit(HAL.Units.Volume.dL)~HAL.Units.Volume.μL">
-      <summary>Implicit conversion to μL.</summary>
-      <param name="measurement">Measurement in the current unit to convert to μL.</param>
+    <member name="M:HAL.Units.Volume.dL.op_Explicit(HAL.Units.Volume.dL)~HAL.Units.Volume.uL">
+      <summary>Implicit conversion to uL.</summary>
+      <param name="measurement">Measurement in the current unit to convert to uL.</param>
     </member>
     <member name="M:HAL.Units.Volume.dL.op_Explicit(HAL.Units.Volume.dL)~HAL.Units.Volume.mL">
       <summary>Implicit conversion to mL.</summary>
@@ -41870,9 +42018,9 @@
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.L.op_Explicit(HAL.Units.Volume.L)~HAL.Units.Volume.μL">
-      <summary>Implicit conversion to μL.</summary>
-      <param name="measurement">Measurement in the current unit to convert to μL.</param>
+    <member name="M:HAL.Units.Volume.L.op_Explicit(HAL.Units.Volume.L)~HAL.Units.Volume.uL">
+      <summary>Implicit conversion to uL.</summary>
+      <param name="measurement">Measurement in the current unit to convert to uL.</param>
     </member>
     <member name="M:HAL.Units.Volume.L.op_Explicit(HAL.Units.Volume.L)~HAL.Units.Volume.mL">
       <summary>Implicit conversion to mL.</summary>
@@ -42061,9 +42209,9 @@
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.mm3.op_Explicit(HAL.Units.Volume.mm3)~HAL.Units.Volume.μL">
-      <summary>Implicit conversion to μL.</summary>
-      <param name="measurement">Measurement in the current unit to convert to μL.</param>
+    <member name="M:HAL.Units.Volume.mm3.op_Explicit(HAL.Units.Volume.mm3)~HAL.Units.Volume.uL">
+      <summary>Implicit conversion to uL.</summary>
+      <param name="measurement">Measurement in the current unit to convert to uL.</param>
     </member>
     <member name="M:HAL.Units.Volume.mm3.op_Explicit(HAL.Units.Volume.mm3)~HAL.Units.Volume.mL">
       <summary>Implicit conversion to mL.</summary>
@@ -42252,9 +42400,9 @@
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.cm3.op_Explicit(HAL.Units.Volume.cm3)~HAL.Units.Volume.μL">
-      <summary>Implicit conversion to μL.</summary>
-      <param name="measurement">Measurement in the current unit to convert to μL.</param>
+    <member name="M:HAL.Units.Volume.cm3.op_Explicit(HAL.Units.Volume.cm3)~HAL.Units.Volume.uL">
+      <summary>Implicit conversion to uL.</summary>
+      <param name="measurement">Measurement in the current unit to convert to uL.</param>
     </member>
     <member name="M:HAL.Units.Volume.cm3.op_Explicit(HAL.Units.Volume.cm3)~HAL.Units.Volume.mL">
       <summary>Implicit conversion to mL.</summary>
@@ -42443,9 +42591,9 @@
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.dm3.op_Explicit(HAL.Units.Volume.dm3)~HAL.Units.Volume.μL">
-      <summary>Implicit conversion to μL.</summary>
-      <param name="measurement">Measurement in the current unit to convert to μL.</param>
+    <member name="M:HAL.Units.Volume.dm3.op_Explicit(HAL.Units.Volume.dm3)~HAL.Units.Volume.uL">
+      <summary>Implicit conversion to uL.</summary>
+      <param name="measurement">Measurement in the current unit to convert to uL.</param>
     </member>
     <member name="M:HAL.Units.Volume.dm3.op_Explicit(HAL.Units.Volume.dm3)~HAL.Units.Volume.mL">
       <summary>Implicit conversion to mL.</summary>
@@ -42634,9 +42782,9 @@
       <summary>Implicit conversion from a numeric value.</summary>
       <param name="number">Numeric value to store in the current unit.</param>
     </member>
-    <member name="M:HAL.Units.Volume.m3.op_Explicit(HAL.Units.Volume.m3)~HAL.Units.Volume.μL">
-      <summary>Implicit conversion to μL.</summary>
-      <param name="measurement">Measurement in the current unit to convert to μL.</param>
+    <member name="M:HAL.Units.Volume.m3.op_Explicit(HAL.Units.Volume.m3)~HAL.Units.Volume.uL">
+      <summary>Implicit conversion to uL.</summary>
+      <param name="measurement">Measurement in the current unit to convert to uL.</param>
     </member>
     <member name="M:HAL.Units.Volume.m3.op_Explicit(HAL.Units.Volume.m3)~HAL.Units.Volume.mL">
       <summary>Implicit conversion to mL.</summary>
@@ -42861,6 +43009,9 @@
     </member>
     <member name="M:HAL.Utilities.HAL_GraphRenderer.Run(QuickGraph.Graphviz.Dot.GraphvizImageType,System.String,System.String)">
       <inheritdoc />
+    </member>
+    <member name="M:HAL.Utilities.HAL_GraphRenderer.CreateDefault(HAL.Linguistics.Export.LanguageExportGraph)">
+      <summary>Exports graphical representations of each of the internal graphs.</summary>
     </member>
     <member name="T:HAL.Utilities.HAL_Utilities">
       <summary>This makes life easier.</summary>

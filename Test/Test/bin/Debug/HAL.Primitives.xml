@@ -700,6 +700,12 @@
       <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
       <param name="other">An object to compare with this object.</param>
     </member>
+    <member name="M:HAL.Bindings.PropertyKey.Equals(System.Object)">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.Bindings.PropertyKey.GetHashCode">
+      <inheritdoc />
+    </member>
     <member name="M:HAL.Bindings.PropertyKey.StartsWith(System.String)">
       <summary>Checks whether the alias of this starts with the given string.</summary>
       <param name="other">The string to compare to.</param>
@@ -718,6 +724,9 @@
       <summary>Attempts to set the given value to the property pointed to by this <see cref="T:HAL.Bindings.PropertyKey" /> in the given parent object.</summary>
       <param name="parent">The object who's property or sub-property pointed to by this <see cref="T:HAL.Bindings.PropertyKey" /> should be set.</param>
       <param name="value">The value to be assigned to the property to which this points.</param>
+    </member>
+    <member name="M:HAL.Bindings.PropertyKey.ToString">
+      <inheritdoc />
     </member>
     <member name="M:HAL.Bindings.PropertyKey.op_Implicit(HAL.Bindings.PropertyKey)~System.Reflection.PropertyInfo">
       <summary>Converts a <see cref="T:HAL.Bindings.PropertyKey" /> to <c>PropertyInfo</c> by extracting the Info property within. If the key is custom and therefore does not have a valid Info property null is returned.</summary>
@@ -825,6 +834,15 @@
       <summary>Indicates whether the current object is equal to another object of the same type.</summary>
       <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
       <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Bindings.PropertyStack.Equals(System.Object)">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.Bindings.PropertyStack.GetHashCode">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.Bindings.PropertyStack.ToString">
+      <inheritdoc />
     </member>
     <member name="M:HAL.Bindings.PropertyStack.op_Implicit(HAL.Bindings.PropertyKey)~HAL.Bindings.PropertyStack">
       <summary>Converts a <see cref="T:HAL.Bindings.PropertyKey" /> to <see cref="T:HAL.Bindings.PropertyStack" /> by wrapping the key as the only item in a new stack.</summary>
@@ -3160,6 +3178,12 @@
       <param name="assembly">Assembly to search in.</param>
       <returns>Types which implement type.</returns>
     </member>
+    <member name="M:HAL.Helpers.ReflectionHelpers.GetItemType(System.Collections.IEnumerable,System.Type@)">
+      <summary>Retrieves the item type of an enumerable collection.</summary>
+      <param name="enumerable">Enumerable collection.</param>
+      <param name="type">Enumerable collection type.</param>
+      <returns>Item type. <see cref="T:System.Object" /> will be returned as default if the analysis fails.</returns>
+    </member>
     <member name="M:HAL.Helpers.ReflectionHelpers.GetConstructableImplementingTypes(System.Type,System.Reflection.Assembly)">
       <summary>Gets an IEnumerable of Type which contains all the Types which implement a given Type and can be constructed i.e. are not interfaces or abstract etc.</summary>
       <param name="type">The type to search for.</param>
@@ -3171,6 +3195,14 @@
       <param name="type">The type to search for.</param>
       <param name="assembly">Assembly to search in.</param>
       <returns>First detected type which implement type and are constructible, if any.</returns>
+    </member>
+    <member name="M:HAL.Helpers.ReflectionHelpers.SetPropertyAttributeField``1(System.Object,System.String,System.String,System.Object,System.Boolean)">
+      <summary>Sets a field of an attribute placed on a property.</summary>
+      <param name="instance">Instance in which the property should be searched.</param>
+      <param name="propertyName">Property name.</param>
+      <param name="attributeFieldName">Attribute field name.</param>
+      <param name="value">Attribute field value.</param>
+      <param name="silent">Whether this method should hide its exception and return silently.</param>
     </member>
     <member name="T:HAL.Helpers.SerializationHelpers">
       <summary>Helper methods for serializing and deserializing objects.</summary>
@@ -3539,6 +3571,11 @@
       <summary>Clones this identifier.</summary>
       <returns>Cloned identifier.</returns>
     </member>
+    <member name="M:HAL.Identifier.Clone(System.Boolean)">
+      <summary>Clones this identifier.</summary>
+      <param name="retainGuid">Whether to retain the GUID or refresh it creating a clone of all other aspects.</param>
+      <returns>Cloned identifier.</returns>
+    </member>
     <member name="M:HAL.Identifier.op_Equality(HAL.Identifier,HAL.Identifier)">
       <summary>Indicates whether objects of the same type are equal.</summary>
       <returns>true if the two objects are equal otherwise, false.</returns>
@@ -3569,6 +3606,13 @@
     <member name="P:HAL.IIdentifiable.Identity">
       <summary>Object identity.</summary>
     </member>
+    <member name="T:HAL.INested">
+      <summary>Qualifies an object which can be nested,</summary>
+    </member>
+    <member name="M:HAL.INested.GetNestedItems">
+      <summary>Retrieves items nested in this one.</summary>
+      <returns>Nested items, if any.</returns>
+    </member>
     <member name="T:HAL.ISortable`1">
       <summary>Qualifies a sortable object.</summary>
       <typeparam name="T">Type being sorted.</typeparam>
@@ -3591,6 +3635,13 @@
     </member>
     <member name="P:HAL.Reflection.IReflector.Assemblies">
       <summary>Reflected assemblies.</summary>
+    </member>
+    <member name="M:HAL.Reflection.IReflector.Find(System.String,System.Type,System.Reflection.Assembly[])">
+      <summary>Finds a type in the registered assemblies from its name.</summary>
+      <param name="typeName">Type name to search for.</param>
+      <param name="hint">Hint type.</param>
+      <param name="assemblies">Assemblies in which to restrict the search.</param>
+      <returns>Matching type, if any.</returns>
     </member>
     <member name="T:HAL.Reflection.ReflectedAssemblyInfo">
       <summary>Reflected assembly information.</summary>
@@ -4334,7 +4385,7 @@
     <member name="M:HAL.Web.Licenser.Start(System.Action)">
       <summary>Ensures the license checker has started.</summary>
     </member>
-    <member name="M:HAL.Web.Licenser.RefreshLicensesAsync">
+    <member name="M:HAL.Web.Licenser.RefreshLicensesAsync(System.Boolean)">
       <summary>Forces a refresh of the license cache.</summary>
     </member>
     <member name="M:HAL.Web.Licenser.EnsureLicense(System.String)">
