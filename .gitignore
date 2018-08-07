@@ -7,3 +7,9 @@
 /.vs/EGM/v15/.suo
 *.dtbcache
 
+*/.vs
+*.exe
+*.cache
+
+
+
