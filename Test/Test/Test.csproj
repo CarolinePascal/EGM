@@ -32,17 +32,41 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Google.ProtocolBuffers">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.google.protocolbuffers\2.4.1.555\Google.ProtocolBuffers.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.ProtocolBuffers.Serialization">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.google.protocolbuffers\2.4.1.555\Google.ProtocolBuffers.Serialization.dll</HintPath>
+    </Reference>
     <Reference Include="HAL.Core">
-      <HintPath>..\..\..\..\..\..\ProgramData\HAL\HAL.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\HAL.Core.dll</HintPath>
     </Reference>
-    <Reference Include="HAL.ENPC">
-      <HintPath>..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.enpc\1.1.14-beta\HAL.ENPC.dll</HintPath>
+    <Reference Include="HAL.ENPC, Version=1.1.14.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.enpc\1.1.1-beta\HAL.ENPC.dll</HintPath>
     </Reference>
-    <Reference Include="HAL.ENPC.Primitives">
-      <HintPath>..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.enpc.primitives\1.1.14-beta\HAL.ENPC.Primitives.dll</HintPath>
+    <Reference Include="HAL.ENPC.Primitives, Version=1.1.14.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.enpc.primitives\1.1.1-beta\HAL.ENPC.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="HAL.Primitives">
-      <HintPath>..\..\..\..\..\..\ProgramData\HAL\HAL.Primitives.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\HAL.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="HAL.UI">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\HAL.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="HAL.UI.Primitives">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\HAL.UI.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="HAL.UI.WPF">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\HAL.UI.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="QuickGraph">
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\QuickGraph.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
