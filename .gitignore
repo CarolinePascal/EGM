@@ -13,6 +13,8 @@ ForceSensor/.vs
 *.exe
 *.cache
 *.pdb
+*.ide-shm
+*.ide-wal
 
 
 
