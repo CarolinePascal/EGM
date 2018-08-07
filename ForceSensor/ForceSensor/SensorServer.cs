@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
 
 
 /// <summary>
@@ -141,16 +142,22 @@ namespace ForceSensor
         public void Main()
         {
             int n = 0;
+
+            double[] results = new double[6];
+
+            var csv = new StringBuilder();
+
+            var refTime = System.DateTime.Now.Ticks;
             while (n <= 5000)
             {
                 Parse();
-
+                results = GetState();
+                var newline = string.Format("{0};{1};{2};{3};{4};{5};{6};{7}", n, results[0].ToString(), results[1].ToString(), results[2].ToString(), results[3].ToString(), results[4].ToString(), results[5].ToString(),(DateTime.Now.Ticks - refTime).ToString());
+                csv.AppendLine(newline);
                 n++;
-                if(n%50==0)
-                {
-                    GetState();
-                }
             }
+            File.WriteAllText("C:/Users/FormationRobotAdmin/Desktop/Force.csv", csv.ToString());
+
         }
 
         /// <summary>
