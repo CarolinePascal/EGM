@@ -7,9 +7,12 @@
 /.vs/EGM/v15/.suo
 *.dtbcache
 
-*/.vs
+EGMProjet/.vs
+Test/.vs
+ForceSensor/.vs
 *.exe
 *.cache
+*.pdb
 
 
 
