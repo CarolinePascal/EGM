@@ -16,6 +16,8 @@ ForceSensor/.vs
 *.ide-shm
 *.ide-wal
 *.ide
+*.FileListAbsolute.txt
+
 
 
 
