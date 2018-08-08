@@ -1,6 +1,0 @@
-C:\Users\carol\Desktop\Stage_1\EGM\ForceSensor\ForceSensor\bin\Debug\ForceSensor.exe.config
-C:\Users\carol\Desktop\Stage_1\EGM\ForceSensor\ForceSensor\bin\Debug\ForceSensor.exe
-C:\Users\carol\Desktop\Stage_1\EGM\ForceSensor\ForceSensor\bin\Debug\ForceSensor.pdb
-C:\Users\carol\Desktop\Stage_1\EGM\ForceSensor\ForceSensor\obj\Debug\ForceSensor.csproj.CoreCompileInputs.cache
-C:\Users\carol\Desktop\Stage_1\EGM\ForceSensor\ForceSensor\obj\Debug\ForceSensor.exe
-C:\Users\carol\Desktop\Stage_1\EGM\ForceSensor\ForceSensor\obj\Debug\ForceSensor.pdb
