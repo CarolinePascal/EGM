@@ -36,13 +36,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\HAL.Core.dll</HintPath>
     </Reference>
-    <Reference Include="HAL.ENPC, Version=1.1.14.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="HAL.ENPC, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.enpc\1.1.1-beta\HAL.ENPC.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.enpc\1.1.0-beta\HAL.ENPC.dll</HintPath>
     </Reference>
-    <Reference Include="HAL.ENPC.Primitives, Version=1.1.14.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="HAL.ENPC.Primitives, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.enpc.primitives\1.1.1-beta\HAL.ENPC.Primitives.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\ProgramData\HAL\Extensions\hal.enpc.primitives\1.1.0-beta\HAL.ENPC.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="HAL.Primitives, Version=1.1.19.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
