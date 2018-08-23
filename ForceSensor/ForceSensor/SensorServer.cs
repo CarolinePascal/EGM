@@ -7,6 +7,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 
+using System.Diagnostics;
+
 
 /// <summary>
 /// **SENSOR CONNECTION**
@@ -82,14 +84,18 @@ namespace ForceSensor
                 byte[] message = new byte[8];
 
                 short header = IPAddress.HostToNetworkOrder((short)0x1234);
-                short order = IPAddress.HostToNetworkOrder((short)0x0002);
+                short order = IPAddress.HostToNetworkOrder((short)0x0042);
                 int time = IPAddress.HostToNetworkOrder((int)0);
 
                 BitConverter.GetBytes(header).CopyTo(message, 0);
                 BitConverter.GetBytes(order).CopyTo(message, 2);
                 BitConverter.GetBytes(time).CopyTo(message, 4);
 
-                _udpClient.Send(message,8);
+                _udpClient.Send(message, 8);
+
+                order = IPAddress.HostToNetworkOrder((short)0x0002);
+                BitConverter.GetBytes(order).CopyTo(message, 2);
+                _udpClient.Send(message, 8);
 
             }
 
@@ -148,14 +154,18 @@ namespace ForceSensor
             var csv = new StringBuilder();
 
             var refTime = System.DateTime.Now.Ticks;
-            while (n <= 5000)
+
+            var sw = Stopwatch.StartNew();
+
+            while (sw.ElapsedMilliseconds <= 5000)
             {
                 Parse();
                 results = GetState();
-                var newline = string.Format("{0};{1};{2};{3};{4};{5};{6};{7}", n, results[0].ToString(), results[1].ToString(), results[2].ToString(), results[3].ToString(), results[4].ToString(), results[5].ToString(),(DateTime.Now.Ticks - refTime).ToString());
+                var newline = string.Format("{0};{1};{2};{3};{4};{5};{6};{7}", n, results[0].ToString(), results[1].ToString(), results[2].ToString(), results[3].ToString(), results[4].ToString(), results[5].ToString(), (DateTime.Now.Ticks - refTime).ToString());
                 csv.AppendLine(newline);
                 n++;
             }
+            Console.WriteLine(n);
             File.WriteAllText("C:/Users/FormationRobotAdmin/Desktop/Force.csv", csv.ToString());
 
         }
