@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using HAL.ENPC.Communication;
 using HAL.ENPC.Control;
-using HAL.ENPC.Filtering;
 using HAL.ENPC.Messaging;
 using HAL.ENPC.Messaging.Server.ATI;
-using HAL.ENPC.Messaging.Server.Generic;
-using HAL.ENPC.Messaging.Server.ABB;
 using HAL.ENPC.Sensoring;
 using HAL.ENPC.Sensoring.SensorData;
-using UnityEngine;
+using System.Diagnostics;
 
 namespace HAL.ENPC.Debug
 {
@@ -22,59 +17,96 @@ namespace HAL.ENPC.Debug
         static void Main(string[] args)
         {
 
-           // Declaration(sensors)
-           List<RealTimeController> sensors = new List<RealTimeController>();
+            // Declaration(sensors)
+            List<RealTimeController> sensors = new List<RealTimeController>();
 
             Sensor egmSensor = null;
             Sensor.CreateEgm(ref egmSensor, "EgmSensor", "127.0.0.1", 6510, 6510, out egmSensor);
             sensors.Add(egmSensor);
 
-            //ForceSensorServer forceSensorServer = new ForceSensorServer("ForceSensor", IPAddress.Parse("192.168.1.1"), 49152, 49152, filter: new AverageFilter(10));
-            //Sensor forceSensor = new Sensor(new Identifier("ForceSensor"), null, forceSensorServer, null);
-            //sensors.Add(forceSensor);
+            ForceSensorServer forceSensorServer = new ForceSensorServer("ForceSensor", IPAddress.Parse("192.168.1.1"), 49152, 49152, filter: null);
+            Sensor forceSensor = new Sensor(new Identifier("ForceSensor"), null, forceSensorServer, null);
+            sensors.Add(forceSensor);
 
             //Declaration(real time controller)
             ControlBuilder.Create("egm", (int)ControlableType.Joint, out Control.ABB.Egm controlStrategy);
             RealTimeController controller = null;
             RealTimeController.Create(ref controller, "MyController", sensors, controlStrategy, out controller);
-            controller.BufferMaximumMessageCount = 6000;
+            controller.BufferMaximumMessageCount = 5;
 
             // Monitoring initialization
 
-            RealTimeController.Monitor(controller, new[] {(int)MessageCode.Joints, (int)MessageCode.Torsor}, true, true);
-
-            //Console.WriteLine(message.ToString());
+            RealTimeController.Monitor(controller, new[] { (int)MessageCode.Joints, (int)MessageCode.Torsor }, true, true);
 
             // Control initialization
-            //RealTimeController.RunControl(controller, true, egmSensor, (int)MessageCode.Joints, true);                                                                                                                                                                
+            RealTimeController.RunControl(controller, true, egmSensor, (int)MessageCode.Joints, true);
 
-            Console.WriteLine("Test run?");
+            Console.WriteLine("test run ?");
             Console.ReadLine();
-            Thread.Sleep(10000);
-            Console.WriteLine("Edit bug report.");
-            Analysis.SaveSensorData(controller, true, "C:\\Users\\FormationRobotAdmin\\Documents\\CP019-EGM\\test20m.csv", out _, out _);
+
+            Task.Run(() => RunControlTest(controller));
+
+            Console.WriteLine("enter to exit");
+            Console.ReadLine();
+
+            //Analysis.SaveSensorData(controller, true, "C:\\Users\\FormationRobotAdmin\\Documents\\CP019-EGM\\test20m.csv", out _, out_ );
         }
 
         static async Task RunControlTest(RealTimeController controller)
         {
-            int index = 1;
             controller.BufferMaximumMessageCount = 5;
             controller.Buffering = true;
 
             Torsor torsorSmooth = Torsor.Default;
+            Joints actualJoints = Joints.Default;
 
-            while (true)
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            Stopwatch stopWatch2 = new Stopwatch();
+            stopWatch2.Start();            
+
+            while (stopWatch2.ElapsedMilliseconds<=100000)
             {
                 controller.ReceiveBufferQueue.TryDequeue(out IMessage message);
-                if(message is TorsorMessage torsorMessage)
+                if (message is TorsorMessage torsorMessage)
                 {
                     torsorSmooth = torsorMessage.Payload; //Tester SmoothDamp de Mathf
                 }
+                else if (message is JointMessage jointMessage)
+                {
+                    actualJoints = jointMessage.Payload;
+                }
 
-                Joints joints = CreateJointFromTorsor(torsorSmooth);
+                if(stopWatch.ElapsedMilliseconds>=500)
+                {
+                    Joints joints = CreateJointFromTorsor(torsorSmooth, actualJoints);
+                    ControlBuilder.Joint(controller, new double[] { joints.J1, joints.J2, joints.J3, joints.J4, joints.J5, joints.J6 });
+                    stopWatch.Restart();
+                }
 
-                controller.CommandMessageQueue.Add(controller.ControlStrategy(joint));
             }
+        }
+
+        public static Joints CreateJointFromTorsor(Torsor torsor, Joints refJoints)
+        {
+            Joints targetJoints = new Joints(torsor.TX, torsor.TY, torsor.TZ, torsor.RX, torsor.RY, torsor.RZ);
+      
+            double j1 = Smooth(refJoints.J1, targetJoints.J1, 0.5);
+            double j2 = Smooth(refJoints.J2, targetJoints.J2, 0.5);
+            double j3 = Smooth(refJoints.J3, targetJoints.J3, 0.5);
+            double j4 = Smooth(refJoints.J4, targetJoints.J4, 0.5);
+            double j5 = Smooth(refJoints.J5, targetJoints.J5, 0.5);
+            double j6 = Smooth(refJoints.J6, targetJoints.J6, 0.5);
+
+            Joints commandJoints = new Joints(j1, j2, j3, j4, j5, j6);
+            Console.WriteLine("Commande : " + commandJoints.ToString());
+
+            return (commandJoints);
+        }
+
+        public static double Smooth (double start, double target, double rate)
+        {
+            return (start + (target - start) * rate);
         }
 
     }
