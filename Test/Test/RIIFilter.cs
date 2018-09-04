@@ -36,6 +36,37 @@ namespace HAL.ENPC.Debug
             }
         }
 
+        public RIIFilter(double cuttingFrequency, double samplingFrequency):base()
+        {
+            FilterSize = 3;
+
+            if(cuttingFrequency<=0 || samplingFrequency <= 0)
+            {
+                throw new System.Exception("[RII] Les fréquences doivent être strictement positives");
+            }
+            else
+            {
+                double ff = cuttingFrequency / samplingFrequency;
+                double ita = 1 / Math.Tan(Math.PI * ff);
+                double q = Math.Sqrt(2);
+
+                double[] arrayM = new double[3];
+                double[] arrayF = new double[2];
+
+                arrayM[0] = 1 / (1 + q * ita + ita * ita);
+                arrayM[1] = 2 * arrayM[0];
+                arrayM[2] = arrayM[0];
+
+                arrayF[0] = 2 * (ita * ita - 1) * arrayM[0];
+                arrayF[1] = -(1 - q * ita + ita * ita) * arrayM[0];
+
+                coefficientsFiltered = arrayF;
+                coefficientsMeasures = arrayM;
+                Console.WriteLine("Filtered" + arrayF[0] + " " + arrayF[1]);
+                Console.WriteLine("Measured" + arrayM[0] + " " + arrayM[1] + " " + arrayM[2]);
+            }
+        }
+
         protected override Torsor FilterMethod()
         {
             if(Filteredbuffer.Count==0)
