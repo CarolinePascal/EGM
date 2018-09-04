@@ -27,6 +27,21 @@ namespace HAL.ENPC.Debug
             }
         }
 
+        public RIFFilter(int buffersize, double mu, double sigma):base(buffersize)
+        {
+            if (sigma < 0)
+            {
+                throw new System.Exception("[RIF Gaussien] L'écart type de la loi gaussienne doit être positif ou nul");
+            }
+            double[] array = new double[buffersize];
+            for (int i = 0; i < buffersize; i++)
+            {
+                int x = buffersize - 1 - i;
+                array[i] = (Math.Exp(-(x - mu) * (x - mu) / (2 * sigma * sigma)) / Math.Sqrt(2 * Math.PI * sigma * sigma));
+            }
+            coefficients = array;
+        }
+
         protected override Torsor FilterMethod()
         {
             Torsor torsor = Torsor.Default;
