@@ -25,7 +25,7 @@ namespace HAL.ENPC.Debug
             Sensor.CreateEgm(ref egmSensor, "EgmSensor", "127.0.0.1", 6510, 6510, out egmSensor);
             sensors.Add(egmSensor);
 
-            ForceSensorServer forceSensorServer = new ForceSensorServer("ForceSensor", IPAddress.Parse("192.168.1.205"), 49152, 49152, filter: null);
+            ForceSensorServer forceSensorServer = new ForceSensorServer("ForceSensor", IPAddress.Parse("192.168.1.205"), 49152, 49152, filter: new RIIFilter(100,1000));
             Sensor forceSensor = new Sensor(new Identifier("ForceSensor"), null, forceSensorServer, null);
             sensors.Add(forceSensor);
 
@@ -111,22 +111,6 @@ namespace HAL.ENPC.Debug
         public static double Smooth (double start, double target, double rate)
         {
             return (start + (target - start) * rate);
-        }
-
-        // The normal distribution function.
-        public static double F(double x, double mu, double sigma)
-        {
-            return (Math.Exp(-(x - mu)*(x-mu) / (2*sigma*sigma)) / Math.Sqrt(2*Math.PI*sigma*sigma));
-        }
-
-        public static double[] GaussianPonderation(int n)
-        {
-            double[] array = new double[n];
-            for (int i=0;i<n;i++)
-            {
-                array[i] = F(n - 1 - i,0,1);
-            }
-            return (array);
         }
     }
 }
