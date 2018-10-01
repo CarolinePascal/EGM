@@ -12,12 +12,19 @@ namespace HAL.ENPC.Debug
 {
     class MedianFilter : Filter<Torsor>
     {
-
+        /// <summary>
+        /// Median filter constructor
+        /// </summary>
+        /// <param name="bufferSize">Size of the value window</param>
         public MedianFilter(int bufferSize) : base(bufferSize)
         {
 
         }
 
+        /// <summary>
+        /// Median filter method
+        /// </summary>
+        /// <returns></returns>
         protected override Torsor FilterMethod()
         {
             List<double> tx= new List<double>();
@@ -40,13 +47,17 @@ namespace HAL.ENPC.Debug
             return new Torsor(Median(tx), Median(ty), Median(tz), Median(rx), Median(ry), Median(rz));
         }
 
+        /// <summary>
+        /// Median calculation method
+        /// </summary>
+        /// <param name="list">List of doubles in random order</param>
+        /// <returns></returns>
         public static double Median(List<double> list)
-
         {
             double[] array = list.ToArray();
             if (array == null || array.Length == 0)
             {
-                throw new System.Exception("La médianne d'un tableau vide n'est pas définie");
+                throw new System.Exception("[Median] La médianne d'un tableau vide n'est pas définie");
             }
 
             double[] sorted = (double[])array.Clone();
