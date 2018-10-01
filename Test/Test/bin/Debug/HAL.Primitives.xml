@@ -39,6 +39,11 @@
       <param name="logger">Logger to be used to record this alert.</param>
       <returns>Original alert.</returns>
     </member>
+    <member name="M:HAL.Alerts.Alert.GetHighestSeverity(System.Collections.Generic.List{HAL.Alerts.Alert},HAL.Alerts.AlertLevel)">
+      <summary>Retrieves the highest severity from a set of alerts.</summary>
+      <param name="alerts">Alerts to analyze.</param>
+      <param name="threshold">Severity below which the search should continue. If a higher severity is encountered, it will return immediately.</param>
+    </member>
     <member name="T:HAL.Alerts.AlertLevel">
       <summary>Enumerates supported <see cref="T:HAL.Alerts.Alert" /> severity levels.</summary>
     </member>
@@ -597,6 +602,14 @@
       <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
       <param name="other">An object to compare with this object.</param>
     </member>
+    <member name="M:HAL.Bindings.MultiPropertyIdentifer.Equals(HAL.IIdentifiable)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Bindings.MultiPropertyIdentifer.Equals(System.Object)">
+      <inheritdoc />
+    </member>
     <member name="M:HAL.Bindings.MultiPropertyIdentifer.GetValue(System.Object)">
       <summary>Gets the current value of the property of a given object pointed to by this <see cref="T:HAL.Bindings.IPropertyIdentifer" />.</summary>
       <param name="parent">The object from which the value pointed to by this <see cref="T:HAL.Bindings.IPropertyIdentifer" /> should be retrieved.</param>
@@ -696,6 +709,11 @@
       <param name="other">An object to compare with this object.</param>
     </member>
     <member name="M:HAL.Bindings.PropertyKey.Equals(HAL.Identifier)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Bindings.PropertyKey.Equals(HAL.IIdentifiable)">
       <summary>Indicates whether the current object is equal to another object of the same type.</summary>
       <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
       <param name="other">An object to compare with this object.</param>
@@ -831,6 +849,11 @@
       <param name="other">An object to compare with this object.</param>
     </member>
     <member name="M:HAL.Bindings.PropertyStack.Equals(HAL.Identifier)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Bindings.PropertyStack.Equals(HAL.IIdentifiable)">
       <summary>Indicates whether the current object is equal to another object of the same type.</summary>
       <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
       <param name="other">An object to compare with this object.</param>
@@ -1445,6 +1468,14 @@
       <summary>Indicates whether the current object is equal to another object of the same type.</summary>
       <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
       <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Catalog.InfoItem.Equals(HAL.IIdentifiable)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Catalog.InfoItem.Equals(System.Object)">
+      <inheritdoc />
     </member>
     <member name="M:HAL.Catalog.InfoItem.ToString">
       <summary>Creates a human readable string from this object.</summary>
@@ -2185,6 +2216,14 @@
       <summary>Indicates whether the current object is equal to another object of the same type.</summary>
       <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
       <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Catalog.Repository`1.Equals(HAL.IIdentifiable)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Catalog.Repository`1.Equals(System.Object)">
+      <inheritdoc />
     </member>
     <member name="T:HAL.Catalog.Version">
       <summary>Custom implementation of SemVer.</summary>
@@ -3001,10 +3040,11 @@
       <summary>Clones this <see cref="T:HAL.Graphs.IGraphConnection" />.</summary>
       <returns>Cloned connection.</returns>
     </member>
-    <member name="M:HAL.Graphs.IGraphConnection`2.CloneEdgeTo(`0,`0)">
+    <member name="M:HAL.Graphs.IGraphConnection`2.CloneEdgeTo(`0,`0,System.Boolean)">
       <summary>Creates a new connection with the same properties as the original but a new source and target.</summary>
       <param name="source">Source vertex.</param>
       <param name="target">Target vertex.</param>
+      <param name="retainGuid">Whether to retain the GUID or refresh it creating a clone of all other aspects.</param>
       <returns>Cloned connection between specified source and target vertices.</returns>
     </member>
     <member name="T:HAL.Graphs.IGraphItem">
@@ -3034,6 +3074,55 @@
       <param name="task">Task[T] method to execute</param>
       <returns>
       </returns>
+    </member>
+    <member name="M:HAL.Helpers.AsyncHelpers.CompleteWith(System.Threading.Tasks.Task,System.Action,System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskScheduler)">
+      <summary>Registers a UI thread handler for when the specified task successfully finishes execution.</summary>
+      <param name="task">The task to monitor for successful completion.</param>
+      <param name="action">The action to take when the task has successfully completed, in the context of the UI thread.</param>
+      <param name="token">Cancellation token.</param>
+      <param name="scheduler">The task scheduler to associate with the continuation task and to use for its execution. Leave empty to keep the current context scheduler.</param>
+      <returns>The continuation created to handle successful completion. This is normally ignored.</returns>
+    </member>
+    <member name="M:HAL.Helpers.AsyncHelpers.CompleteWith``1(System.Threading.Tasks.Task{``0},System.Action{``0},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskScheduler)">
+      <summary>Registers a UI thread handler for when the specified task successfully finishes execution and returns a result.</summary>
+      <typeparam name="TResult">The type of the task result.</typeparam>
+      <param name="task">The task to monitor for successful completion.</param>
+      <param name="action">The action to take when the task has successfully completed, in the context of the UI thread. The argument to the action is the return value of the task.</param>
+      <param name="token">Cancellation token.</param>
+      <param name="scheduler">The task scheduler to associate with the continuation task and to use for its execution. Leave empty to keep the current context scheduler.</param>
+      <returns>The continuation created to handle successful completion. This is normally ignored.</returns>
+    </member>
+    <member name="M:HAL.Helpers.AsyncHelpers.FailWith(System.Threading.Tasks.Task,System.Action{System.Exception},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskScheduler)">
+      <summary>Registers a UI thread handler for when the specified task becomes faulted.</summary>
+      <param name="task">The task to monitor for faulting.</param>
+      <param name="action">The action to take when the task has faulted, in the context of the UI thread.</param>
+      <param name="token">Cancellation token.</param>
+      <param name="scheduler">The task scheduler to associate with the continuation task and to use for its execution. Leave empty to keep the current context scheduler.</param>
+      <returns>The continuation created to handle faulting. This is normally ignored.</returns>
+    </member>
+    <member name="M:HAL.Helpers.AsyncHelpers.FailWith(System.Threading.Tasks.Task,System.Action{System.Threading.Tasks.Task},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskScheduler)">
+      <summary>Registers a UI thread handler for when the specified task becomes faulted.</summary>
+      <param name="task">The task to monitor for faulting.</param>
+      <param name="action">The action to take when the task has faulted, in the context of the UI thread.</param>
+      <param name="token">Cancellation token.</param>
+      <param name="scheduler">The task scheduler to associate with the continuation task and to use for its execution. Leave empty to keep the current context scheduler.</param>
+      <returns>The continuation created to handle faulting. This is normally ignored.</returns>
+    </member>
+    <member name="M:HAL.Helpers.AsyncHelpers.CancelWith(System.Threading.Tasks.Task,System.Action,System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskScheduler)">
+      <summary>Registers a UI thread handler for when the specified task is canceled.</summary>
+      <param name="task">The task to monitor for cancellation.</param>
+      <param name="action">The action to take when the task is canceled, in the context of the UI thread.</param>
+      <param name="token">Cancellation token.</param>
+      <param name="scheduler">The task scheduler to associate with the continuation task and to use for its execution. Leave empty to keep the current context scheduler.</param>
+      <returns>The continuation created to handle cancellation. This is normally ignored.</returns>
+    </member>
+    <member name="M:HAL.Helpers.AsyncHelpers.CancelWith(System.Threading.Tasks.Task,System.Action{System.Threading.Tasks.Task},System.Nullable{System.Threading.CancellationToken},System.Threading.Tasks.TaskScheduler)">
+      <summary>Registers a UI thread handler for when the specified task is canceled.</summary>
+      <param name="task">The task to monitor for cancellation.</param>
+      <param name="action">The action to take when the task is canceled, in the context of the UI thread.</param>
+      <param name="token">Cancellation token.</param>
+      <param name="scheduler">The task scheduler to associate with the continuation task and to use for its execution. Leave empty to keep the current context scheduler.</param>
+      <returns>The continuation created to handle cancellation. This is normally ignored.</returns>
     </member>
     <member name="T:HAL.Helpers.CollectionHelpers">
       <summary>Helper methods for manipulating collections.</summary>
@@ -3099,6 +3188,21 @@
       <param name="second">Second array.</param>
       <param name="predicate">Compare function.</param>
       <returns>Whether the first array content equals the second array content.</returns>
+    </member>
+    <member name="M:HAL.Helpers.CollectionHelpers.ContentEquals(System.Collections.IList,System.Collections.IList)">
+      <summary>Compares the content of two lists.</summary>
+      <param name="compared">List to compare.</param>
+      <param name="toCompareWith">Second list to compare with.</param>
+      <returns>Whether both lists are similar.</returns>
+    </member>
+    <member name="M:HAL.Helpers.CollectionHelpers.GetNext``1(System.Collections.Generic.IList{``0},System.Int32,System.Boolean@,System.Boolean)">
+      <summary>Returns the next item available in an indexed collection of items.</summary>
+      <typeparam name="T">Item type.</typeparam>
+      <param name="collection">Collection of items.</param>
+      <param name="index">Current index from which the next item must be found.</param>
+      <param name="reachedEnd">Whether the end of the collection was reached.</param>
+      <param name="loop">Whether a looped indexing is tolerated. In this mode, the next item after the last item will be the first item.</param>
+      <returns>Next item, if any.</returns>
     </member>
     <member name="T:HAL.Helpers.DebugHelpers">
       <summary>Debug helpers.</summary>
@@ -3178,6 +3282,12 @@
       <param name="assembly">Assembly to search in.</param>
       <returns>Types which implement type.</returns>
     </member>
+    <member name="M:HAL.Helpers.ReflectionHelpers.IsBasedOnGeneric(System.Type,System.Type)">
+      <summary>Tests whether a type implements a specified generic type.</summary>
+      <param name="toCheck">Type to test.</param>
+      <param name="generic">Generic type.</param>
+      <returns>Whether the type implements the generic type.</returns>
+    </member>
     <member name="M:HAL.Helpers.ReflectionHelpers.GetItemType(System.Collections.IEnumerable,System.Type@)">
       <summary>Retrieves the item type of an enumerable collection.</summary>
       <param name="enumerable">Enumerable collection.</param>
@@ -3209,14 +3319,14 @@
     </member>
     <member name="M:HAL.Helpers.SerializationHelpers.AddConverter(Newtonsoft.Json.JsonConverter)">
       <summary>Adds a new converter to the default serialization settings.</summary>
-      <param name="converter">
-      </param>
+      <param name="converter">Converter to be added.</param>
     </member>
-    <member name="M:HAL.Helpers.SerializationHelpers.SerializeObjectToString(System.Object,Newtonsoft.Json.JsonSerializerSettings)">
-      <summary>Serializes and object.</summary>
-      <param name="objectToSerialize">The object to serialize.</param>
-      <param name="serializationSettings">The serialization settings to be used during the serialization. Defaults will be used if null is provided.</param>
-      <returns>Resulting string.</returns>
+    <member name="M:HAL.Helpers.SerializationHelpers.RenameFile(System.String,System.String,System.String,System.String)">
+      <summary>Renames a file.</summary>
+      <param name="path">Path to existing file.</param>
+      <param name="newName">New file name.</param>
+      <param name="oldName">Old file name.</param>
+      <param name="extension">File extension.</param>
     </member>
     <member name="M:HAL.Helpers.SerializationHelpers.SerializeObject(System.String,System.String,System.Object,System.String)">
       <summary>Serializes an object as a JSON file at the specified location with default settings.</summary>
@@ -3230,21 +3340,11 @@
       <param name="objectToSerialize">The object to serialize.</param>
       <returns>Resulting bytes.</returns>
     </member>
-    <member name="M:HAL.Helpers.SerializationHelpers.DeserializeJson``1(System.String,Newtonsoft.Json.JsonSerializerSettings)">
-      <summary>Deserializes a JSON file to a generic type.</summary>
-      <param name="path">Path of the file to deserialize.</param>
-      <param name="deserializationSettings">The serialization settings to be used during the serialization. Defaults will be used if null is provided.</param>
-      <returns>Deserialized object.</returns>
-    </member>
-    <member name="M:HAL.Helpers.SerializationHelpers.DeserializeJson``1(System.String)">
-      <summary>Deserializes a JSON file to a generic type with default settings.</summary>
-      <param name="path">Path of the file to deserialize.</param>
-      <returns>Deserialized object.</returns>
-    </member>
-    <member name="M:HAL.Helpers.SerializationHelpers.DeserializeJsonString``1(System.String)">
-      <summary>Deserializes a JSON string to a generic type with default settings.</summary>
-      <param name="text">Json string to deserialize.</param>
-      <returns>Deserialized object.</returns>
+    <member name="M:HAL.Helpers.SerializationHelpers.SerializeObjectToString(System.Object,Newtonsoft.Json.JsonSerializerSettings)">
+      <summary>Serializes and object.</summary>
+      <param name="objectToSerialize">The object to serialize.</param>
+      <param name="serializationSettings">The serialization settings to be used during the serialization. Defaults will be used if null is provided.</param>
+      <returns>Resulting string.</returns>
     </member>
     <member name="M:HAL.Helpers.SerializationHelpers.SerializeAndCompressObject(System.String,System.String,System.Object,System.String)">
       <summary>Serializes an object as a JSON file at the specified location.</summary>
@@ -3262,21 +3362,27 @@
       <param name="serializationSettings">The serialization settings to be used during the serialization. Defaults will be used if null is provided.</param>
       <param name="data">Serialized data.</param>
     </member>
-    <member name="M:HAL.Helpers.SerializationHelpers.DeserializeCompressedJson``1(System.String)">
-      <summary>Deserializes a JSON file to a generic type.</summary>
-      <param name="path">Path of the file to deserialize.</param>
+    <member name="M:HAL.Helpers.SerializationHelpers.Deserialize``1(System.Byte[],Newtonsoft.Json.JsonSerializerSettings)">
+      <summary>Deserializes data.</summary>
+      <typeparam name="T">Desired output type.</typeparam>
+      <param name="data">Data to deserialize.</param>
+      <param name="deserializationSettings">The serialization settings to be used during the serialization. Defaults will be used if null is provided.</param>
       <returns>Deserialized object.</returns>
     </member>
-    <member name="M:HAL.Helpers.SerializationHelpers.DeserializeCompressedJson``1(System.String,Newtonsoft.Json.JsonSerializerSettings)">
+    <member name="M:HAL.Helpers.SerializationHelpers.DeserializeJson``1(System.String,Newtonsoft.Json.JsonSerializerSettings)">
       <summary>Deserializes a JSON file to a generic type.</summary>
       <param name="path">Path of the file to deserialize.</param>
       <param name="deserializationSettings">The serialization settings to be used during the serialization. Defaults will be used if null is provided.</param>
       <returns>Deserialized object.</returns>
     </member>
-    <member name="M:HAL.Helpers.SerializationHelpers.Deserialize``1(System.Byte[],Newtonsoft.Json.JsonSerializerSettings)">
-      <summary>Deserializes data.</summary>
-      <typeparam name="T">Desired output type.</typeparam>
-      <param name="data">Data to deserialize.</param>
+    <member name="M:HAL.Helpers.SerializationHelpers.DeserializeJsonString``1(System.String)">
+      <summary>Deserializes a JSON string to a generic type with default settings.</summary>
+      <param name="text">Json string to deserialize.</param>
+      <returns>Deserialized object.</returns>
+    </member>
+    <member name="M:HAL.Helpers.SerializationHelpers.DeserializeCompressedJson``1(System.String,Newtonsoft.Json.JsonSerializerSettings)">
+      <summary>Deserializes a JSON file to a generic type.</summary>
+      <param name="path">Path of the file to deserialize.</param>
       <param name="deserializationSettings">The serialization settings to be used during the serialization. Defaults will be used if null is provided.</param>
       <returns>Deserialized object.</returns>
     </member>
@@ -3350,13 +3456,6 @@
       <summary>Deserializes an installation configuration.</summary>
       <param name="path">Configuration path.</param>
       <returns>Deserialized configuration.</returns>
-    </member>
-    <member name="M:HAL.Helpers.SerializationHelpers.RenameFile(System.String,System.String,System.String,System.String)">
-      <summary>Renames a file.</summary>
-      <param name="path">Path to existing file.</param>
-      <param name="newName">New file name.</param>
-      <param name="oldName">Old file name.</param>
-      <param name="extension">File extension.</param>
     </member>
     <member name="M:HAL.Helpers.SerializationHelpers.GetInterfacesAndSelf(System.Type)">
       <summary>Get all interfaces implemented by the incoming type as well as the type itself if it is an interface.</summary>
@@ -3502,6 +3601,12 @@
       <param name="analyzed">The <see cref="T:System.Enum" /> whose description we're after.</param>
       <returns>String representation of the value.</returns>
     </member>
+    <member name="M:HAL.Helpers.StringHelpers.ContainsChar(System.String,System.Char)">
+      <summary>Tests whether a character is contained in a string.</summary>
+      <param name="string">Containing string.</param>
+      <param name="character">Character to test.</param>
+      <returns>Whether the character was found.</returns>
+    </member>
     <member name="T:HAL.ICloneable`1">
       <summary>Qualifies an object that can be cloned. A clone is defined as a shallow copy of the original object.</summary>
       <typeparam name="T">Clone type.</typeparam>
@@ -3527,6 +3632,17 @@
       <summary>Indicates whether the current object is equal to another object of the same type.</summary>
       <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
       <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Identified.Equals(HAL.IIdentifiable)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Identified.Equals(System.Object)">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.Identified.GetHashCode">
+      <inheritdoc />
     </member>
     <member name="M:HAL.Identified.ToString">
       <summary>Creates a <see cref="T:System.String" /> representation of this <see cref="T:HAL.Identified" /> object.</summary>
@@ -3654,7 +3770,10 @@
       <summary>Related assembly.</summary>
     </member>
     <member name="P:HAL.Reflection.ReflectedAssemblyInfo.Types">
-      <summary>Assembly types.</summary>
+      <summary>Assembly types, registered by their name.</summary>
+    </member>
+    <member name="P:HAL.Reflection.ReflectedAssemblyInfo.FullyQualifiedTypes">
+      <summary>Assembly types, registered by their fully qualified name.</summary>
     </member>
     <member name="P:HAL.Reflection.ReflectedAssemblyInfo.Attributes">
       <summary>Assembly types attributes.</summary>
@@ -3995,6 +4114,103 @@
     </member>
     <member name="P:HAL.Resources.HAL_InstallationPaths.ItemExtensions">
       <summary>The file extension options for all catalog items.</summary>
+    </member>
+    <member name="T:HAL.SettingsBase">
+      <summary>Base settings class to be derived for specific settings groups.</summary>
+    </member>
+    <member name="M:HAL.SettingsBase.#ctor">
+      <summary>Empty constructor.</summary>
+    </member>
+    <member name="M:HAL.SettingsBase.#ctor(HAL.SettingsBase)">
+      <summary>Copy constructor.</summary>
+      <param name="clonee">Settings to be cloned.</param>
+    </member>
+    <member name="M:HAL.SettingsBase.#ctor(HAL.Identifier)">
+      <summary>Identified constructor.</summary>
+      <param name="identifier">Identifier.</param>
+    </member>
+    <member name="P:HAL.SettingsBase.Identity">
+      <inheritdoc />
+    </member>
+    <member name="P:HAL.SettingsBase.IsValid">
+      <summary>Ensures these settings are complete or a compatible subset are.</summary>
+    </member>
+    <member name="P:HAL.SettingsBase.Bindings">
+      <summary>A list of bindings that contain this as either the source or target of the binding.</summary>
+    </member>
+    <member name="E:HAL.SettingsBase.PropertyChanged">
+      <summary>Occurs when a property value changes.</summary>
+    </member>
+    <member name="M:HAL.SettingsBase.OnPropertyChanged(System.String)">
+      <summary>The method called by the setter of a property to trigger the PropertyChanged event.</summary>
+      <param name="propertyName">The name of the property that has changed.</param>
+    </member>
+    <member name="M:HAL.SettingsBase.Dispose(System.Boolean)">
+      <summary>Disposes of this object.</summary>
+      <param name="disposing">Defines whether this should dispose managed objects.</param>
+    </member>
+    <member name="M:HAL.SettingsBase.Dispose">
+      <summary>Disposes of this object.</summary>
+    </member>
+    <member name="M:HAL.SettingsBase.Equals(HAL.SettingsBase)">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.SettingsBase.Equals(System.Object)">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.SettingsBase.GetHashCode">
+      <inheritdoc />
+    </member>
+    <member name="T:HAL.Tasks.MultiStageProgress">
+      <summary>Base implementation of a multi-stage progress reporter.</summary>
+    </member>
+    <member name="M:HAL.Tasks.MultiStageProgress.#ctor(HAL.Identifier)">
+      <summary>Creates a new multi-stage progress reporter.</summary>
+    </member>
+    <member name="T:HAL.Tasks.NormalizedProgress">
+      <summary>Base implementation of a normalized progress reporter.</summary>
+    </member>
+    <member name="M:HAL.Tasks.NormalizedProgress.#ctor(HAL.Identifier,System.Double,System.Double)">
+      <summary>Creates a new normalized progress reporter.</summary>
+      <param name="identity">Progress identity.</param>
+      <param name="window">Total progress window.</param>
+      <param name="value">Initial progress value.</param>
+    </member>
+    <member name="P:HAL.Tasks.NormalizedProgress.Identity">
+      <summary>Progress identity.</summary>
+    </member>
+    <member name="P:HAL.Tasks.NormalizedProgress.Value">
+      <summary>Current progress value.</summary>
+    </member>
+    <member name="P:HAL.Tasks.NormalizedProgress.Window">
+      <summary>Total progress window.</summary>
+    </member>
+    <member name="P:HAL.Tasks.NormalizedProgress.Progress">
+      <summary>Normalized progress.</summary>
+    </member>
+    <member name="M:HAL.Tasks.NormalizedProgress.Reset">
+      <summary>Resets the progress to 0.</summary>
+    </member>
+    <member name="M:HAL.Tasks.NormalizedProgress.ResizeWindow(System.Double)">
+      <summary>Resizes the progress window to a specified value.</summary>
+      <param name="window">New progress window.</param>
+    </member>
+    <member name="M:HAL.Tasks.NormalizedProgress.Report(System.Double)">
+      <summary>Reports a progress change.</summary>
+      <param name="value">The value of the updated progress.</param>
+    </member>
+    <member name="M:HAL.Tasks.NormalizedProgress.OnReport(System.Double)">
+      <inheritdoc />
+    </member>
+    <member name="M:HAL.Tasks.NormalizedProgress.Equals(HAL.Identifier)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.Tasks.NormalizedProgress.Equals(HAL.IIdentifiable)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
     </member>
     <member name="T:HAL.Web.API">
       <summary>Collection of methods that interact with the web server via its API.</summary>

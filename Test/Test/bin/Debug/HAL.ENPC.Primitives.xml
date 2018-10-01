@@ -140,6 +140,21 @@
             This allow to go threw sub controllers that hold other real time controllers or sensors.
             </remarks>
     </member>
+    <member name="T:HAL.ENPC.Filtering.Filter`1">
+      <summary> Filter class allows to filter ISensorData through time.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Filtering.Filter`1.FilterBuffer">
+      <summary> Filter buffer where data is enqueued and dequeued through time.</summary>
+    </member>
+    <member name="M:HAL.ENPC.Filtering.Filter`1.FilterValue(`0)">
+      <summary>This applies a filter to a data.</summary>
+      <param name="sensordata">The data to filter.</param>
+      <returns>Filtered data.</returns>
+    </member>
+    <member name="M:HAL.ENPC.Filtering.Filter`1.FilterMethod">
+      <summary> This should be overridden by user. This allow to apply a filter to filter buffer's data.</summary>
+      <returns>The filtered data.</returns>
+    </member>
     <member name="T:HAL.ENPC.Messaging.MessageCode">
       <summary>Defines the message header indices for the ENPC communication system.</summary>
     </member>
@@ -309,7 +324,7 @@
     <member name="T:HAL.ENPC.Messaging.Server.Generic.GenericServer">
       <summary> Sensor Generic UDP server class that extend the UdpServer class. This server can be paired with a single Sensor. </summary>
     </member>
-    <member name="M:HAL.ENPC.Messaging.Server.Generic.GenericServer.#ctor(System.String,System.Net.IPAddress,System.Int32,System.Int32,HAL.Alerts.AlertRegistry,System.Boolean)">
+    <member name="M:HAL.ENPC.Messaging.Server.Generic.GenericServer.#ctor(System.String,System.Net.IPAddress,System.Int32,System.Int32,HAL.Alerts.AlertRegistry,System.Boolean,HAL.ENPC.Filtering.IFilter)">
       <inheritdoc />
     </member>
     <member name="M:HAL.ENPC.Messaging.Server.Generic.GenericServer.UpdateSensor(HAL.ENPC.Messaging.IMessage)">
@@ -431,15 +446,15 @@
       <param name="values">Values.</param>
     </member>
     <member name="F:HAL.ENPC.Sensoring.SensorData.Torsor.Default">
-      <summary>0-filled 3D vector.</summary>
+      <summary>0-filled torsor.</summary>
     </member>
-    <member name="P:HAL.ENPC.Sensoring.SensorData.Torsor.X">
+    <member name="P:HAL.ENPC.Sensoring.SensorData.Torsor.TX">
       <summary>First component of this vector.</summary>
     </member>
-    <member name="P:HAL.ENPC.Sensoring.SensorData.Torsor.Y">
+    <member name="P:HAL.ENPC.Sensoring.SensorData.Torsor.TY">
       <summary>Second component of this vector.</summary>
     </member>
-    <member name="P:HAL.ENPC.Sensoring.SensorData.Torsor.Z">
+    <member name="P:HAL.ENPC.Sensoring.SensorData.Torsor.TZ">
       <summary>Third component of this vector.</summary>
     </member>
     <member name="M:HAL.ENPC.Sensoring.SensorData.Translation.#ctor(System.Double[])">
