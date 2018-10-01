@@ -48,9 +48,8 @@ namespace HAL.ENPC.Debug
         /// </summary>
         /// <param name="cuttingFrequency">Cutting frequency in Hz</param>
         /// <param name="samplingFrequency">Sampling frequency in Hz</param>
-        public RIIFilter(double cuttingFrequency, double samplingFrequency):base()
+        public RIIFilter(double cuttingFrequency, double samplingFrequency):base(3)
         {
-            FilterSize = 3;
 
             if(cuttingFrequency<=0 || samplingFrequency <= 0)
             {
@@ -97,13 +96,13 @@ namespace HAL.ENPC.Debug
             Torsor torsor = Torsor.Default;
             for(int i=0;i<coefficientsMeasures.Length;i++)
             {
-                torsor = torsor.Add(Multiply(FilterBuffer[i], coefficientsMeasures[i]));
+                torsor = torsor.Add(Multiply(FilterBuffer[(CurrentIndex + i) % FilterSize], coefficientsMeasures[FilterSize - i - 1]));
             }
             
             int n = 0;
             foreach (Torsor t in Filteredbuffer)
             {
-                torsor = torsor.Add(Multiply(t, coefficientsFiltered[n]));
+                torsor = torsor.Add(Multiply(t, coefficientsFiltered[FilterSize-n-1]));
                 n++;
             }
 

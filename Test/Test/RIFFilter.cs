@@ -51,11 +51,13 @@ namespace HAL.ENPC.Debug
         protected override Torsor FilterMethod()
         {
             Torsor torsor = Torsor.Default;
-            for(int i=0;i<FilterBuffer.Length-1;i++)
+
+            for (int i=0;i<FilterSize;i++)
             {
-                torsor = torsor.Add(Multiply(FilterBuffer[i], coefficients[i]));
+                torsor = torsor.Add(Multiply(FilterBuffer[(CurrentIndex + i) % FilterSize], coefficients[FilterSize-i-1]));
             }
-            return torsor;
+
+            return (torsor);
         }
 
         /// <summary>
