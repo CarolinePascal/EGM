@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HAL.ENPC.Filtering;
 using HAL.ENPC.Sensoring.SensorData;
 using System.Collections;
+using MathNet.Filtering;
 
 
 namespace HAL.ENPC.Debug
@@ -13,11 +14,17 @@ namespace HAL.ENPC.Debug
     class RIIFilter : Filter<Torsor>
     {
 
-        public double[] coefficientsMeasures { get; set; }
-        public double[] coefficientsFiltered { get; set; }
+        private double[] coefficientsMeasures { get; set; }
+        private double[] coefficientsFiltered { get; set; }
 
         private Queue<Torsor> Filteredbuffer;
 
+        /// <summary>
+        /// Complete RII filter constructor
+        /// </summary>
+        /// <param name="buffersize">Size of the window</param>
+        /// <param name="arrayMeasures">Measured values coefficients</param>
+        /// <param name="arrayFiltered">Filtered values coefficients</param>
         public RIIFilter(int buffersize, double[] arrayMeasures, double[] arrayFiltered) : base(buffersize) 
         {
             if (arrayMeasures.Length != buffersize)
@@ -36,13 +43,18 @@ namespace HAL.ENPC.Debug
             }
         }
 
+        /// <summary>
+        /// RII low pass filter constructor - 2nd order Butterwoth filter
+        /// </summary>
+        /// <param name="cuttingFrequency">Cutting frequency in Hz</param>
+        /// <param name="samplingFrequency">Sampling frequency in Hz</param>
         public RIIFilter(double cuttingFrequency, double samplingFrequency):base()
         {
             FilterSize = 3;
 
             if(cuttingFrequency<=0 || samplingFrequency <= 0)
             {
-                throw new System.Exception("[RII] Les fréquences doivent être strictement positives");
+                throw new System.Exception("[RII LPF] Les fréquences doivent être strictement positives");
             }
             else
             {
@@ -62,11 +74,16 @@ namespace HAL.ENPC.Debug
 
                 coefficientsFiltered = arrayF;
                 coefficientsMeasures = arrayM;
+
                 Console.WriteLine("Filtered" + arrayF[0] + " " + arrayF[1]);
                 Console.WriteLine("Measured" + arrayM[0] + " " + arrayM[1] + " " + arrayM[2]);
             }
         }
 
+        /// <summary>
+        /// RII filter filtering process
+        /// </summary>
+        /// <returns></returns>
         protected override Torsor FilterMethod()
         {
             if(Filteredbuffer.Count==0)
@@ -96,6 +113,12 @@ namespace HAL.ENPC.Debug
             return (torsor);
         }
 
+        /// <summary>
+        /// Term by term multiplication method for the Torsor structure
+        /// </summary>
+        /// <param name="torsor"></param>
+        /// <param name="multiplier"></param>
+        /// <returns></returns>
         public static Torsor Multiply(Torsor torsor, double multiplier)
         {
             return new Torsor(
