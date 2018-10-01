@@ -9,31 +9,25 @@ using System.Collections;
 
 namespace HAL.ENPC.Debug
 {
-    class AverageFilter : Filter<Torsor>
-    { 
-
+    class AverageFilter : RIFFilter
+    {
+        /// <summary>
+        /// Average filter constructor
+        /// </summary>
+        /// <param name="bufferSize">Number of coefficients - Size of the window</param>
         public AverageFilter(int bufferSize) : base(bufferSize)
         {
-
-        }
-
-        protected override Torsor FilterMethod()
-        {
-            //do something with that...generate filtered value.
-            Torsor torsor = Torsor.Default;
-            foreach (Torsor t in FilterBuffer)
+            double[] array = new double[bufferSize];
+            for(int i=0;i<bufferSize;i++)
             {
-                torsor = torsor.Add(t);
+                array[i] = 1.0 / bufferSize;
             }
+            coefficients = array;
 
-            return Divide(torsor,FilterBuffer.Length);
-        }
-
-        public static Torsor Divide(Torsor torsor, double divider)
-        {
-            return new Torsor(
-                torsor.TX / divider, torsor.TY / divider, torsor.TZ / divider,
-                torsor.RX / divider, torsor.RY / divider, torsor.RZ / divider);
+            for(int i=0;i<bufferSize;i++)
+            {
+                Console.WriteLine(array[i]);
+            }
         }
     }
 }
