@@ -6,18 +6,26 @@ using System.Threading.Tasks;
 using HAL.ENPC.Filtering;
 using HAL.ENPC.Sensoring.SensorData;
 using System.Collections;
+using Accord.Math;
 
 
 namespace HAL.ENPC.Debug
 {
-    class RIFFilter : Filter<Torsor>
+    abstract class RIFFilter : Filter<Torsor>
     {
+        /// <summary>
+        /// Coefficients of the RIF filter
+        /// </summary>
+        protected double [] coefficients { get; set; }
 
-        public double [] coefficients { get; set; }
-
-        public RIFFilter(int buffersize, double[] array):base(buffersize)
+        /// <summary>
+        /// Complete RIF filter constructor
+        /// </summary>
+        /// <param name="bufferSize">Number of coefficients - Size of the window</param>
+        /// <param name="array">Coefficents of the RIF filter</param>
+        public RIFFilter(int bufferSize, double[] array):base(bufferSize)
         {
-            if(buffersize!=array.Length)
+            if(bufferSize!=array.Length)
             {
                 throw new System.Exception("[RIF] Le vecteur de ponderation doit être de la même taille que le buffer");
             }
@@ -27,21 +35,19 @@ namespace HAL.ENPC.Debug
             }
         }
 
-        public RIFFilter(int buffersize, double mu, double sigma):base(buffersize)
+        /// <summary>
+        /// Partial RIF filter constructor - the coefficients are all set to 0
+        /// </summary>
+        /// <param name="bufferSize">Size of the value window</param>
+        public RIFFilter(int bufferSize):base(bufferSize)
         {
-            if (sigma < 0)
-            {
-                throw new System.Exception("[RIF Gaussien] L'écart type de la loi gaussienne doit être positif ou nul");
-            }
-            double[] array = new double[buffersize];
-            for (int i = 0; i < buffersize; i++)
-            {
-                int x = buffersize - 1 - i;
-                array[i] = (Math.Exp(-(x - mu) * (x - mu) / (2 * sigma * sigma)) / Math.Sqrt(2 * Math.PI * sigma * sigma));
-            }
-            coefficients = array;
+            coefficients = new double[bufferSize];
         }
 
+        /// <summary>
+        /// FIR filter filtering process
+        /// </summary>
+        /// <returns></returns>
         protected override Torsor FilterMethod()
         {
             Torsor torsor = Torsor.Default;
@@ -49,11 +55,16 @@ namespace HAL.ENPC.Debug
             {
                 torsor = torsor.Add(Multiply(FilterBuffer[i], coefficients[i]));
             }
-
             return torsor;
         }
 
-        public static Torsor Multiply(Torsor torsor, double multiplier)
+        /// <summary>
+        /// Term by term multiplication method for the Torsor structure
+        /// </summary>
+        /// <param name="torsor"></param>
+        /// <param name="multiplier"></param>
+        /// <returns></returns>
+        public Torsor Multiply(Torsor torsor, double multiplier)
         {
             return new Torsor(
                 torsor.TX * multiplier, torsor.TY * multiplier, torsor.TZ * multiplier,
