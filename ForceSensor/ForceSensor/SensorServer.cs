@@ -43,17 +43,25 @@ namespace ForceSensor
         private const double _gain = 1000000.0;
 
         /// <summary>
-        /// The recorded efforts are stored as an array of 6 list of doubles
+        /// The recorded efforts are stored as a queue of doubles array  - the size of the queue is 100 by default, the size of the arrays is 6
         /// </summary>
-        private List<double>[] _efforts;
+        private Queue<double[]> _efforts;
+        private int _sizeQueue = 100;
+
+        /// <summary>
+        /// The instant current efforts are stored in a double array
+        /// </summary>
+        private double[] _temp;
 
         /// <summary>
         /// Constructor of a SensorServer instance with a specified IP Address
         /// </summary>
         /// <param name="address">IP Address a a string</param>
-        public SensorServer(string address)
+        /// <param name="size">Size of the sensor queue as an integer</param>
+        public SensorServer(string address, int size)
         {
             _isConnected = false;
+            _sizeQueue = size;
             InitEfforts();
             _ipAddress = IPAddress.Parse(address);
         }
@@ -63,11 +71,8 @@ namespace ForceSensor
         /// </summary>
         public void InitEfforts()
         {
-            _efforts = new List<double>[6];
-            for (int i = 0; i < 6; i++)
-            {
-                _efforts[i] = new List<double>();
-            }
+            _efforts = new Queue<double[]>(_sizeQueue);
+            _temp = new double[6];
         }
 
         /// <summary>
@@ -135,11 +140,27 @@ namespace ForceSensor
             byte[] answer = new byte[36];
             answer = _udpClient.Receive(ref _remoteEP);
 
+            bool flag = true;
+
+            double[] buffer = new double[6];
+
+            if(_efforts.Count < _sizeQueue)
+            {
+                flag = false;
+            }
+
             for (int i=0;i<6;i++)
             {
                 Array.Copy(answer, 12 + 4 * i, slicing, 0, 4);
-                _efforts[i].Add(IPAddress.NetworkToHostOrder(BitConverter.ToInt32(slicing, 0))/_gain);
+                buffer[i] = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(slicing, 0)) / _gain;
             }
+
+            if (flag)
+            {
+                _efforts.Dequeue();
+            }
+            _temp = buffer;
+            _efforts.Enqueue(_temp);
         }
 
         /// <summary>
@@ -147,46 +168,34 @@ namespace ForceSensor
         /// </summary>
         public void Main()
         {
-            int n = 0;
-
-            double[] results = new double[6];
-
-            var csv = new StringBuilder();
-
-            var refTime = System.DateTime.Now.Ticks;
-
-            var sw = Stopwatch.StartNew();
-
-            while (sw.ElapsedMilliseconds <= 5000)
+            while(true)
             {
-                Parse();
-                results = GetState();
-                var newline = string.Format("{0};{1};{2};{3};{4};{5};{6};{7}", n, results[0].ToString(), results[1].ToString(), results[2].ToString(), results[3].ToString(), results[4].ToString(), results[5].ToString(), (DateTime.Now.Ticks - refTime).ToString());
-                csv.AppendLine(newline);
-                n++;
+                //Parse()
             }
-            Console.WriteLine(n);
-            File.WriteAllText("C:/Users/FormationRobotAdmin/Desktop/Force.csv", csv.ToString());
-
         }
 
         /// <summary>
         /// Get the averaged efforts monitored by the sensor
         /// </summary>
         /// <returns>Averaged efforts since the begining of th communication or last GetState() call</returns>
-        public double[] GetState()
+        public double[] GetStateAvg()
         {
-            string str = String.Empty;
             double[] results = new double[6];
 
-            for (int i=0;i<6;i++)
+            foreach(double[] torsor in _efforts)
             {
-                results[i] = _efforts[i].Average();
-                str += " " + results[i].ToString();
+                Console.WriteLine(torsor[0]);
+                for(int i=0;i<6;i++)
+                {
+                    results[i] += torsor[i] / _sizeQueue;
+                }
             }
-            Console.WriteLine(str);
-            InitEfforts();
             return (results);
+        }
+
+        public double[] GetStateLast()
+        {
+            return (_temp);
         }
     }
 }
