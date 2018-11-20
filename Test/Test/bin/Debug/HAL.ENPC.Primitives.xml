@@ -4,14 +4,14 @@
     <name>HAL.ENPC.Primitives</name>
   </assembly>
   <members>
-    <member name="M:HAL.ENPC.Control.ABB.Egm.JointControl(HAL.ENPC.Sensoring.SensorData.Joints)">
+    <member name="M:HAL.ENPC.Control.ABB.EgmControl.JointControl(HAL.ENPC.Sensoring.SensorData.Joints)">
       <summary> Control task of the joints. </summary>
-      <param name="joints">Command</param>
+      <param name="joints">Command in degrees.</param>
       <returns>Completed task.</returns>
     </member>
-    <member name="M:HAL.ENPC.Control.ABB.Egm.CartesianControl(HAL.ENPC.Sensoring.SensorData.Orientation)">
+    <member name="M:HAL.ENPC.Control.ABB.EgmControl.CartesianControl(HAL.ENPC.Sensoring.SensorData.Orientation)">
       <summary> Orientation control task. </summary>
-      <param name="orientation">Command</param>
+      <param name="orientation">Command with position in mm.</param>
       <returns>Completed task.</returns>
     </member>
     <member name="T:HAL.ENPC.Control.ControlBuilder">
@@ -19,13 +19,22 @@
     </member>
     <member name="M:HAL.ENPC.Control.ControlBuilder.JointControl(HAL.ENPC.Sensoring.SensorData.Joints)">
       <summary> Control task of the joints. </summary>
-      <param name="joints">Command</param>
+      <param name="command">Command</param>
       <returns>Completed task.</returns>
     </member>
     <member name="M:HAL.ENPC.Control.ControlBuilder.CartesianControl(HAL.ENPC.Sensoring.SensorData.Orientation)">
       <summary> Orientation control task. </summary>
       <param name="orientation">Command</param>
       <returns>Completed task.</returns>
+    </member>
+    <member name="T:HAL.ENPC.Control.ControlSettings">
+      <summary>
+      </summary>
+      <summary>
+      </summary>
+    </member>
+    <member name="F:HAL.ENPC.Control.ControlableType.Unset">
+      <summary> Unset control type.</summary>
     </member>
     <member name="F:HAL.ENPC.Control.ControlableType.Joint">
       <summary> Control in joint space.</summary>
@@ -48,7 +57,7 @@
     <member name="M:HAL.ENPC.Control.RealTimeController.Create(HAL.ENPC.Control.RealTimeController@,System.String,System.Collections.Generic.List{HAL.Control.IControllableObject},System.Collections.Generic.List{HAL.Procedures.Procedure},System.Collections.Generic.List{HAL.Communications.ElectricSignal},System.Collections.Generic.List{HAL.ENPC.Control.RealTimeController},HAL.ENPC.Control.ControlBuilder,HAL.ENPC.Control.RealTimeController@)">
       <summary>Create a real time controller.</summary>
     </member>
-    <member name="M:HAL.ENPC.Control.RealTimeController.Create(HAL.ENPC.Control.RealTimeController@,System.String,System.Collections.Generic.List{HAL.ENPC.Control.RealTimeController},HAL.ENPC.Control.ControlBuilder,HAL.ENPC.Control.RealTimeController@)">
+    <member name="M:HAL.ENPC.Control.RealTimeController.Create(HAL.ENPC.Control.RealTimeController@,System.String,System.Collections.Generic.List{HAL.Control.IControllableObject},System.Collections.Generic.List{HAL.ENPC.Control.RealTimeController},HAL.ENPC.Control.ControlBuilder,HAL.ENPC.Control.RealTimeController@)">
       <summary>Create a real time controller.</summary>
     </member>
     <member name="P:HAL.ENPC.Control.RealTimeController.SubControllers">
@@ -66,9 +75,6 @@
     <member name="P:HAL.ENPC.Control.RealTimeController.ReceiveBufferQueue">
       <summary>Received message buffer queue.</summary>
     </member>
-    <member name="P:HAL.ENPC.Control.RealTimeController.ControlStrategy">
-      <summary>Control strategy.</summary>
-    </member>
     <member name="P:HAL.ENPC.Control.RealTimeController.IsControlRunning">
       <summary>Is control command loop activated?</summary>
     </member>
@@ -78,11 +84,20 @@
     <member name="P:HAL.ENPC.Control.RealTimeController.IsSynchronized">
       <summary>Is synchronized command loop activated?</summary>
     </member>
-    <member name="P:HAL.ENPC.Control.RealTimeController.Buffering">
-      <summary>Activate buffering.</summary>
+    <member name="P:HAL.ENPC.Control.RealTimeController.MechanismState">
+      <summary>Mechanism state.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Control.RealTimeController.ControlBuilder">
+      <summary>Control builder.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Control.RealTimeController.CommandSenderSensor">
+      <summary>Command sender sensor.</summary>
     </member>
     <member name="P:HAL.ENPC.Control.RealTimeController.BufferMaximumMessageCount">
-      <summary> Delay after a message in queue expire and is dequeued.  </summary>
+      <summary> Delay after a message in queue expire and is dequeued.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Control.RealTimeController.Buffering">
+      <summary>Activate buffering.</summary>
     </member>
     <member name="M:HAL.ENPC.Control.RealTimeController.Monitor(HAL.ENPC.Messaging.MessageCode[],System.Boolean,System.Boolean)">
       <summary> Monitoring of specified data types. </summary>
@@ -92,10 +107,13 @@
     </member>
     <member name="M:HAL.ENPC.Control.RealTimeController.RunSynchronizedControl(HAL.ENPC.Sensoring.Sensor,HAL.ENPC.Messaging.MessageCode,System.Boolean)">
       <summary> Run synchronized control loop. A send command message will be trigged if a message code is received. </summary>
-      <param name="sensor">The sensor synchronized with.</param>
-      <param name="synchronizationMessageCode">The message code that trigs the command sending.</param>
+      <param name="commandSenderSensor">The command sender sensor.</param>
+      <param name="controlMessageCode">The message code that trigs the command sending.</param>
       <param name="overrideMonitoredMessage">
       </param>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.ReceivedMessage">
+      <summary>Task to deal with received message and associated steps (buffering, updating state and command sending).</summary>
     </member>
     <member name="M:HAL.ENPC.Control.RealTimeController.StopMonitor">
       <summary>
@@ -140,11 +158,29 @@
             This allow to go threw sub controllers that hold other real time controllers or sensors.
             </remarks>
     </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.Initialize">
+      <summary> Initialize all sub controllers. </summary>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.Run">
+      <summary> Run all sub controllers. </summary>
+      <returns>
+      </returns>
+    </member>
+    <member name="M:HAL.ENPC.Control.RealTimeController.Terminate">
+      <summary> Terminate all sub controllers. </summary>
+      <returns>
+      </returns>
+    </member>
     <member name="T:HAL.ENPC.Filtering.Filter`1">
       <summary> Filter class allows to filter ISensorData through time.</summary>
     </member>
     <member name="P:HAL.ENPC.Filtering.Filter`1.FilterBuffer">
       <summary> Filter buffer where data is enqueued and dequeued through time.</summary>
+    </member>
+    <member name="P:HAL.ENPC.Filtering.Filter`1.CurrentIndex">
+      <summary> Current index of filter's buffer.  </summary>
     </member>
     <member name="M:HAL.ENPC.Filtering.Filter`1.FilterValue(`0)">
       <summary>This applies a filter to a data.</summary>
@@ -167,7 +203,7 @@
       <summary>
             Creates and fill the message header with 
              - The identifier of the message
-             - The time stamp of the mesage
+             - The time stamp of the message
              - The type of the message
             </summary>
       <param name="seqNumber">Identifier of the last EGM message sent to the robot</param>
@@ -197,50 +233,38 @@
       </returns>
     </member>
     <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.PoseBuilder(HAL.ENPC.Messaging.Server.ABB.EgmCartesian.Builder,HAL.ENPC.Messaging.Server.ABB.EgmQuaternion.Builder)">
-      <summary>
-            Builds a cartesian motion command from a translation command and a rotation command
-            </summary>
-      <param name="cartesian">Trasnlation command</param>
+      <summary> Builds a cartesian motion command from a translation command and a rotation command. </summary>
+      <param name="cartesian">Translation command</param>
       <param name="quaternion">Rotation command from a quaternion</param>
       <returns>
       </returns>
     </member>
     <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.PoseBuilder(HAL.ENPC.Messaging.Server.ABB.EgmCartesian.Builder,HAL.ENPC.Messaging.Server.ABB.EgmEuler.Builder)">
-      <summary>
-            Builds a cartesian motion command from a transmation command and a rotation command
-            </summary>
+      <summary> Builds a cartesian motion command from a transformation command and a rotation command. </summary>
       <param name="cartesian">Translation command</param>
       <param name="euler">Rotation command from Euler angles</param>
       <returns>
       </returns>
     </member>
     <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.JointsBuilder(HAL.ENPC.Sensoring.SensorData.Joints)">
-      <summary>
-            Builds a joints (internal or external) motion or speed command 
-            </summary>
-      <param name="rotations">Motion joints values as a Joints</param>
+      <summary> Builds a joints (internal or external) motion or speed command. </summary>
+      <param name="joints">Motion joints values as a Joints</param>
       <returns>
       </returns>
     </member>
     <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.CartesianSpeedBuilder(HAL.ENPC.Sensoring.SensorData.CartesianSpeed)">
-      <summary>
-            Builds a cartesian speed reference command 
-            </summary>
+      <summary> Builds a cartesian speed reference command. </summary>
       <param name="speed">Cartesian speed command as a CartesianSpeed</param>
       <returns>
       </returns>
     </member>
     <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.MovePose(HAL.ENPC.Sensoring.SensorData.Translation,HAL.ENPC.Sensoring.SensorData.Quaternion)">
-      <summary>
-            Fills the message with a cartesian motion command
-            </summary>
+      <summary> Fills the message with a cartesian motion command. </summary>
       <param name="position">Translation vector as a Vector3D</param>
       <param name="quaternion">Rotation quaternion as a Quaternion</param>
     </member>
     <member name="M:HAL.ENPC.Messaging.Server.ABB.EgmMessageBuilder.MovePose(HAL.ENPC.Sensoring.SensorData.Translation,HAL.ENPC.Sensoring.SensorData.EulerAngles)">
-      <summary>
-            Fills the message with a cartesian motion command
-            </summary>
+      <summary> Fills the message with a cartesian motion command. </summary>
       <param name="position">Translation vector as a Vector3D</param>
       <param name="angles">Rotation Euler angles as an EulerAngles</param>
     </member>
@@ -425,6 +449,14 @@
       <summary>
             Third Euler angle - Intrinsic rotation angle
             </summary>
+    </member>
+    <member name="M:HAL.ENPC.Sensoring.SensorData.Joints.Min">
+      <summary> Returns the index of the minimum value joint. </summary>
+      <returns> The index</returns>
+    </member>
+    <member name="M:HAL.ENPC.Sensoring.SensorData.Joints.Max">
+      <summary> Returns the index of the minimum value joint. </summary>
+      <returns> The index</returns>
     </member>
     <member name="P:HAL.ENPC.Sensoring.SensorData.Quaternion.Values">
       <summary>Quaternion components, in the Real, X, Y, Z order.</summary>
