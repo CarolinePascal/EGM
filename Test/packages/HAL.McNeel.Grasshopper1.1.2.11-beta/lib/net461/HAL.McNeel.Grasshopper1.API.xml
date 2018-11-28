@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>HAL.McNeel.Grasshopper1</name>
+  </assembly>
+  <members>
+    <member name="M:HAL.McNeel.Grasshopper1.Components.Motion.JointTarget.#ctor(HAL.McNeel.Grasshopper1.Components.Motion.JointTarget@,System.String,HAL.Objects.Mechanisms.Mechanism,System.Collections.Generic.List{System.Double},HAL.Motion.Settings.Target@)">
+      <summary>Creates a motion target.</summary>
+      <param name="instance">Instance of the target.</param>
+      <param name="alias">Target alias.</param>
+      <param name="mechanism">Mechanism.</param>
+      <param name="position">Position of the mechanism joints is SI units: radians for revolute joints, meters for prismatic joints.</param>
+      <param name="target">Target.</param>
+    </member>
+    <member name="M:HAL.McNeel.Grasshopper1.Components.Motion.TargetCreation.FromCurve(System.String,Rhino.Geometry.Curve,HAL.McNeel.RhinoCommon5.Spatial.CurveDiscretization,HAL.Units.Length.Length,HAL.Objects.Reference,System.Boolean,System.Collections.Generic.List{HAL.Motion.Settings.Target}@,Rhino.Geometry.PolyCurve@)">
+      <summary>Extracts targets from a curve.</summary>
+      <param name="alias">Curve alias.</param>
+      <param name="curve">Curve to extract targets from.</param>
+      <param name="discretization">Curve discretization method.</param>
+      <param name="tolerance">Admissible position deviation.</param>
+      <param name="reference">Reference on which resulting target will be based on.</param>
+      <param name="isAbsolute">Whether the frame specifies an absolute world location. If false, the frame is considered relative to the parent.</param>
+      <param name="target">Resulting targets.</param>
+      <param name="trace">Curve described by the resulting targets.</param>
+    </member>
+    <member name="M:HAL.McNeel.Grasshopper1.Components.Motion.TargetCreation.FromCurve(System.String,Rhino.Geometry.Curve,HAL.McNeel.RhinoCommon5.Spatial.CurveDiscretization,HAL.Units.Length.Length,Rhino.Geometry.GeometryBase,HAL.Spatial.Axis,System.Boolean,HAL.Objects.Reference,System.Boolean,System.Collections.Generic.List{HAL.Motion.Settings.Target}@,Rhino.Geometry.PolyCurve@)">
+      <summary>Extracts targets from a curve.</summary>
+      <param name="alias">Curve alias.</param>
+      <param name="curve">Curve to extract targets from.</param>
+      <param name="discretization">Curve discretization method.</param>
+      <param name="tolerance">Admissible position deviation.</param>
+      <param name="guide">Guide (Point, Vector, Plane, Curve, Surface, Brep or Mesh) to follow.</param>
+      <param name="axis">If a guide geometry is specified, target axis following the guide geometry.</param>
+      <param name="flip">If a guide geometry is specified, whether the inverse direction of the axis should be used.</param>
+      <param name="reference">Reference on which resulting target will be based on.</param>
+      <param name="isAbsolute">Whether the frame specifies an absolute world location. If false, the frame is considered relative to the parent.</param>
+      <param name="target">Resulting targets.</param>
+      <param name="trace">Curve described by the resulting targets.</param>
+    </member>
+    <member name="M:HAL.McNeel.Grasshopper1.Components.Motion.TargetTransformation.ParallelTo(HAL.Motion.Settings.Target,System.String,Rhino.Geometry.Vector3d,HAL.Spatial.Axis,System.Boolean,System.Boolean,HAL.Motion.Settings.Target@)">
+      <summary>Modifies the orientation of a target.</summary>
+      <param name="instance">Target to modify.</param>
+      <param name="alias">Transformed target alias.</param>
+      <param name="direction">Direction to follow.</param>
+      <param name="axis">Target axis to operate on.</param>
+      <param name="flip">Whether the inverse direction of the axis should be used.</param>
+      <param name="project">Whether a projection of the direction vector on the target should be used instead of the exact vector.</param>
+      <param name="target">Orientated target.</param>
+    </member>
+    <member name="M:HAL.McNeel.Grasshopper1.Components.Motion.TargetTransformation.TangentTo(HAL.Motion.Settings.Target,System.String,Rhino.Geometry.Curve,HAL.Spatial.Axis,System.Boolean,System.Boolean,HAL.Motion.Settings.Target@,System.Collections.Generic.List{Rhino.Geometry.Point3d}@,System.Collections.Generic.List{Rhino.Geometry.Vector3d}@)">
+      <summary>Modifies the orientation of a target.</summary>
+      <param name="instance">Target to modify.</param>
+      <param name="alias">Transformed target alias.</param>
+      <param name="guide">Curve to follow.</param>
+      <param name="axis">Target axis to operate on.</param>
+      <param name="flip">Whether the inverse direction of the axis should be used.</param>
+      <param name="project">Whether a projection of the direction vector on the target should be used instead of the exact vector.</param>
+      <param name="target">Modified target.</param>
+      <param name="onGuide">Projected target frames' origins.</param>
+      <param name="tangent">Tangent vector at each projected target frames' origins.</param>
+    </member>
+    <member name="M:HAL.McNeel.Grasshopper1.Components.Motion.TargetTransformation.NormalTo(HAL.Motion.Settings.Target,System.String,Rhino.Geometry.Mesh,HAL.Spatial.Axis,System.Boolean,System.Boolean,HAL.Motion.Settings.Target@,System.Collections.Generic.List{Rhino.Geometry.Point3d}@,System.Collections.Generic.List{Rhino.Geometry.Vector3d}@)">
+      <summary>Modifies the orientation of a target.</summary>
+      <param name="instance">Target to modify.</param>
+      <param name="alias">Transformed target alias.</param>
+      <param name="guide">Shape to follow.</param>
+      <param name="axis">Target axis to operate on.</param>
+      <param name="flip">Whether the inverse direction of the axis should be used.</param>
+      <param name="project">Whether a projection of the direction vector on the target should be used instead of the exact vector.</param>
+      <param name="target">Modified target.</param>
+      <param name="onGuide">Projected target frames' origins.</param>
+      <param name="normal">Normal vector at each projected target frames' origins.</param>
+    </member>
+    <member name="M:HAL.McNeel.Grasshopper1.Components.Motion.TargetTransformation.NormalTo(HAL.Motion.Settings.Target,System.String,Rhino.Geometry.Brep,HAL.Spatial.Axis,System.Boolean,System.Boolean,HAL.Motion.Settings.Target@,System.Collections.Generic.List{Rhino.Geometry.Point3d}@,System.Collections.Generic.List{Rhino.Geometry.Vector3d}@)">
+      <summary>Modifies the orientation of a target.</summary>
+      <param name="instance">Target to modify.</param>
+      <param name="alias">Transformed target alias.</param>
+      <param name="guide">Shape to follow.</param>
+      <param name="axis">Target axis to operate on.</param>
+      <param name="flip">Whether the inverse direction of the axis should be used.</param>
+      <param name="project">Whether a projection of the direction vector on the target should be used instead of the exact vector.</param>
+      <param name="target">Modified target.</param>
+      <param name="onGuide">Projected target frames' origins.</param>
+      <param name="normal">Normal vector at each projected target frames' origins.</param>
+    </member>
+    <member name="M:HAL.McNeel.Grasshopper1.Components.Motion.TargetTransformation.Transform(HAL.Motion.Settings.Target,System.String,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Spatial.MatrixFrame,HAL.Motion.Settings.Target@)">
+      <summary>Modifies the position and orientation of a target.</summary>
+      <param name="instance">Target to modify.</param>
+      <param name="alias">Transformed target alias.</param>
+      <param name="x">X offset.</param>
+      <param name="y">Y offset.</param>
+      <param name="z">Z offset.</param>
+      <param name="rX">Rotation around X.</param>
+      <param name="rY">Rotation around Y.</param>
+      <param name="rZ">Rotation around Z.</param>
+      <param name="reference">Reference frame. If null, the transformation will be relative to the original target position.</param>
+      <param name="target">Modified target.</param>
+    </member>
+  </members>
+</doc>

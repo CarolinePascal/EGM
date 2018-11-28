@@ -1,0 +1,872 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>HAL.Core</name>
+  </assembly>
+  <members>
+    <member name="M:HAL.Communications.ElectricSignal.CreateOutput(HAL.Communications.ElectricSignal@,System.String,HAL.Units.Electrical.ElectricTension,HAL.Units.Electrical.ElectricTension,System.Boolean,HAL.Communications.ElectricSignal@)">
+      <summary>Creates a digital output signal.</summary>
+      <param name="instance">Existing instance of this signal.</param>
+      <param name="alias">Signal alias.</param>
+      <param name="low">Low state tension of the signal.</param>
+      <param name="high">High state tension of the signal.</param>
+      <param name="default">Default state of the signal.</param>
+      <param name="signal">Digital output signal.</param>
+    </member>
+    <member name="M:HAL.Communications.ElectricSignal.DigitalInput(HAL.Communications.ElectricSignal@,System.String,HAL.Units.Electrical.ElectricTension,HAL.Units.Electrical.ElectricTension,HAL.Communications.ElectricSignal@)">
+      <summary>Creates an digital input signal.</summary>
+      <param name="instance">Existing instance of this signal.</param>
+      <param name="alias">Signal alias.</param>
+      <param name="low">Low state tension of the signal.</param>
+      <param name="high">High state tension of the signal.</param>
+      <param name="signal">Digital input signal.</param>
+    </member>
+    <member name="M:HAL.Communications.ElectricSignal.AnalogOutput(HAL.Communications.ElectricSignal@,System.String,HAL.Units.Electrical.ElectricTension,HAL.Units.Electrical.ElectricTension,HAL.Units.Electrical.ElectricTension,HAL.Communications.ElectricSignal@)">
+      <summary>Creates an analog output signal.</summary>
+      <param name="instance">Existing instance of this signal.</param>
+      <param name="alias">Signal alias.</param>
+      <param name="min">Minimum value of the signal.</param>
+      <param name="max">Maximum value of the signal.</param>
+      <param name="default">Default state of the signal.</param>
+      <param name="signal">Analog output signal.</param>
+    </member>
+    <member name="M:HAL.Communications.ElectricSignal.AnalogInput(HAL.Communications.ElectricSignal@,System.String,HAL.Units.Electrical.ElectricTension,HAL.Units.Electrical.ElectricTension,HAL.Communications.ElectricSignal@)">
+      <summary>Creates an analog input signal.</summary>
+      <param name="instance">Existing instance of this signal.</param>
+      <param name="alias">Signal alias.</param>
+      <param name="min">Minimum value of the signal.</param>
+      <param name="max">Maximum value of the signal.</param>
+      <param name="signal">Analog input signal.</param>
+    </member>
+    <member name="M:HAL.Control.Controller.Place(HAL.Control.Controller@,System.String,HAL.Spatial.MatrixFrame,System.Collections.Generic.List{HAL.Control.IControllableObject},System.Collections.Generic.List{HAL.Procedures.Procedure},System.Collections.Generic.List{HAL.Communications.ElectricSignal},HAL.Control.Controller@)">
+      <summary>Places a controller in the document.</summary>
+      <param name="instance">Existing instance to be modified.</param>
+      <param name="alias">Controller alias.</param>
+      <param name="location">Controller location.</param>
+      <param name="robot">Robot(s) being controlled.</param>
+      <param name="procedure">Procedure(s) executed by the controller.</param>
+      <param name="signal">Signal(s) mapped to the controller.</param>
+      <param name="controller">Controller.</param>
+    </member>
+    <member name="M:HAL.Control.Controller.Export(HAL.Control.Controller,HAL.Simulation.Solution,System.String,System.Boolean,System.Threading.CancellationToken,HAL.Tasks.BackgroundProgress)">
+      <summary>Exports procedures to the controller programming language.</summary>
+      <param name="controller">Controller for which the tasks should be exported.</param>
+      <param name="solution">Simulation solution.</param>
+      <param name="destination">Destination path.</param>
+      <param name="export">Triggers the export.</param>
+      <param name="cancel">Cancellation token.</param>
+      <param name="progress">Task progress.</param>
+    </member>
+    <member name="M:HAL.Control.Controller.Export(HAL.Control.Controller,HAL.Simulation.Solution,System.Collections.Generic.List{HAL.Procedures.Procedure},HAL.Linguistics.Export.DeclarationMode,System.String,System.Boolean,System.Threading.CancellationToken,HAL.Tasks.BackgroundProgress)">
+      <summary>Exports procedures to the controller programming language.</summary>
+      <param name="controller">Controller for which the tasks should be exported.</param>
+      <param name="solution">Simulation solution.</param>
+      <param name="procedure">Procedures to upload.</param>
+      <param name="mode">Declaration mode.</param>
+      <param name="destination">Destination path.</param>
+      <param name="export">Triggers the export.</param>
+      <param name="cancel">Cancellation token.</param>
+      <param name="progress">Task progress.</param>
+    </member>
+    <member name="M:HAL.Control.Controller.Upload(HAL.Control.Controller,HAL.Simulation.Solution,System.String,System.Collections.Generic.List{HAL.Procedures.Procedure},System.String,HAL.Linguistics.Export.DeclarationMode,System.Boolean,System.Boolean,System.Threading.CancellationToken,HAL.Tasks.BackgroundProgress)">
+      <summary>Uploads procedures to a controller.</summary>
+      <param name="controller">Destination controller.</param>
+      <param name="solution">Simulation solution.</param>
+      <param name="networkId">Network identity of the controller (usually the IP address or SSID of the remote controller).</param>
+      <param name="procedure">Procedures to upload. Leave empty if all procedures associated with the controller must be uploaded.</param>
+      <param name="task">Name of the destination task.</param>
+      <param name="mode">Declaration mode.</param>
+      <param name="autoRun">Whether the uploaded procedures should be executed automatically after the upload.</param>
+      <param name="upload">Triggers the upload.</param>
+      <param name="cancel">Cancellation token.</param>
+      <param name="progress">Task progress.</param>
+    </member>
+    <member name="M:HAL.Control.Controller.Upload(HAL.Control.Controller,HAL.Simulation.Solution,System.String,System.String,System.String,System.Boolean,System.Boolean,System.Boolean,System.Threading.CancellationToken,HAL.Tasks.BackgroundProgress)">
+      <summary>Uploads procedures to the controller.</summary>
+      <param name="controller">Destination controller.</param>
+      <param name="solution">Simulation solution.</param>
+      <param name="networkId">Network identity of the controller (usually the IP address or SSID of the remote controller).</param>
+      <param name="source">Path to the file or directory to be uploaded.</param>
+      <param name="task">Name of the destination task.</param>
+      <param name="delete">Whether the file or directory should be deleted once the upload is complete.</param>
+      <param name="autoRun">Whether the uploaded procedures should be executed automatically after the upload.</param>
+      <param name="upload">Triggers the operation.</param>
+      <param name="cancel">Cancellation token.</param>
+      <param name="progress">Task progress.</param>
+    </member>
+    <member name="M:HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverMechanismConstraints.Create(System.String,HAL.Objects.Mechanisms.Mechanism,System.Collections.Generic.List{System.Boolean},System.Collections.Generic.List{System.Double},System.Collections.Generic.List{System.Double},HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverMechanismConstraints@)">
+      <summary>Creates a set of mechanism constraints.</summary>
+      <param name="alias">Alias to give to these constraints.</param>
+      <param name="mechanism">Mechanism to be constrained.</param>
+      <param name="active">Whether each joint is allowed to move.</param>
+      <param name="min">Minimum position for each joint, in m for prismatic joints or in rad for revolute joints. The joint is locked if the minimum position equals the maximum position.</param>
+      <param name="max">Maximum position for each joint, in m for prismatic joints or in rad for revolute joints. The joint is locked if the minimum position equals the maximum position.</param>
+      <param name="constraints">Mechanism constraints.</param>
+    </member>
+    <member name="M:HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverTargetConstraints.Create(System.String,HAL.Spatial.Axis,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverTargetConstraints@)">
+      <summary>Creates a set of target constraints.</summary>
+      <param name="alias">Alias to give to these constraints.</param>
+      <param name="rotationAxis">Axis around which the target is free to rotate.</param>
+      <param name="minRotation">Minimum rotation around the axis. The target orientation remains fixed if this value is null.</param>
+      <param name="maxRotation">Maximum rotation around the axis. The target orientation remains fixed if this value is null.</param>
+      <param name="constraints">Target constraints.</param>
+    </member>
+    <member name="M:HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverTargetConstraints.Create(System.String,System.Boolean,System.Boolean,HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverTargetConstraints@)">
+      <summary>Creates a set of target constraints.</summary>
+      <param name="alias">Alias to give to these constraints.</param>
+      <param name="isPositionFree">Whether the target is free in position.</param>
+      <param name="isOrientationFree">Whether the target is free in orientation.</param>
+      <param name="constraints">Target constraints.</param>
+    </member>
+    <member name="M:HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverTargetConstraints.Create(System.String,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Spatial.Axis,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverTargetConstraints@)">
+      <summary>Constrains the position of a robot in Cartesian space.</summary>
+      <param name="alias">Alias to give to these constraints.</param>
+      <param name="minXTranslation">Minimum translation along X. The target X coordinate remains fixed if this value if null.</param>
+      <param name="maxXTranslation">Maximum translation along X. The target X coordinate remains fixed if this value if null.</param>
+      <param name="minYTranslation">Minimum translation along Y. The target Y coordinate remains fixed if this value if null.</param>
+      <param name="maxYTranslation">Maximum translation along Y. The target Y coordinate remains fixed if this value if null.</param>
+      <param name="minZTranslation">Minimum translation along Z. The target Z coordinate remains fixed if this value if null.</param>
+      <param name="maxZTranslation">Maximum translation along Z. The target Z coordinate remains fixed if this value if null.</param>
+      <param name="rotationAxis">Axis around which the target is free to rotate.</param>
+      <param name="minRotation">Minimum rotation around the axis. The target orientation remains fixed if this value is null.</param>
+      <param name="maxRotation">Maximum rotation around the axis. The target orientation remains fixed if this value is null.</param>
+      <param name="constraints">Target constraints.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.GCode.GCodeVisitor.Parse(System.String,HAL.Objects.Reference,System.Double,System.Collections.Generic.List{HAL.Linguistics.Import.CodeLine}@,System.Collections.Generic.List{HAL.Motion.Settings.Target}@)">
+      <summary>Parses a GCode file.</summary>
+      <param name="path">Path to file.</param>
+      <param name="reference">Reference for targets.</param>
+      <param name="scale">Scaling factor.</param>
+      <param name="instruction">Interpretable instructions found in the file.</param>
+      <param name="target">Targets.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.GCode.GCodeVisitor.Interpret(System.Collections.Generic.List{HAL.Linguistics.Import.CodeLine},System.Collections.Generic.List{HAL.Linguistics.Import.ReplacementRules.ReplacementRule},HAL.Procedures.Procedure@)">
+      <summary>Interprets GCode instructions and replacement rules to create a procedure.</summary>
+      <param name="instruction">Instructions.</param>
+      <param name="rule">Replacement rules.</param>
+      <param name="procedure">Procedure.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.GCode.GCodeVisitor.Interpret(System.String,HAL.Objects.Reference,System.Double,System.Collections.Generic.List{HAL.Linguistics.Import.ReplacementRules.ReplacementRule},HAL.Procedures.Procedure@,System.Collections.Generic.List{HAL.Motion.Settings.Target}@)">
+      <summary>Interprets GCode instructions and replacement rules to create a procedure.</summary>
+      <param name="path">Path to file.</param>
+      <param name="reference">Reference for targets.</param>
+      <param name="scale">Scaling factor.</param>
+      <param name="rule">Replacement rules.</param>
+      <param name="procedure">Procedure.</param>
+      <param name="target">Targets.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.GCode.GCodeVisitor.GetInstructionProperties(HAL.Linguistics.Import.CodeLine,System.Int32@,System.String@,System.String@,System.Collections.Generic.List{System.String}@,System.Collections.Generic.List{System.Double}@,HAL.Motion.Settings.Target@,System.Boolean@,System.Double@,HAL.Units.Time.Time@)">
+      <summary>Retrieves the properties of GCode instructions.</summary>
+      <param name="instruction">Instruction.</param>
+      <param name="index">Line number from the original file.</param>
+      <param name="originalString">Text used to create the line.</param>
+      <param name="instructionCode">Instruction code in use.</param>
+      <param name="argumentCode">Argument letter(s).</param>
+      <param name="argumentValue">Argument value(s)</param>
+      <param name="target">Instruction target.</param>
+      <param name="isRapidTravel">Whether the instruction is a rapid travel.</param>
+      <param name="feedRate">Feed rate during instruction.</param>
+      <param name="waitTime">Time for dwell.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.ReplacementRules.ReplacementRule.Replace(System.String,HAL.Procedures.Procedure,HAL.Linguistics.Import.ReplacementRules.ReplacementRule@)">
+      <summary>Replaces any instruction which matches the given text with the procedure.</summary>
+      <param name="match">Instruction code or complete line to match.</param>
+      <param name="replacement">Procedure with which to replace the instruction.</param>
+      <param name="rule">Replacement rule.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.ReplacementRules.ReplacementRule.Replace(System.String,System.String,HAL.Linguistics.Import.ReplacementRules.ReplacementRule@)">
+      <summary>Replaces any instruction which matches the given text with a code pattern.</summary>
+      <param name="match">Instruction code or complete line to match, e.g. M106.</param>
+      <param name="pattern">Code pattern. e.g. "MyMethod("&lt;E&gt;*0.1");"</param>
+      <param name="rule">Replacement rule.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.ReplacementRules.ReplacementRule.ReplaceArgument(System.String,System.String,HAL.Linguistics.Import.ReplacementRules.ReplacementRule@)">
+      <summary>Replaces any argument change with a code pattern.</summary>
+      <param name="argument">Argument code to match e.g. E.</param>
+      <param name="pattern">Code pattern. e.g. "MyMethod("&lt;E&gt;*0.1");"</param>
+      <param name="rule">Replacement rule.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.ReplacementRules.ReplacementRule.ReplaceSpeed(System.Double,HAL.Motion.Settings.SpeedSettings,HAL.Linguistics.Import.ReplacementRules.ReplacementRule@)">
+      <summary>Replaces the speed of any instruction with a matching feed rate.</summary>
+      <param name="feedRate">Feed rate to match.</param>
+      <param name="speed">Speed settings to apply.</param>
+      <param name="rule">Replacement rule.</param>
+    </member>
+    <member name="M:HAL.Linguistics.Import.ReplacementRules.ReplacementRule.Replace(System.Int32,System.Int32,HAL.Procedures.Procedure,HAL.Linguistics.Import.ReplacementRules.ReplacementRule@)">
+      <summary>Replaces a block of instructions with a given procedure.</summary>
+      <param name="from">Starting index.</param>
+      <param name="to">If included, block end index, otherwise a single instruction is replaced.</param>
+      <param name="replacement">Procedure with which to replace the instruction(s).</param>
+      <param name="rule">Replacement rule.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.AccelerationSettings.Create(System.String,HAL.Units.Acceleration.LinearAcceleration,HAL.Units.Acceleration.AngularAcceleration,HAL.Motion.Settings.AccelerationSettings@)">
+      <summary>Creates a set of acceleration settings.</summary>
+      <param name="position">Position speed.</param>
+      <param name="orientation">Orientation speed.</param>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.AccelerationSettings.Create(System.String,HAL.Objects.Mechanisms.Mechanism,System.Collections.Generic.List{System.Double},HAL.Motion.Settings.AccelerationSettings@)">
+      <summary>Creates a set of acceleration settings.</summary>
+      <param name="mechanism">Mechanism.</param>
+      <param name="joint">Joint acceleration for each joint of the mechanism.</param>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.AccelerationSettings.Create(System.String,HAL.Units.Acceleration.LinearAcceleration,HAL.Units.Acceleration.AngularAcceleration,HAL.Objects.Mechanisms.Mechanism,System.Collections.Generic.List{System.Double},HAL.Motion.Settings.AccelerationSettings@)">
+      <summary>Creates a set of acceleration settings.</summary>
+      <param name="position">Position speed.</param>
+      <param name="orientation">Orientation speed.</param>
+      <param name="mechanism">Mechanism.</param>
+      <param name="joint">Joint acceleration for each joint of the mechanism.</param>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.BlendSettings.Create(System.String,HAL.Units.Length.Length,HAL.Units.Angle.Angle,HAL.Motion.Settings.BlendSettings@)">
+      <summary>Creates a set of blend (approximation) settings.</summary>
+      <param name="position">Position blend.</param>
+      <param name="orientation">Orientation blend.</param>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Kinematics.KinematicSettings.Create(System.String,HAL.Objects.Mechanisms.Mechanism,HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverMechanismConstraints,HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverTargetConstraints,HAL.Motion.Settings.Kinematics.KinematicSettings@)">
+      <summary>Creates settings for the kinematic solving of a mechanism.</summary>
+      <param name="alias">Alias.</param>
+      <param name="mechanism">Mechanism on which to apply the constraints.</param>
+      <param name="mechanismConstraints">Mechanical constraints.</param>
+      <param name="targetConstraints">Target constraints.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Kinematics.KinematicSettings.Create(System.String,HAL.Motion.Settings.Kinematics.KinematicSettings,System.Collections.Generic.List{HAL.Motion.Settings.Kinematics.KinematicSettings},HAL.Kinematics.SolverManagers.MechanismGroupSolvingStrategy,HAL.Motion.Settings.Kinematics.TargetResolver,HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverMechanismConstraints,HAL.Kinematics.Solvers.Inverse.Constraints.InverseSolverTargetConstraints,HAL.Motion.Settings.Kinematics.KinematicSettings@)">
+      <summary>Creates settings for the kinematic solving of a compound mechanism.</summary>
+      <param name="alias">Alias.</param>
+      <param name="master">Constraints for the master sub-mechanism in this compound mechanism.</param>
+      <param name="slave">Solving strategy for the compound mechanism.</param>
+      <param name="solvingStrategy">Solving strategy.</param>
+      <param name="masterTargetResolver">Method of resolution for the master's target if none is explicitly defined.</param>
+      <param name="mechanismConstraints">Mechanical constraints.</param>
+      <param name="targetConstraints">Target constraints.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Kinematics.TargetResolver.CreateAligned(HAL.Spatial.Vector3D,HAL.Spatial.Axis,System.Boolean,System.Boolean,System.Boolean,HAL.Motion.Settings.Kinematics.TargetResolver@)">
+      <summary>Creates an aligned target resolver.</summary>
+      <param name="direction">Direction to follow.</param>
+      <param name="axis">Target axis to operate on.</param>
+      <param name="flip">Whether the inverse direction of the axis should be used.</param>
+      <param name="project">Whether a projection of the direction vector on the target should be used instead of the exact vector.</param>
+      <param name="average">Whether to average the input targets. If false, the first target will be used.</param>
+      <param name="resolver">Resolver.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Kinematics.TargetResolver.CreateOffset(HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame,System.Boolean,HAL.Motion.Settings.Kinematics.TargetResolver@)">
+      <summary>Creates an offset target resolver.</summary>
+      <param name="offset">Offset frame.</param>
+      <param name="reference">&gt;Reference for the offset. If none is specified the target itself is considered the reference frame.</param>
+      <param name="average">Whether to average the input targets. If false, the first target will be used.</param>
+      <param name="resolver">Resolver.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Kinematics.TargetResolver.CreateExplicit(HAL.Motion.Settings.Target,HAL.Motion.Settings.Kinematics.TargetResolver@)">
+      <summary>Creates an explicit target resolver.</summary>
+      <param name="target">Target to resolve to.</param>
+      <param name="resolver">Resolver.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.MotionSettings.Create(System.String,HAL.Motion.Settings.MotionSpace,HAL.Motion.Settings.SpeedSettings,HAL.Motion.Settings.AccelerationSettings,HAL.Motion.Settings.BlendSettings,HAL.Motion.Settings.MotionSettings@)">
+      <summary>Creates a set of motion settings.</summary>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="space">Motion space.</param>
+      <param name="speed">Motion speed.</param>
+      <param name="acceleration">Motion acceleration.</param>
+      <param name="blend">Blend (approximation) of the motion.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.MotionSettings.Create(System.String,HAL.Motion.Settings.MotionSpace,HAL.Motion.Settings.SpeedSettings,HAL.Motion.Settings.AccelerationSettings,HAL.Motion.Settings.BlendSettings,HAL.Motion.Settings.SyncSettings,HAL.Motion.Settings.Kinematics.KinematicSettings,HAL.Motion.Settings.MotionSettings@)">
+      <summary>Creates a set of motion settings.</summary>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="space">Motion space.</param>
+      <param name="speed">Motion speed.</param>
+      <param name="acceleration">Motion acceleration.</param>
+      <param name="blend">Blend (approximation) of the motion.</param>
+      <param name="sync">Synchronization settings.</param>
+      <param name="kinematics">Kinematic settings for each target.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.SpeedSettings.Create(System.String,HAL.Units.Speed.LinearSpeed,HAL.Units.Speed.AngularSpeed,HAL.Motion.Settings.SpeedSettings@)">
+      <summary>Creates a set of speed settings.</summary>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="position">Position speed.</param>
+      <param name="orientation">Orientation speed.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.SpeedSettings.Create(System.String,HAL.Objects.Mechanisms.Mechanism,System.Collections.Generic.List{System.Double},HAL.Motion.Settings.SpeedSettings@)">
+      <summary>Creates a set of speed settings.</summary>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="mechanism">Mechanism.</param>
+      <param name="joint">Joint speed for each joint of the mechanism.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.SpeedSettings.Create(System.String,HAL.Units.Speed.LinearSpeed,HAL.Units.Speed.AngularSpeed,HAL.Objects.Mechanisms.Mechanism,System.Collections.Generic.List{System.Double},HAL.Motion.Settings.SpeedSettings@)">
+      <summary>Creates a set of speed settings.</summary>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="position">Position speed.</param>
+      <param name="orientation">Orientation speed.</param>
+      <param name="mechanism">Mechanism.</param>
+      <param name="joint">Joint speed for each joint of the mechanism.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.SyncSettings.Create(System.String,HAL.Motion.Settings.SyncSettings@)">
+      <summary>Creates a set of synchronization settings.</summary>
+      <param name="alias">Alias to give to these settings.</param>
+      <param name="settings">Resulting settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Target.CartesianTarget(System.Collections.Generic.List{System.String},System.Collections.Generic.List{HAL.Spatial.MatrixFrame},HAL.Objects.Reference,System.Boolean,HAL.Motion.Settings.Target[]@)">
+      <summary>Creates motion targets.</summary>
+      <param name="alias">Targets aliases. If a single value is given, it will be used as a prefix, followed by the target index.</param>
+      <param name="frame">Targets frames.</param>
+      <param name="reference">Reference.</param>
+      <param name="isAbsolute">Whether the frame specifies an absolute world location. If false, the frame is considered relative to the reference.</param>
+      <param name="target">Targets.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Target.CartesianTarget(System.String,System.Collections.Generic.List{HAL.Spatial.MatrixFrame},HAL.Objects.Reference,System.Boolean,HAL.Motion.Settings.Target[]@)">
+      <summary>Creates motion targets.</summary>
+      <param name="alias">Targets aliases.</param>
+      <param name="frame">Targets frames.</param>
+      <param name="reference">Reference.</param>
+      <param name="isAbsolute">Whether the frame specifies an absolute world location. If false, the frame is considered relative to the reference.</param>
+      <param name="target">Targets.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Target.CartesianTarget(HAL.Motion.Settings.Target@,System.String,HAL.Spatial.MatrixFrame,HAL.Objects.Reference,HAL.Motion.Settings.Target@)">
+      <summary>Creates a motion target.</summary>
+      <param name="instance">Existing instance of this target.</param>
+      <param name="alias">Target alias.</param>
+      <param name="frame">Target frame.</param>
+      <param name="reference">Reference.</param>
+      <param name="target">Target.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Target.Filter(System.Collections.Generic.List{HAL.Motion.Settings.Target},HAL.Units.Length.Length,HAL.Units.Angle.Angle,System.Collections.Generic.List{HAL.Motion.Settings.Target}@,System.Collections.Generic.List{HAL.Motion.Settings.Target}@,System.Collections.Generic.List{System.Boolean}@)">
+      <summary>Filters a set of targets.</summary>
+      <param name="target">Targets to be filtered.</param>
+      <param name="position">If &gt; 0, minimum tolerated position displacement between targets.</param>
+      <param name="orientation">If &gt; 0, minimum tolerated orientation displacement between targets.</param>
+      <param name="remaining">Filtered targets.</param>
+      <param name="discarded">Discarded targets.</param>
+      <param name="mask">Filtering mask. True for remaining, false for discarded.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Target.GetProperties(HAL.Motion.Settings.Target,System.String@,System.Collections.Generic.List{System.Double}@,HAL.Spatial.MatrixFrame@,HAL.Spatial.MatrixFrame@,HAL.Objects.Reference@,System.Boolean@)">
+      <summary>Retrieves the properties of a target.</summary>
+      <param name="target">Target to analyze.</param>
+      <param name="alias">Target alias.</param>
+      <param name="joint">Joint positions.</param>
+      <param name="wayFrame">Way frame if the target depicts an arc.</param>
+      <param name="endFrame">End frame.</param>
+      <param name="reference">Reference.</param>
+      <param name="isArc">Whether this target depicts an arc.</param>
+    </member>
+    <member name="M:HAL.Motion.Settings.Target.SetProperties(HAL.Motion.Settings.Target,System.String,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame,HAL.Objects.Reference,HAL.Motion.Settings.Target@)">
+      <summary>Modifies the properties of a target.</summary>
+      <param name="instance">Target to modify.</param>
+      <param name="alias">Target alias.</param>
+      <param name="wayFrame">Way frame if the target depicts an arc.</param>
+      <param name="endFrame">End frame.</param>
+      <param name="reference">Reference.</param>
+      <param name="target">Target.</param>
+    </member>
+    <member name="M:HAL.Motion.Planning.SolvingSettings.Create(HAL.Motion.Planning.SolvingSettings@,HAL.Motion.Discretization.SamplingStrategy,System.Boolean,HAL.Motion.Planning.SolvingFidelity,HAL.Motion.Planning.SolvingSettings@)">
+      <summary>Creates a set of procedure solver settings.</summary>
+      <param name="instance">Prior settings instance.</param>
+      <param name="strategy">Sampling strategy.</param>
+      <param name="interpolate">Whether the solving can approximate calculations using interpolated measurements (faster).</param>
+      <param name="fidelity">Solving fidelity.</param>
+      <param name="settings">Solving settings.</param>
+    </member>
+    <member name="M:HAL.Motion.Planning.SolvingSettings.Create(HAL.Motion.Planning.SolvingSettings@,HAL.Motion.Discretization.SamplingStrategy,System.Boolean,HAL.Units.Length.Length,HAL.Units.Angle.Angle,HAL.Units.Length.Length,HAL.Units.Angle.Angle,HAL.Motion.Planning.SolvingSettings@)">
+      <summary>Creates a set of procedure solver settings.</summary>
+      <param name="instance">Prior settings instance.</param>
+      <param name="strategy">Sampling strategy.</param>
+      <param name="interpolate">Whether the solving can approximate calculations using interpolated measurements (faster).</param>
+      <param name="positionTolerance">Acceptable approximation of Cartesian positions. Higher values will solve faster.</param>
+      <param name="orientationTolerance">Acceptable approximation of Cartesian orientations. Higher values will solve faster.</param>
+      <param name="prismaticJointTolerance">Acceptable approximation of prismatic joint positions. Higher values will solve faster.</param>
+      <param name="revoluteJointTolerance">Acceptable approximation of revolute joint positions. Higher values will solve faster.</param>
+      <param name="settings">Solving settings.</param>
+    </member>
+    <member name="M:HAL.Objects.Connection.Create(HAL.Objects.Connection@,System.String,HAL.Objects.Reference,HAL.Objects.Reference,HAL.Spatial.MatrixFrame,System.Boolean,HAL.Objects.Connection@)">
+      <summary>Creates a fixed connection from specified properties.</summary>
+      <param name="instance">Existing instance of the connection.</param>
+      <param name="alias">Joint alias.</param>
+      <param name="from">Parent part.</param>
+      <param name="to">Child part. If null, a placeholder will be created in position.</param>
+      <param name="frame">Connection frame.</param>
+      <param name="isEndpoint">Whether this connection should be considered the end of an object, like a flange.</param>
+      <param name="connection">Fixed joint.</param>
+    </member>
+    <member name="M:HAL.Objects.Joint.Revolute(HAL.Objects.Joint@,System.String,HAL.Objects.Parts.Part,HAL.Objects.Parts.Part,HAL.Spatial.MatrixFrame,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Units.Speed.AngularSpeed,HAL.Units.Acceleration.AngularAcceleration,HAL.Units.Torque.Torque,System.Int32,HAL.Objects.Joint@)">
+      <summary>Creates a revolute joint between two parts.</summary>
+      <param name="instance">Existing instance of this joint.</param>
+      <param name="alias">Joint alias.</param>
+      <param name="from">Parent part.</param>
+      <param name="to">Child part.</param>
+      <param name="frame">Actuated joint frame, at the position given. The Z axis of this frame is the rotation axis of the joint.</param>
+      <param name="position">Current joint position.</param>
+      <param name="minPosition">Minimum joint position.</param>
+      <param name="maxPosition">Maximum joint position.</param>
+      <param name="maxSpeed">Maximum joint speed.</param>
+      <param name="maxAcceleration">Maximum joint acceleration.</param>
+      <param name="maxTorque">Maximum joint torque.</param>
+      <param name="mapping">Index override of this joint within its host mechanism.</param>
+      <param name="joint">Revolute joint.</param>
+    </member>
+    <member name="M:HAL.Objects.Joint.Revolute(HAL.Objects.Joint@,System.String,HAL.Objects.Parts.Part,HAL.Objects.Parts.Part,HAL.Spatial.MatrixFrame,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Objects.Joint@)">
+      <summary>Creates a passive revolute joint between two parts.</summary>
+      <param name="instance">Existing instance of this joint.</param>
+      <param name="alias">Joint alias.</param>
+      <param name="from">Parent part.</param>
+      <param name="to">Child part.</param>
+      <param name="frame">Actuated joint frame, at the position given. The Z axis of this frame is the rotation axis of the joint.</param>
+      <param name="position">Current joint position.</param>
+      <param name="minPosition">Minimum joint position.</param>
+      <param name="maxPosition">Maximum joint position.</param>
+      <param name="joint">Passive revolute joint.</param>
+    </member>
+    <member name="M:HAL.Objects.Joint.Prismatic(HAL.Objects.Joint@,System.String,HAL.Objects.Parts.Part,HAL.Objects.Parts.Part,HAL.Spatial.MatrixFrame,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Speed.LinearSpeed,HAL.Units.Acceleration.LinearAcceleration,HAL.Units.Torque.Torque,System.Int32,HAL.Objects.Joint@)">
+      <summary>Creates a prismatic joint between two parts.</summary>
+      <param name="instance">Existing instance of this joint.</param>
+      <param name="alias">Joint alias.</param>
+      <param name="from">Parent part.</param>
+      <param name="to">Child part.</param>
+      <param name="frame">Actuated joint frame, at the position given. The Z axis of this frame is the rotation axis of the joint.</param>
+      <param name="position">Current joint position.</param>
+      <param name="minPosition">Minimum joint position.</param>
+      <param name="maxPosition">Maximum joint position.</param>
+      <param name="maxSpeed">Maximum joint speed.</param>
+      <param name="maxAcceleration">Maximum joint acceleration.</param>
+      <param name="maxTorque">Maximum joint torque.</param>
+      <param name="mapping">Index override of this joint within its host mechanism.</param>
+      <param name="joint">Prismatic joint.</param>
+    </member>
+    <member name="M:HAL.Objects.Joint.Prismatic(HAL.Objects.Joint@,System.String,HAL.Objects.Parts.Part,HAL.Objects.Parts.Part,HAL.Spatial.MatrixFrame,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Objects.Joint@)">
+      <summary>Creates a passive prismatic joint between two parts.</summary>
+      <param name="instance">Existing instance of this joint.</param>
+      <param name="alias">Joint alias.</param>
+      <param name="from">Parent part.</param>
+      <param name="to">Child part.</param>
+      <param name="frame">Actuated joint frame, at the position given. The Z axis of this frame is the rotation axis of the joint.</param>
+      <param name="position">Current joint position.</param>
+      <param name="minPosition">Minimum joint position.</param>
+      <param name="maxPosition">Maximum joint position.</param>
+      <param name="joint">Passive prismatic joint.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Mechanism.Create(HAL.Objects.Mechanisms.Mechanism@,System.String,System.Collections.Generic.List{HAL.Objects.IObjectGraphEntity},HAL.Objects.Mechanisms.Mechanism@)">
+      <summary>Assembles a mechanism from components.</summary>
+      <param name="instance">Existing instance of this mechanism.</param>
+      <param name="alias">Mechanism alias.</param>
+      <param name="component">Components of the mechanism, starting from the base part.</param>
+      <param name="mechanism">Mechanism.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Mechanism.Assemble(HAL.Objects.Mechanisms.Mechanism@,System.String,System.Collections.Generic.List{HAL.Objects.Mechanisms.Mechanism},HAL.Objects.Mechanisms.Mechanism@)">
+      <summary>Creates a composite mechanism from two or more mechanisms.</summary>
+      <param name="instance">Instance.</param>
+      <param name="alias">Alias.</param>
+      <param name="toAssemble">Mechanisms to assemble.</param>
+      <param name="mechanism">Composite mechanism.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Mechanism.Assemble(HAL.Objects.Mechanisms.Mechanism@,System.String,HAL.Objects.Mechanisms.Mechanism,System.Collections.Generic.List{HAL.Objects.Connection},System.Collections.Generic.List{HAL.Objects.Mechanisms.Mechanism},HAL.Objects.Mechanisms.Mechanism@)">
+      <summary>Creates a composite mechanism from two or more mechanisms.</summary>
+      <param name="instance">Instance.</param>
+      <param name="alias">Alias.</param>
+      <param name="trunk">Trunk mechanism.</param>
+      <param name="connection">Trunk connections to which branch mechanisms should be attached.</param>
+      <param name="branch">Branch mechanisms.</param>
+      <param name="mechanism">Composite mechanism.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Mechanism.Disassemble(HAL.Objects.Mechanisms.Mechanism,HAL.Objects.Parts.Part@,System.Collections.Generic.List{HAL.Objects.Parts.Part}@,System.Collections.Generic.List{HAL.Objects.Joint}@,System.Collections.Generic.List{HAL.Objects.Connection}@,HAL.Objects.Connection@,HAL.Objects.Mechanisms.Mechanism@,System.Collections.Generic.List{HAL.Objects.Mechanisms.Mechanism}@,System.Collections.Generic.List{HAL.Graphs.Persistence}@)">
+      <summary>Retrieves the components of a mechanism.</summary>
+      <param name="mechanism">Mechanism to disassemble.</param>
+      <param name="base">Base part.</param>
+      <param name="part">Mechanical parts.</param>
+      <param name="joint">Mechanical joints.</param>
+      <param name="connection">Connections.</param>
+      <param name="activeEndpoint">Active end point.</param>
+      <param name="endEffector">End effector.</param>
+      <param name="subMechanism">Sub-mechanisms.</param>
+      <param name="persistence">Persistence of each sub-mechanism.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Mechanism.PlaceRobot(HAL.Objects.Mechanisms.Mechanism@,System.String,HAL.Spatial.MatrixFrame,System.Double[],System.Int32[],HAL.Objects.Mechanisms.Mechanism@)">
+      <summary>Places a robot in the document.</summary>
+      <param name="instance">Existing instance of this robot.</param>
+      <param name="alias">Robot alias.</param>
+      <param name="location">Location relative to the document reference coordinate system.</param>
+      <param name="position">Initial mechanism position.</param>
+      <param name="mapping">Index of each joint of this mechanism to ensure correct order in the controller.</param>
+      <param name="robot">Robot.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Mechanism.Relocate(HAL.Objects.Mechanisms.Mechanism,HAL.Spatial.MatrixFrame,HAL.Objects.Mechanisms.Mechanism@)">
+      <summary>Modifies the location of a mechanism.</summary>
+      <param name="instance">Mechanism to relocate.</param>
+      <param name="location">Location relative to the document reference coordinate system.</param>
+      <param name="mechanism">Updated mechanism.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Tools.Grasping.Gripper.Create(HAL.Objects.Mechanisms.Tools.Grasping.Gripper@,System.String,HAL.Spatial.MatrixFrame,System.Collections.Generic.List{HAL.Spatial.Mesh},System.Collections.Generic.List{HAL.Display.Styles.MeshDisplayStyle},HAL.Units.Mass.Mass,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame,HAL.Objects.Mechanisms.Tools.Grasping.Gripper@)">
+      <summary>Creates a generic gripper.</summary>
+      <param name="instance">Existing instance of this tool.</param>
+      <param name="alias">Tool alias.</param>
+      <param name="frame">Body frame expressed in the world coordinate system.</param>
+      <param name="body">Tool body.</param>
+      <param name="color">Tool body display material.</param>
+      <param name="toolFrame">Tool frame (TCP), as the "processing" frame of the tool.</param>
+      <param name="mass">Mass.</param>
+      <param name="centerOfMass">Center of mass.</param>
+      <param name="tool">Gripper.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Tools.Grasping.Gripper.Create(HAL.Objects.Mechanisms.Tools.Grasping.VacuumGripper@,System.String,HAL.Spatial.MatrixFrame,System.Collections.Generic.List{HAL.Spatial.Mesh},System.Collections.Generic.List{HAL.Display.Styles.MeshDisplayStyle},HAL.Units.Mass.Mass,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame,HAL.Objects.Mechanisms.Tools.Grasping.VacuumGripper@)">
+      <summary>Creates a vacuum gripper.</summary>
+      <param name="instance">Existing instance of this tool.</param>
+      <param name="alias">Tool alias.</param>
+      <param name="frame">Body frame expressed in the world coordinate system.</param>
+      <param name="body">Tool body.</param>
+      <param name="color">Tool body display material.</param>
+      <param name="toolFrame">Tool frame (TCP), as the "processing" frame of the tool.</param>
+      <param name="mass">Mass.</param>
+      <param name="centerOfMass">Center of mass.</param>
+      <param name="tool">Gripper.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Tools.Tool.Place(HAL.Objects.Mechanisms.Mechanism@,System.String,HAL.Spatial.MatrixFrame,System.Double[],HAL.Objects.Mechanisms.Tools.Tool@)">
+      <summary>Places a tool in the document.</summary>
+      <param name="instance">Existing instance of this tool.</param>
+      <param name="alias">Tool alias.</param>
+      <param name="location">Location relative to the document reference (World).</param>
+      <param name="position">Initial mechanism position.</param>
+      <param name="tool">Tool.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Tools.Tool.Create(HAL.Objects.Mechanisms.Tools.Tool@,System.String,HAL.Spatial.MatrixFrame,System.Collections.Generic.List{HAL.Spatial.Mesh},HAL.Units.Mass.Mass,HAL.Spatial.MatrixFrame,HAL.Objects.Mechanisms.Tools.Tool@)">
+      <summary>Creates a generic tool.</summary>
+      <param name="instance">Existing instance of this tool.</param>
+      <param name="alias">Tool alias.</param>
+      <param name="frame">Body frame expressed in the world coordinate system.</param>
+      <param name="body">Tool body.</param>
+      <param name="toolFrame">Tool frame (TCP), as the "processing" frame of the tool.</param>
+      <param name="mass">Mass.</param>
+      <param name="tool">Tool.</param>
+    </member>
+    <member name="M:HAL.Objects.Mechanisms.Tools.Tool.Create(HAL.Objects.Mechanisms.Tools.Tool@,System.String,HAL.Spatial.MatrixFrame,System.Collections.Generic.List{HAL.Spatial.Mesh},System.Collections.Generic.List{HAL.Display.Styles.MeshDisplayStyle},HAL.Units.Mass.Mass,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame,HAL.Objects.Mechanisms.Tools.Tool@)">
+      <summary>Creates a generic tool.</summary>
+      <param name="instance">Existing instance of this tool.</param>
+      <param name="alias">Tool alias.</param>
+      <param name="frame">Body frame expressed in the world coordinate system.</param>
+      <param name="body">Tool body.</param>
+      <param name="color">Tool body display material.</param>
+      <param name="toolFrame">Tool frame (TCP), as the "processing" frame of the tool.</param>
+      <param name="mass">Mass.</param>
+      <param name="centerOfMass">Center of mass.</param>
+      <param name="tool">Tool.</param>
+    </member>
+    <member name="M:HAL.Objects.Parts.Part.Create(HAL.Objects.Parts.Part@,System.String,HAL.Spatial.MatrixFrame,System.Collections.Generic.List{HAL.Spatial.Mesh},HAL.Units.Mass.Mass,HAL.Objects.Parts.Part@)">
+      <summary>Creates a mechanical part.</summary>
+      <param name="instance">Existing instance of the part.</param>
+      <param name="alias">Joint alias.</param>
+      <param name="frame">Part frame expressed in the world coordinate system.</param>
+      <param name="body">Part body.</param>
+      <param name="mass">Part mass.</param>
+      <param name="part">Mechanical part.</param>
+    </member>
+    <member name="M:HAL.Objects.Parts.Part.Create(HAL.Objects.Parts.Part@,System.String,HAL.Spatial.MatrixFrame,System.Collections.Generic.List{HAL.Spatial.Mesh},System.Collections.Generic.List{HAL.Display.Styles.MeshDisplayStyle},HAL.Units.Mass.Mass,HAL.Spatial.MatrixFrame,HAL.Objects.Parts.Part@)">
+      <summary>Creates a mechanical part.</summary>
+      <param name="instance">Existing instance of the part.</param>
+      <param name="alias">Joint alias.</param>
+      <param name="frame">Part frame expressed in the world coordinate system.</param>
+      <param name="body">Part body.</param>
+      <param name="color">Part body display material.</param>
+      <param name="mass">Part mass.</param>
+      <param name="centerOfMass">Center of mass.</param>
+      <param name="part">Mechanical part.</param>
+    </member>
+    <member name="M:HAL.Objects.Parts.Part.Create(HAL.Objects.Parts.Part@,System.String,HAL.Spatial.MatrixFrame,System.Collections.Generic.List{HAL.Spatial.Mesh},System.Collections.Generic.List{HAL.Spatial.Mesh},System.Boolean,System.Collections.Generic.List{HAL.Display.Styles.MeshDisplayStyle},HAL.Units.Mass.Mass,HAL.Spatial.MatrixFrame,HAL.Objects.Parts.Part@)">
+      <summary>Creates a mechanical part.</summary>
+      <param name="instance">Existing instance of the part.</param>
+      <param name="alias">Joint alias.</param>
+      <param name="frame">Part frame expressed in the world coordinate system.</param>
+      <param name="body">Part body.</param>
+      <param name="lowResBody">Low resolution part body.</param>
+      <param name="generateHulls">Whether to generate convex hulls for the input meshes.</param>
+      <param name="color">Part body display material.</param>
+      <param name="mass">Part mass.</param>
+      <param name="centerOfMass">Center of mass.</param>
+      <param name="part">Mechanical part.</param>
+    </member>
+    <member name="M:HAL.Objects.Reference.Create(HAL.Objects.Reference@,System.String,HAL.Spatial.MatrixFrame,HAL.Objects.Reference@)">
+      <summary>Creates a reference coordinate system.</summary>
+      <param name="instance">Existing instance of this reference.</param>
+      <param name="alias">Reference alias.</param>
+      <param name="frame">Reference frame.</param>
+      <param name="reference">Reference.</param>
+    </member>
+    <member name="M:HAL.Objects.Reference.Create(HAL.Objects.Reference@,System.String,HAL.Spatial.MatrixFrame,HAL.Objects.Reference,System.Boolean,HAL.Objects.Reference@)">
+      <summary>Creates a reference.</summary>
+      <param name="instance">Existing instance of this reference.</param>
+      <param name="alias">Reference alias.</param>
+      <param name="frame">Reference frame.</param>
+      <param name="parent">Parent reference, if any. The world reference system will be used otherwise.</param>
+      <param name="isAbsolute">Whether the frame specifies an absolute world location. If false, the frame is considered relative to the parent.</param>
+      <param name="reference">Reference.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.ActionSet.OverrideExport(HAL.Procedures.Procedure@,System.String,System.String,HAL.Procedures.Procedure,HAL.Procedures.Procedure@)">
+      <summary>Wraps a literal expression as a custom action.</summary>
+      <param name="instance">Existing instance.</param>
+      <param name="alias">Action alias.</param>
+      <param name="expression">Action expression. Please ensure string literals are enclosed in double quotes ("").</param>
+      <param name="simulation">Action simulation.</param>
+      <param name="action">Custom action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.AssemblyAction.ChangeEndPoint(HAL.Procedures.Procedure@,System.String,HAL.Objects.Mechanisms.Mechanism,HAL.Objects.Connection,System.Collections.Generic.List{HAL.Procedures.Procedure},System.Collections.Generic.List{HAL.Procedures.Procedure},HAL.Procedures.Procedure@)">
+      <summary>Changes the end point of a robot.</summary>
+      <param name="instance">Existing instance.</param>
+      <param name="alias">Action alias.</param>
+      <param name="mechanism">Mechanism whose end point should be changed.</param>
+      <param name="endPoint">End point to use as the active end point of the mechanism.</param>
+      <param name="before">Actions to be executed before the tool change.</param>
+      <param name="after">Actions to be executed after the tool change.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.MotionAction.Move(HAL.Procedures.Procedure@,System.String,System.Collections.Generic.List{HAL.Motion.Settings.Target},System.Collections.Generic.List{HAL.Motion.Settings.MotionSettings},HAL.Procedures.Procedure@)">
+      <summary>Moves the robot through a sequence of targets.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="alias">Action alias.</param>
+      <param name="target">Targets to move through.</param>
+      <param name="motionSettings">Motion settings for each target.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.MotionAction.Jump(HAL.Procedures.Procedure@,System.String,HAL.Motion.Settings.Target,HAL.Motion.Settings.Target,HAL.Spatial.Vector3D,System.Boolean,HAL.Units.Length.Length,HAL.Motion.Settings.MotionSettings,HAL.Motion.Settings.MotionSettings,HAL.Procedures.Procedure@)">
+      <summary>Jump motion between two targets.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="alias">Action alias.</param>
+      <param name="from">Target to move from.</param>
+      <param name="to">Target to move to.</param>
+      <param name="direction">Jump direction.</param>
+      <param name="isRelative">Whether the specified jump direction is relative to the start and end targets (true) or the world (false).</param>
+      <param name="distance">Jump distance.</param>
+      <param name="settings">Jump start and end settings.</param>
+      <param name="travelSettings">Travel settings.</param>
+      <param name="action">Jump action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.MotionAction.Jump(HAL.Procedures.Procedure@,System.String,HAL.Motion.Settings.Target,HAL.Motion.Settings.Target,HAL.Spatial.Vector3D,System.Boolean,HAL.Spatial.Vector3D,System.Boolean,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Motion.Settings.MotionSettings,HAL.Motion.Settings.MotionSettings,HAL.Motion.Settings.MotionSettings,HAL.Procedures.Procedure@)">
+      <summary>Jump motion between two targets.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="alias">Action alias.</param>
+      <param name="from">Target to move from.</param>
+      <param name="to">Target to move to.</param>
+      <param name="fromDirection">Jump start direction.</param>
+      <param name="relativeFromDirection">Whether the specified jump start direction is relative to the start target (true) or the world (false).</param>
+      <param name="toDirection">Jump end direction.</param>
+      <param name="relativeToDirection">Whether the specified jump end direction is relative to the end target (true) or the world (false).</param>
+      <param name="fromDistance">Jump start distance.</param>
+      <param name="toDistance">Jump end distance.</param>
+      <param name="fromSettings">Jump start settings.</param>
+      <param name="travelSettings">Travel settings.</param>
+      <param name="toSettings">Jump end settings.</param>
+      <param name="action">Jump action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.MotionAction.Jump(HAL.Procedures.Procedure@,System.String,System.Collections.Generic.List{HAL.Procedures.Procedure},HAL.Spatial.Vector3D,System.Boolean,HAL.Units.Length.Length,HAL.Motion.Settings.MotionSettings,HAL.Motion.Settings.MotionSettings,HAL.Procedures.Procedure@)">
+      <summary>Jump motion between two procedures.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="alias">Action alias.</param>
+      <param name="procedures">Actions between which jumps should be inserted.</param>
+      <param name="direction">Jump direction.</param>
+      <param name="isRelative">Whether the specified jump direction is relative to the start and end targets (true) or the world (false).</param>
+      <param name="distance">Jump distance.</param>
+      <param name="settings">Jump start and end settings.</param>
+      <param name="travelSettings">Travel settings.</param>
+      <param name="action">Jump action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.MotionAction.Jump(HAL.Procedures.Procedure@,System.String,System.Collections.Generic.List{HAL.Procedures.Procedure},HAL.Spatial.Vector3D,System.Boolean,HAL.Spatial.Vector3D,System.Boolean,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Motion.Settings.MotionSettings,HAL.Motion.Settings.MotionSettings,HAL.Motion.Settings.MotionSettings,HAL.Procedures.Procedure@)">
+      <summary>Jump motion between two procedures.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="alias">Action alias.</param>
+      <param name="procedures">Actions between which jumps should be inserted.</param>
+      <param name="fromDirection">Jump start direction.</param>
+      <param name="relativeFromDirection">Whether the specified jump start direction is relative to the start target (true) or the world (false).</param>
+      <param name="toDirection">Jump end direction.</param>
+      <param name="relativeToDirection">Whether the specified jump end direction is relative to the end target (true) or the world (false).</param>
+      <param name="fromDistance">Jump start distance.</param>
+      <param name="toDistance">Jump end distance.</param>
+      <param name="fromSettings">Jump start settings.</param>
+      <param name="travelSettings">Travel settings.</param>
+      <param name="toSettings">Jump end settings.</param>
+      <param name="action">Jump action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.SignalAction.Digital(HAL.Procedures.Procedure@,System.String,HAL.Communications.ElectricSignal,HAL.Procedures.Actions.SignalEffect,System.Boolean,HAL.Procedures.Procedure@)">
+      <summary>Changes the state of a digital output electric signal.</summary>
+      <param name="instance">Existing instance.</param>
+      <param name="alias">Action alias.</param>
+      <param name="signal">Signal to be modified.</param>
+      <param name="effect">Desired effect.</param>
+      <param name="state">State to set to this signal if Effect = Set.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.SignalAction.Digital(HAL.Procedures.Procedure@,System.String,System.Collections.Generic.List{HAL.Communications.ElectricSignal},HAL.Procedures.Actions.SignalEffect,System.Collections.Generic.List{System.Boolean},HAL.Procedures.Procedure@)">
+      <summary>Changes the state of multiple digital output signals.</summary>
+      <param name="instance">Existing instance.</param>
+      <param name="alias">Action alias.</param>
+      <param name="signal">Signals to be modified.</param>
+      <param name="effect">Desired effect for each signal.</param>
+      <param name="state">State to set to each signal, only taken into account if Effect = Set.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.SignalAction.Analog(HAL.Procedures.Procedure@,System.String,HAL.Communications.ElectricSignal,HAL.Procedures.Actions.SignalEffect,HAL.Units.Electrical.ElectricTension,HAL.Procedures.Procedure@)">
+      <summary>Changes the tension of an analog output electric signal.</summary>
+      <param name="instance">Existing instance.</param>
+      <param name="alias">Action alias.</param>
+      <param name="signal">Signal to be modified.</param>
+      <param name="effect">Desired effect.</param>
+      <param name="tension">Tension to set to this signal if Effect = Set.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.SignalAction.Analog(HAL.Procedures.Procedure@,System.String,System.Collections.Generic.List{HAL.Communications.ElectricSignal},HAL.Procedures.Actions.SignalEffect,System.Collections.Generic.List{HAL.Units.Electrical.ElectricTension},HAL.Procedures.Procedure@)">
+      <summary>Changes the tension of multiple analog output electric signals.</summary>
+      <param name="instance">Existing instance.</param>
+      <param name="alias">Action alias.</param>
+      <param name="signal">Signals to be modified.</param>
+      <param name="effect">Desired effect for each signal.</param>
+      <param name="tension">Tension to set to each signal, only taken into account if Effect = Set.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Actions.ThreadAction.Wait(HAL.Procedures.Procedure@,System.String,HAL.Units.Time.Time,HAL.Procedures.Procedure@)">
+      <summary>Temporarily pauses the procedure.</summary>
+      <param name="instance">Existing instance.</param>
+      <param name="alias">Action alias.</param>
+      <param name="duration">Waiting duration.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Applications.Prehension.Prehension.Take(HAL.Procedures.Procedure@,HAL.Objects.Mechanisms.Tools.Grasping.Gripper,HAL.Objects.Parts.Part,HAL.Procedures.Procedure,HAL.Procedures.Procedure@)">
+      <summary>Takes a part.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="gripper">Gripper taking the part.</param>
+      <param name="part">Part being taken.</param>
+      <param name="procedure">Procedure executed to actuate the gripper.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Applications.Prehension.Prehension.Release(HAL.Procedures.Procedure@,HAL.Objects.Mechanisms.Tools.Grasping.Gripper,HAL.Objects.Parts.Part,HAL.Procedures.Procedure,HAL.Procedures.Procedure@)">
+      <summary>Releases a part.</summary>
+      <param name="instance">Existing instance of this action.</param>
+      <param name="gripper">Gripper releasing the part.</param>
+      <param name="part">Part being released.</param>
+      <param name="procedure">Procedure executed to actuate the gripper.</param>
+      <param name="action">Resulting action.</param>
+    </member>
+    <member name="M:HAL.Procedures.Procedure.Combine(HAL.Procedures.Procedure@,System.String,System.Collections.Generic.List{HAL.Procedures.Procedure},System.Boolean,HAL.Procedures.Procedure@)">
+      <summary>Combines multiple actions into a single one.</summary>
+      <param name="instance">Existing instance of the combined action.</param>
+      <param name="alias">Alias of the resulting action.</param>
+      <param name="combined">Actions to be fused into a single one.</param>
+      <param name="compact">Whether the combined action structure should be simplified.</param>
+      <param name="action">Combined actions.</param>
+    </member>
+    <member name="M:HAL.Procedures.Procedure.Combine(HAL.Procedures.Procedure@,System.String,System.Collections.Generic.List{HAL.Procedures.Procedure},System.Collections.Generic.List{HAL.Procedures.Procedure},System.Boolean,HAL.Procedures.Procedure@)">
+      <summary>Combines multiple actions into a single one.</summary>
+      <param name="instance">Existing instance of the combined action.</param>
+      <param name="alias">Alias of the resulting action.</param>
+      <param name="combined">Actions to be fused into a single one.</param>
+      <param name="simulation">Combined procedure simulation override.</param>
+      <param name="compact">Whether the combined action structure should be simplified.</param>
+      <param name="action">Combined actions.</param>
+    </member>
+    <member name="M:HAL.Spatial.DHParameters.Create(HAL.Units.Angle.Angle,HAL.Units.Length.Length,HAL.Units.Angle.Angle,HAL.Units.Length.Length,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame specified with classic Denavit-Hartenberg parameters.</summary>
+      <param name="rz1">Rotation angle between x1 and x2 around z1.</param>
+      <param name="tz1">Distance between x1 and x2 along z1.</param>
+      <param name="rx2">Rotation angle between z1 and z2 around x2.</param>
+      <param name="tx2">Distance between z1 and z2 along x2.</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.EulerFrame.Create(HAL.Spatial.Vector3D,HAL.Spatial.Axis,HAL.Spatial.Axis,HAL.Spatial.Axis,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame with a rotation specified in intrinsic Euler or Tait-Bryan angles.</summary>
+      <param name="origin">Frame origin.</param>
+      <param name="axisA">First rotation direction.</param>
+      <param name="axisB">Second rotation direction.</param>
+      <param name="axisC">Third rotation direction.</param>
+      <param name="angleA">First rotation angle.</param>
+      <param name="angleB">Second rotation angle.</param>
+      <param name="angleC">Third rotation angle.</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.EulerFrame.Create(HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Spatial.Axis,HAL.Spatial.Axis,HAL.Spatial.Axis,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Units.Angle.Angle,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame with a rotation specified in intrinsic Euler or Tait-Bryan angles.</summary>
+      <param name="x">Origin X coordinate.</param>
+      <param name="y">Origin Y coordinate.</param>
+      <param name="z">Origin Z coordinate.</param>
+      <param name="axisA">First rotation direction.</param>
+      <param name="axisB">Second rotation direction.</param>
+      <param name="axisC">Third rotation direction.</param>
+      <param name="angleA">First rotation angle.</param>
+      <param name="angleB">Second rotation angle.</param>
+      <param name="angleC">Third rotation angle.</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.MatrixFrame.Create(HAL.Spatial.Vector3D,HAL.Spatial.Vector3D,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame with a rotation specified as an axis-angle rotation.</summary>
+      <param name="origin">Frame origin.</param>
+      <param name="axisAngle">Axis-angle rotation.</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.MatrixFrame.Create(HAL.Spatial.Vector3D,HAL.Spatial.Vector3D,HAL.Units.Angle.Angle,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame with a rotation specified as an axis-angle rotation.</summary>
+      <param name="origin">Frame origin.</param>
+      <param name="axis">Rotation axis (e).</param>
+      <param name="angle">Rotation angle (θ).</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.MatrixFrame.Create(HAL.Spatial.Vector3D,HAL.Units.Absolute.Absolute,HAL.Units.Absolute.Absolute,HAL.Units.Absolute.Absolute,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame with a rotation specified as an axis-angle rotation.</summary>
+      <param name="origin">Frame origin.</param>
+      <param name="ax">X component of the axis-angle.</param>
+      <param name="ay">Y component of the axis-angle.</param>
+      <param name="az">Z component of the axis-angle.</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.MatrixFrame.Create(HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Absolute.Absolute,HAL.Units.Absolute.Absolute,HAL.Units.Absolute.Absolute,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame with a rotation specified as an axis-angle rotation.</summary>
+      <param name="x">Origin X coordinate.</param>
+      <param name="y">Origin Y coordinate.</param>
+      <param name="z">Origin Z coordinate.</param>
+      <param name="ax">X component of the axis-angle.</param>
+      <param name="ay">Y component of the axis-angle.</param>
+      <param name="az">Z component of the axis-angle.</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.ModifiedDHParameters.Create(HAL.Units.Angle.Angle,HAL.Units.Length.Length,HAL.Units.Angle.Angle,HAL.Units.Length.Length,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame specified with modified Denavit-Hartenberg parameters.</summary>
+      <param name="rx1">Rotation angle between z1 and z2 around x1.</param>
+      <param name="tx1">Distance between z1 and z2 along x1.</param>
+      <param name="rz2">Rotation angle between x1 and x2 around z2.</param>
+      <param name="tz2">Distance between x1 and x2 along z2.</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.QuaternionFrame.Create(HAL.Spatial.Vector3D,System.Double,System.Double,System.Double,System.Double,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame with a rotation specified as a quaternion.</summary>
+      <param name="origin">Frame origin.</param>
+      <param name="qw">Real component of the quaternion (w, q1).</param>
+      <param name="qx">X component of the quaternion (q2).</param>
+      <param name="qy">Y component of the quaternion (q3).</param>
+      <param name="qz">Y component of the quaternion (q4).</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+    <member name="M:HAL.Spatial.QuaternionFrame.Create(HAL.Units.Length.Length,HAL.Units.Length.Length,HAL.Units.Length.Length,System.Double,System.Double,System.Double,System.Double,HAL.Spatial.MatrixFrame,HAL.Spatial.MatrixFrame@)">
+      <summary>Creates a frame with a rotation specified as a quaternion.</summary>
+      <param name="x">Origin X coordinate.</param>
+      <param name="y">Origin Y coordinate.</param>
+      <param name="z">Origin Z coordinate.</param>
+      <param name="qw">Real component of the quaternion (w, q1).</param>
+      <param name="qx">X component of the quaternion (q2).</param>
+      <param name="qy">Y component of the quaternion (q3).</param>
+      <param name="qz">Y component of the quaternion (q4).</param>
+      <param name="reference">Reference frame.</param>
+      <param name="frame">Resulting frame.</param>
+    </member>
+  </members>
+</doc>

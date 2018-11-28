@@ -1,0 +1,652 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>HAL.UI.Primitives</name>
+  </assembly>
+  <members>
+    <member name="T:HAL.UI.Attributes.EditorAttribute">
+      <summary>Registers a view to be the default editor of one or multiple object type(s).</summary>
+    </member>
+    <member name="M:HAL.UI.Attributes.EditorAttribute.#ctor(System.Type[])">
+      <summary>Registers a view to be the default editor of one or multiple object type(s).</summary>
+      <param name="types">Types which can be edited with this editor.</param>
+    </member>
+    <member name="M:HAL.UI.Attributes.EditorAttribute.#ctor(System.String)">
+      <summary>Registers a view to be the default editor of one or multiple object type(s).</summary>
+      <param name="getTypeMethodName">Name of the static method to be called to retrieve target types from. This method must return a <see cref="T:System.Type" /> enumeration.</param>
+    </member>
+    <member name="P:HAL.UI.Attributes.EditorAttribute.GetTypeMethodName">
+      <summary>Name of the static method to be called to retrieve target types from. This method must return a <see cref="T:System.Type" /> enumeration.</summary>
+    </member>
+    <member name="P:HAL.UI.Attributes.EditorAttribute.Types">
+      <summary>Types which can be edited with this editor.</summary>
+    </member>
+    <member name="T:HAL.UI.Attributes.NavigationAttribute">
+      <summary>Registers a view for navigation.</summary>
+    </member>
+    <member name="M:HAL.UI.Attributes.NavigationAttribute.#ctor">
+      <summary>Registers a view for navigation.</summary>
+    </member>
+    <member name="M:HAL.UI.Attributes.NavigationAttribute.#ctor(System.String)">
+      <summary>Registers a view for navigation with a given alias.</summary>
+      <param name="alias">Navigation alias.</param>
+    </member>
+    <member name="P:HAL.UI.Attributes.NavigationAttribute.Alias">
+      <summary>Navigation alias.</summary>
+    </member>
+    <member name="T:HAL.UI.Attributes.PropertyEditorAttribute">
+      <summary>Registers a view to be the default editor of one or multiple object type(s) in a property grid.</summary>
+    </member>
+    <member name="M:HAL.UI.Attributes.PropertyEditorAttribute.#ctor(System.Type[])">
+      <summary>Registers a view to be the default editor of one or multiple object type(s) in a property grid.</summary>
+      <param name="types">Types which can be edited with this property editor.</param>
+    </member>
+    <member name="M:HAL.UI.Attributes.PropertyEditorAttribute.#ctor(System.String)">
+      <summary>Registers a view to be the default editor of one or multiple object type(s) in a property grid.</summary>
+      <param name="getTypeMethodName">Name of the static method to be called to retrieve target types from. This method must return a <see cref="T:System.Type" /> enumeration.</param>
+    </member>
+    <member name="P:HAL.UI.Attributes.PropertyEditorAttribute.GetTypeMethodName">
+      <summary>Name of the static method to be called to retrieve target types from. This method must return a <see cref="T:System.Type" /> enumeration.</summary>
+    </member>
+    <member name="P:HAL.UI.Attributes.PropertyEditorAttribute.Types">
+      <summary>Types which can be edited with this property editor.</summary>
+    </member>
+    <member name="T:HAL.UI.Attributes.RegionAttribute">
+      <summary>Associates a view with a region.</summary>
+    </member>
+    <member name="M:HAL.UI.Attributes.RegionAttribute.#ctor(System.String)">
+      <summary>Associates a view with a region.</summary>
+      <param name="regionName">Associated region name.</param>
+    </member>
+    <member name="P:HAL.UI.Attributes.RegionAttribute.RegionName">
+      <summary>Associated region name.</summary>
+    </member>
+    <member name="M:HAL.UI.Attributes.ViewModelAttribute.#ctor(System.Type)">
+      <summary>Associates a view model type to a view type.</summary>
+      <param name="viewModelType">View model type.</param>
+    </member>
+    <member name="M:HAL.UI.Attributes.ViewModelAttribute.#ctor(System.String)">
+      <summary>Associates a view model type to a view type.</summary>
+      <param name="viewModelTypeName">View model type name.</param>
+    </member>
+    <member name="P:HAL.UI.Attributes.ViewModelAttribute.ViewModelType">
+      <summary>Target view model type.</summary>
+    </member>
+    <member name="P:HAL.UI.Attributes.ViewModelAttribute.ViewModelTypeName">
+      <summary>Target view model type name.</summary>
+    </member>
+    <member name="T:HAL.UI.Composition.IExtendedRegionManager">
+      <summary>Qualifies a region manager.</summary>
+    </member>
+    <member name="M:HAL.UI.Composition.IExtendedRegionManager.GetRegion(System.String)">
+      <summary>Retrieves a region from its name.</summary>
+      <param name="regionName">Region name.</param>
+      <returns>Matching region, if any.</returns>
+    </member>
+    <member name="M:HAL.UI.Composition.IExtendedRegionManager.RequestNavigate(System.String,System.String)">
+      <summary>Navigates on the specified region.</summary>
+      <param name="regionName">Region to navigate on.</param>
+      <param name="uri">Content URI to be displayed in the region.</param>
+    </member>
+    <member name="M:HAL.UI.Composition.IExtendedRegionManager.RegisterViewWithRegion(System.Type,System.String)">
+      <summary>Associates a view with a region.</summary>
+      <param name="regionName">Region name to associate the view with.</param>
+      <param name="viewType">View type.</param>
+    </member>
+    <member name="M:HAL.UI.Composition.IExtendedRegionManager.RegisterViewWithRegion``1(System.String)">
+      <summary>Associates a view with a region.</summary>
+      <typeparam name="T">View type.</typeparam>
+      <param name="regionName">Region name to associate the view with.</param>
+    </member>
+    <member name="M:HAL.UI.Composition.IExtendedRegionManager.SetScopedRegionManager(System.Object)">
+      <summary>Creates a scoped region manager from this one, and sets it to the specified target object.</summary>
+      <param name="target">Target object.</param>
+      <returns>Resulting scoped region manager.</returns>
+    </member>
+    <member name="M:HAL.UI.Composition.IExtendedRegionManager.SetTo(System.Object)">
+      <summary>Assigns this region manager to the specified target object.</summary>
+      <param name="target">Target object.</param>
+    </member>
+    <member name="T:HAL.UI.Composition.IRegionManagerAware">
+      <summary>Qualifies an object keeping a reference to a region manager.</summary>
+    </member>
+    <member name="P:HAL.UI.Composition.IRegionManagerAware.RegionManager">
+      <summary>Region manager.</summary>
+    </member>
+    <member name="T:HAL.UI.Composition.RegionAlias">
+      <summary>Common regions aliases.</summary>
+    </member>
+    <member name="T:HAL.UI.Composition.View">
+      <summary>Common view aliases.</summary>
+    </member>
+    <member name="T:HAL.UI.Controls.PropertyGrid.IEditorRegister">
+      <summary>Qualifies an editor register.</summary>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IEditorRegister.Add(System.Type,System.Type[])">
+      <summary>Adds an editor to the register.</summary>
+      <param name="editorType">Editor type.</param>
+      <param name="editedTypes">Edited types.</param>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IEditorRegister.GetEditorAlias(System.Type,System.String@)">
+      <summary>Attempts to retrieve the alias of the editor mapped to a type.</summary>
+      <param name="type">Type to test.</param>
+      <param name="alias">Editor alias, if any.</param>
+      <returns>Whether an editor was found.</returns>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IEditorRegister.GetEditorTemplate(System.Type)">
+      <summary>Attempts to retrieve the template of the editor mapped to a type.</summary>
+      <param name="type">Type to test.</param>
+      <returns>Matching template.</returns>
+    </member>
+    <member name="T:HAL.UI.Controls.PropertyGrid.IPropertyEditorRegister">
+      <summary>Qualifies a property editor register.</summary>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IPropertyEditorRegister.Add(System.Type,System.Type[])">
+      <summary>Adds an editor to the register.</summary>
+      <param name="editorType">Editor type.</param>
+      <param name="editedTypes">Edited types.</param>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IPropertyEditorRegister.TryGetEditorTemplate(System.Type,System.Object@)">
+      <summary>Attempts to retrieve the editor template for a given type.</summary>
+      <param name="type">Type to analyze.</param>
+      <param name="template">Editor template.</param>
+      <returns>Whether an editor template was found.</returns>
+    </member>
+    <member name="T:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor">
+      <summary>Qualifies a property editor view model.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.Property">
+      <summary>Edited property.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.PropertyType">
+      <summary>Edited property type.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.Name">
+      <summary>Property name.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.Value">
+      <summary>Property value.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.DefaultValue">
+      <summary>Default value, if any.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.IsDefault">
+      <summary>Whether the current property value is the default property value.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.IsEditable">
+      <summary>Whether this property can be edited.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.ParseCommand">
+      <summary>Triggers the parsing of the editor input.</summary>
+    </member>
+    <member name="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.ResetCommand">
+      <summary>Triggers the resetting of the property value.</summary>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.ValidateInput(System.String)">
+      <summary>Validates the property editor text input.</summary>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.OnPropertySet">
+      <summary>Called when the <see cref="P:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.Property" /> input is set.</summary>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.GetValue">
+      <summary>Retrieves the property value as a string.</summary>
+      <returns>Property value as a string.</returns>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.SetValue(System.Object)">
+      <summary>Sets the property value from a string.</summary>
+      <returns>Property value as a string.</returns>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.Parse(System.String)">
+      <summary>Parses the editor text input.</summary>
+      <param name="input">Input.</param>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.IVM_PropertyEditor.Reset">
+      <summary>Resets the value of the property to its initial value.</summary>
+    </member>
+    <member name="M:HAL.UI.Controls.PropertyGrid.PropertyGridHelpers.SetPropertyVisibility(System.Object,System.String,System.Object,System.Boolean)">
+      <summary>Toggles the visibility of a property in a property grid.</summary>
+      <param name="instance">Instance in which the property should be searched.</param>
+      <param name="propertyName">Property name.</param>
+      <param name="isVisible">Whether the property should be displayed in the property grid.</param>
+      <param name="silent">Whether this method should hide its exception and return silently.</param>
+    </member>
+    <member name="T:HAL.UI.Interactivity.IAlertConfirmation">
+      <summary>Confirmation dialog related to an alert.</summary>
+    </member>
+    <member name="T:HAL.UI.Interactivity.IAlertNotification">
+      <summary>Notification related to an alert.</summary>
+    </member>
+    <member name="P:HAL.UI.Interactivity.IAlertNotification.Alert">
+      <summary>Inner alert.</summary>
+    </member>
+    <member name="T:HAL.UI.Interactivity.INotificationService">
+      <summary>Qualifies a notification service.</summary>
+    </member>
+    <member name="M:HAL.UI.Interactivity.INotificationService.Notify(HAL.UI.Interactivity.IUserNotification,System.Action{HAL.UI.Interactivity.IUserNotification})">
+      <summary>Notifies the user of an alert.</summary>
+      <param name="notification">Notification to be shown to the user.</param>
+      <param name="callback">Callback method invoked once the notification is acknowledged.</param>
+    </member>
+    <member name="M:HAL.UI.Interactivity.INotificationService.Confirm(HAL.UI.Interactivity.IUserConfirmation,System.Action{HAL.UI.Interactivity.IUserConfirmation})">
+      <summary>Asks the user to confirm an alert.</summary>
+      <param name="confirmation">Confirmation to be shown to the user.</param>
+      <param name="callback">Callback method invoked once the confirmation is processed.</param>
+    </member>
+    <member name="T:HAL.UI.Interactivity.IUserConfirmation">
+      <summary>Qualifies a notification shown to the user for confirmation.</summary>
+    </member>
+    <member name="P:HAL.UI.Interactivity.IUserConfirmation.IsConfirmed">
+      <summary>Whether the notification is confirmed.</summary>
+    </member>
+    <member name="T:HAL.UI.Interactivity.IUserNotification">
+      <summary>Qualifies a notification shown to the user for acknowledgment.</summary>
+    </member>
+    <member name="P:HAL.UI.Interactivity.IUserNotification.Title">
+      <summary>Notification title.</summary>
+    </member>
+    <member name="P:HAL.UI.Interactivity.IUserNotification.Message">
+      <summary>Notification message.</summary>
+    </member>
+    <member name="T:HAL.UI.ShellModels.SM_Base">
+      <summary>Base shell view model implementation.</summary>
+    </member>
+    <member name="M:HAL.UI.ShellModels.SM_Base.#ctor">
+      <summary>Creates a new shell view model.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.UndoAction">
+      <summary>To be performed when the user wishes to undo its last action.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.RedoAction">
+      <summary>To be performed when the user wishes to redo its last action.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.IsFocusable">
+      <summary>Whether this pop-up is currently focusable.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.FocusAction">
+      <summary>To be performed when the user wishes to focus on this pop-up.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.KeepHidden">
+      <summary>Whether this shell should be kept hidden instead of being closed when the close command is invoked.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.OpenShellCommand">
+      <summary>Opens a new shell on a specified view.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.CloseCommand">
+      <summary>Hides the window.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.HideCommand">
+      <summary>Hides the window.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.ShowCommand">
+      <summary>Shows the window.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.ToggleFullScreenCommand">
+      <summary>Toggles the window full screen mode.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.NavigateCommand">
+      <summary>Navigates to the specified view.</summary>
+    </member>
+    <member name="M:HAL.UI.ShellModels.SM_Base.OpenShell(System.String)">
+      <summary>Opens a new shell on a specified view.</summary>
+      <param name="viewName">Specified view.</param>
+    </member>
+    <member name="M:HAL.UI.ShellModels.SM_Base.Navigate(System.String)">
+      <summary>Navigates to the specified view.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.UndoCommand">
+      <summary>Undo command.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.RedoCommand">
+      <summary>Redo command.</summary>
+    </member>
+    <member name="P:HAL.UI.ShellModels.SM_Base.FocusCommand">
+      <summary>Focuses on the pop-up.</summary>
+    </member>
+    <member name="T:HAL.UI.Shells.IShell">
+      <summary>Qualifies a shell.</summary>
+    </member>
+    <member name="P:HAL.UI.Shells.IShell.AutoSize">
+      <summary>(De)activates the ability of this window to resize itself based on its content, in pixels.</summary>
+    </member>
+    <member name="P:HAL.UI.Shells.IShell.DataContext">
+      <summary>Data context.</summary>
+    </member>
+    <member name="P:HAL.UI.Shells.IShell.Title">
+      <summary>Shell title.</summary>
+    </member>
+    <member name="M:HAL.UI.Shells.IShell.Close">
+      <summary>Closes the shell.</summary>
+    </member>
+    <member name="M:HAL.UI.Shells.IShell.Hide">
+      <summary>Hides the shell.</summary>
+    </member>
+    <member name="M:HAL.UI.Shells.IShell.Show">
+      <summary>Shows the shell.</summary>
+    </member>
+    <member name="M:HAL.UI.Shells.IShell.ShowDialog">
+      <summary>Shows the shell as a modal dialog.</summary>
+    </member>
+    <member name="M:HAL.UI.Shells.IShell.ToggleFullScreen(System.Nullable{System.Boolean})">
+      <summary>Toggles the shell full screen.</summary>
+      <param name="hint">Whether the shell should be in full screen. Leave null to simply toggle the current value.</param>
+    </member>
+    <member name="M:HAL.UI.Shells.IShell.TryGetRegionViewModel(System.String)">
+      <summary>Attempts to retrieve the view model associated with the specified scoped region. If the region has multiple active views, the first view will be analyzed.</summary>
+      <param name="regionName">Target region name.</param>
+      <returns>Correspoding view model, if any.</returns>
+    </member>
+    <member name="T:HAL.UI.Shells.IShellService">
+      <summary>Qualifies a management shell service.</summary>
+    </member>
+    <member name="P:HAL.UI.Shells.IShellService.ViewModelRegister">
+      <summary>Maintains a fast reference between a view and its view model.</summary>
+    </member>
+    <member name="M:HAL.UI.Shells.IShellService.Show``1(System.String,System.Boolean,System.Boolean,System.String,System.Action,System.Action,System.Action,System.Boolean)">
+      <summary>Creates and shows a new shell of the specified type.</summary>
+      <typeparam name="T">Shell type.</typeparam>
+      <param name="uri">Uri to navigate to at the shell opening.</param>
+      <param name="dialog">Whether the shell should be opened as a modal dialog.</param>
+      <param name="open">Whether the new shell should be opened once created.</param>
+      <param name="title">Shell title override.</param>
+      <param name="undo">Undo action.</param>
+      <param name="redo">Redo action.</param>
+      <param name="focus">Focus action.</param>
+      <param name="keepHidden">Whether this shell should be kept hidden when closed.</param>
+    </member>
+    <member name="M:HAL.UI.Shells.IShellService.Show(System.Type,System.String,System.Boolean,System.Boolean,System.String,System.Action,System.Action,System.Action,System.Boolean)">
+      <summary>Creates and shows a new shell of the specified type.</summary>
+      <param name="shellType">Shell type.</param>
+      <param name="uri">Uri to navigate to at the shell opening.</param>
+      <param name="dialog">Whether the shell should be opened as a modal dialog.</param>
+      <param name="open">Whether the new shell should be opened once created.</param>
+      <param name="title">Shell title override.</param>
+      <param name="undo">Undo action.</param>
+      <param name="redo">Redo action.</param>
+      <param name="focus">Focus action.</param>
+      <param name="keepHidden">Whether this shell should be kept hidden when closed.</param>
+    </member>
+    <member name="M:HAL.UI.Shells.IShellService.Show(System.String,System.Boolean,System.Boolean,System.String,System.Action,System.Action,System.Action,System.Boolean)">
+      <summary>Creates and shows a new shell.</summary>
+      <param name="uri">Uri to navigate to at the shell opening.</param>
+      <param name="dialog">Whether the shell should be opened as a modal dialog.</param>
+      <param name="open">Whether the new shell should be opened once created.</param>
+      <param name="title">Shell title override.</param>
+      <param name="undo">Undo action.</param>
+      <param name="redo">Redo action.</param>
+      <param name="focus">Focus action.</param>
+      <param name="keepHidden">Whether this shell should be kept hidden when closed.</param>
+    </member>
+    <member name="M:HAL.UI.Shells.IShellService.OpenScopedShell(HAL.UI.Shells.IShell,System.String,System.Boolean,System.Boolean,System.String,System.Action,System.Action,System.Action,System.Boolean)">
+      <summary>Opens a scoped shell.</summary>
+      <param name="shell">Shell to open.</param>
+      <param name="uri">Uri to navigate to at the shell opening.</param>
+      <param name="dialog">Whether the shell should be opened as a modal dialog.</param>
+      <param name="open">Whether the new shell should be opened once created.</param>
+      <param name="title">Shell title override.</param>
+      <param name="undo">Undo action.</param>
+      <param name="redo">Redo action.</param>
+      <param name="focus">Focus action.</param>
+      <param name="keepHidden">Whether this shell should be kept hidden when closed.</param>
+    </member>
+    <member name="T:HAL.UI.Shells.ShellService">
+      <summary>Shell management service.</summary>
+    </member>
+    <member name="M:HAL.UI.Shells.ShellService.#ctor(Unity.IUnityContainer,HAL.UI.Composition.IExtendedRegionManager)">
+      <summary>Creates a new shell management service.</summary>
+      <param name="container">Container.</param>
+      <param name="regionManager">Region manager.</param>
+    </member>
+    <member name="P:HAL.UI.Shells.ShellService.ViewModelRegister">
+      <summary>Maintains a fast reference between a view and its view model.</summary>
+    </member>
+    <member name="M:HAL.UI.Shells.ShellService.Show``1(System.String,System.Boolean,System.Boolean,System.String,System.Action,System.Action,System.Action,System.Boolean)">
+      <summary>Creates and shows a new shell of the specified type.</summary>
+      <typeparam name="T">Shell type.</typeparam>
+      <param name="uri">Uri to navigate to at the shell opening.</param>
+      <param name="dialog">Whether the shell should be opened as a modal dialog.</param>
+      <param name="open">Whether the new shell should be opened once created.</param>
+      <param name="title">Shell title override.</param>
+      <param name="undo">Undo action.</param>
+      <param name="redo">Redo action.</param>
+      <param name="focus">Focus action.</param>
+      <param name="keepHidden">Whether this shell should be kept hidden when closed.</param>
+    </member>
+    <member name="M:HAL.UI.Shells.ShellService.Show(System.Type,System.String,System.Boolean,System.Boolean,System.String,System.Action,System.Action,System.Action,System.Boolean)">
+      <summary>Creates and shows a new shell of the specified type.</summary>
+      <param name="shellType">Shell type.</param>
+      <param name="uri">Uri to navigate to at the shell opening.</param>
+      <param name="dialog">Whether the shell should be opened as a modal dialog.</param>
+      <param name="open">Whether the new shell should be opened once created.</param>
+      <param name="title">Shell title override.</param>
+      <param name="undo">Undo action.</param>
+      <param name="redo">Redo action.</param>
+      <param name="focus">Focus action.</param>
+      <param name="keepHidden">Whether this shell should be kept hidden when closed.</param>
+    </member>
+    <member name="M:HAL.UI.Shells.ShellService.Show(System.String,System.Boolean,System.Boolean,System.String,System.Action,System.Action,System.Action,System.Boolean)">
+      <summary>Creates and shows a new shell.</summary>
+      <param name="uri">Uri to navigate to at the shell opening.</param>
+      <param name="dialog">Whether the shell should be opened as a modal dialog.</param>
+      <param name="open">Whether the new shell should be opened once created.</param>
+      <param name="title">Shell title override.</param>
+      <param name="undo">Undo action.</param>
+      <param name="redo">Redo action.</param>
+      <param name="focus">Focus action.</param>
+      <param name="keepHidden">Whether this shell should be kept hidden when closed.</param>
+    </member>
+    <member name="M:HAL.UI.Shells.ShellService.OpenScopedShell(HAL.UI.Shells.IShell,System.String,System.Boolean,System.Boolean,System.String,System.Action,System.Action,System.Action,System.Boolean)">
+      <summary>Opens a scoped shell.</summary>
+      <param name="shell">Shell to open.</param>
+      <param name="uri">Uri to navigate to at the shell opening.</param>
+      <param name="dialog">Whether the shell should be opened as a modal dialog.</param>
+      <param name="open">Whether the new shell should be opened once created.</param>
+      <param name="title">Shell title override.</param>
+      <param name="undo">Undo action.</param>
+      <param name="redo">Redo action.</param>
+      <param name="focus">Focus action.</param>
+      <param name="keepHidden">Whether this shell should be kept hidden when closed.</param>
+    </member>
+    <member name="T:HAL.UI.ViewModels.Catalog.VM_CatalogItem">
+      <summary>Catalog item view model.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_CatalogItem.#ctor(HAL.Catalog.Items.CatalogItem,System.Windows.Input.ICommand,System.Windows.Input.ICommand,System.Action{HAL.UI.ViewModels.Catalog.VM_CatalogItem})">
+      <summary>Creates a catalog item view model.</summary>
+      <param name="item">Item to wrap.</param>
+      <param name="selectTagCommand">Triggers the removal of one of the item tags from the collection of currently selected tags.</param>
+      <param name="deselectTagCommand">Triggers the selection of one of this item tags from the collection of currently available tags.</param>
+      <param name="sort">Generates the sorting weight of this tag.</param>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_CatalogItem.CatalogItem">
+      <summary>The item held by this view model.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_CatalogItem.Tags">
+      <summary>Item tags.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_CatalogItem.Sort">
+      <summary>Generates the sorting weight of this tag.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_CatalogItem.SortingWeight">
+      <summary>Sorting weight.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_CatalogItem.Equals(HAL.Catalog.Items.CatalogItem)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_CatalogItem.Filter(HAL.UI.ViewModels.Catalog.VM_Tag)">
+      <summary>Filters an object based on a specified input.</summary>
+      <param name="input">Filtering input.</param>
+      <returns>True if this object is matching the filter constraint.</returns>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_CatalogItem.DeselectTagCommand">
+      <summary>Triggers the removal of one of the item tags from the collection of currently selected tags.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_CatalogItem.SelectTagCommand">
+      <summary>Triggers the selection of one of this item tags from the collection of currently available tags.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_CatalogItem.NavigateUrlCommand">
+      <summary>Triggers the navigation to the item URL.</summary>
+    </member>
+    <member name="T:HAL.UI.ViewModels.Catalog.VM_ExtensionItem">
+      <summary>Framework item view model.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_ExtensionItem.Name">
+      <summary>Extension name.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_ExtensionItem.Version">
+      <summary>Version.</summary>
+    </member>
+    <member name="T:HAL.UI.ViewModels.Catalog.VM_Tag">
+      <summary>Tag view model.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_Tag.#ctor(HAL.Catalog.Items.Attributes.Tags.Tag,System.Windows.Input.ICommand,System.Windows.Input.ICommand,System.Action{HAL.UI.ViewModels.Catalog.VM_Tag})">
+      <summary>Creates a tag view model from an existing tag.</summary>
+      <param name="tag">Tag to wrap.</param>
+      <param name="selectCommand">Triggers the removal of this tag from the collection of currently selected tags.</param>
+      <param name="deselectCommand">Triggers the selection of this tag from the collection of currently available tags.</param>
+      <param name="sort">Generates the sorting weight of this tag.</param>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.Title">
+      <summary>Item title.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.Tag">
+      <summary>Wrapped tag.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.IsHidden">
+      <summary>True if the tag should stay hidden.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_Tag.Equals(HAL.UI.ViewModels.Catalog.VM_Tag)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_Tag.Equals(HAL.Catalog.Items.Attributes.Tags.Tag)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_Tag.Equals(System.String)">
+      <summary>Indicates whether the current object is equal to another object of the same type.</summary>
+      <returns>true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
+      <param name="other">An object to compare with this object.</param>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_Tag.Filter(System.String)">
+      <summary>Filters an object based on a specified input.</summary>
+      <param name="input">Filtering input.</param>
+      <returns>True if this object is matching the filter constraint.</returns>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Catalog.VM_Tag.Filter(HAL.Catalog.Items.Attributes.Tags.Tag)">
+      <summary>Filters an object based on a specified input.</summary>
+      <param name="input">Filtering input.</param>
+      <returns>True if this object is matching the filter constraint.</returns>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.Sort">
+      <summary>Generates the sorting weight of this tag.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.SortingWeight">
+      <summary>Sorting weight.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.DeselectCommand">
+      <summary>Triggers the removal of this tag from the collection of currently selected tags.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.SelectCommand">
+      <summary>Triggers the selection of this tag from the collection of currently available tags.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.EditCommand">
+      <summary>Triggers the edition of this tag.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Catalog.VM_Tag.DeleteCommand">
+      <summary>Triggers the deletion of this tag.</summary>
+    </member>
+    <member name="T:HAL.UI.ViewModels.VM_Base">
+      <summary>Base class for all view models with a default property changed notification implementation.</summary>
+    </member>
+    <member name="E:HAL.UI.ViewModels.VM_Base.PropertyChanged">
+      <summary>Occurs when a property value changes.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.VM_Base.OnPropertyChanged(System.String)">
+      <summary>The method called by the setter of a property to trigger the PropertyChanged event.</summary>
+      <param name="propertyName">The name of the property that has changed.</param>
+    </member>
+    <member name="T:HAL.UI.ViewModels.Filtering.IVM_Filtering">
+      <summary>Qualifies a view model performing the filtering of specified items in a view.</summary>
+    </member>
+    <member name="T:HAL.UI.ViewModels.Filtering.IVM_Filtering`1">
+      <summary>Qualifies a view model performing the filtering of specified items in a view.</summary>
+      <typeparam name="TFilter">Filter type.</typeparam>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Filtering.IVM_Filtering`1.FilterInput">
+      <summary>Filter content.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Filtering.IVM_Filtering`1.Filter(HAL.IFilterable{`0})">
+      <summary>Filtering predicate.</summary>
+      <param name="item">Item to filter.</param>
+      <returns>True if the item matches the filter contraints.</returns>
+    </member>
+    <member name="T:HAL.UI.ViewModels.Filtering.VM_Filtering`1">
+      <summary>Qualifies a filtering-capable view model.</summary>
+      <typeparam name="TFilter">Item filter type.</typeparam>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Filtering.VM_Filtering`1.FilterInput">
+      <summary>Filter content.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.Filtering.VM_Filtering`1.FilterCommand">
+      <summary>Triggers the collection filtering.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.Filtering.VM_Filtering`1.Filter(HAL.IFilterable{`0})">
+      <summary>Filtering predicate.</summary>
+      <param name="item">Item to filter.</param>
+      <returns>True if the item matches the filter constraints.</returns>
+    </member>
+    <member name="T:HAL.UI.ViewModels.IVM_Flyout">
+      <summary>Qualifies a view model to be used by a flyout control.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.IVM_Flyout.Title">
+      <summary>Flyout title.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.IVM_Flyout.IsVisible">
+      <summary>True if this flyout is visible.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.IVM_Flyout.IsFullWidth">
+      <summary>True if this flyout fully covers the window.</summary>
+    </member>
+    <member name="T:HAL.UI.ViewModels.IVM_WindowContent">
+      <summary>Qualifies a view model for being displayed as a window view.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.IVM_WindowContent.AutoSize">
+      <summary>If true, this window will resize itself based on its content.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.IVM_WindowContent.WindowTitle">
+      <summary>Window title.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.IVM_WindowContent.Flyout">
+      <summary>Window flyout.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.IVM_WindowContent.Settings">
+      <summary>Window settings flyout.</summary>
+    </member>
+    <member name="T:HAL.UI.ViewModels.VM_InfoItem">
+      <summary>Info item view model.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.VM_InfoItem.#ctor(HAL.Catalog.InfoItem)">
+      <summary>Creates an info item view model.</summary>
+      <param name="infoItem">Info item to wrap.</param>
+    </member>
+    <member name="P:HAL.UI.ViewModels.VM_InfoItem.Item">
+      <summary>Wrapped item.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.VM_InfoItem.Title">
+      <summary>Item title.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.VM_InfoItem.Description">
+      <summary>Item description.</summary>
+    </member>
+    <member name="P:HAL.UI.ViewModels.VM_InfoItem.IllustrationPath">
+      <summary>Item illustration path.</summary>
+    </member>
+    <member name="M:HAL.UI.ViewModels.VM_InfoItem.ToString">
+      <summary>Returns a string that represents the current object.</summary>
+      <returns>A string that represents the current object.</returns>
+    </member>
+  </members>
+</doc>
