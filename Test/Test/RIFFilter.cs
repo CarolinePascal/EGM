@@ -16,32 +16,32 @@ namespace HAL.ENPC.Debug
         /// <summary>
         /// Coefficients of the RIF filter
         /// </summary>
-        protected double [] coefficients { get; set; }
+        protected double [] _coefficients { get; set; }
 
         /// <summary>
         /// Complete RIF filter constructor
         /// </summary>
-        /// <param name="bufferSize">Number of coefficients - Size of the window</param>
+        /// <param name="filterSize">Number of coefficients - Size of the measures window or order of the filter</param>
         /// <param name="array">Coefficents of the RIF filter</param>
-        public RIFFilter(int bufferSize, double[] array):base(bufferSize)
+        public RIFFilter(int filterSize, double[] array):base(filterSize)
         {
-            if(bufferSize!=array.Length)
+            if(filterSize!=array.Length)
             {
                 throw new System.Exception("[RIF] Le vecteur de ponderation doit être de la même taille que le buffer");
             }
             else
             {
-                coefficients = array;
+                _coefficients = array;
             }
         }
 
         /// <summary>
         /// Partial RIF filter constructor - the coefficients are all set to 0
         /// </summary>
-        /// <param name="bufferSize">Size of the value window</param>
-        public RIFFilter(int bufferSize):base(bufferSize)
+        /// <param name="filterSize">Size of the measures window or order of the filter</param>
+        public RIFFilter(int filterSize):base(filterSize)
         {
-            coefficients = new double[bufferSize];
+            _coefficients = new double[filterSize];
         }
 
         /// <summary>
@@ -54,17 +54,18 @@ namespace HAL.ENPC.Debug
 
             for (int i=0;i<FilterSize;i++)
             {
-                torsor = torsor.Add(Multiply(FilterBuffer[(CurrentIndex + i) % FilterSize], coefficients[FilterSize-i-1]));
+                //y_n = \sum_{i=l-1}^{0} a_{i}x_{n-i}
+                torsor = torsor.Add(Multiply(FilterBuffer[(CurrentIndex + i) % FilterSize], _coefficients[FilterSize-i-1]));
             }
 
             return (torsor);
         }
 
         /// <summary>
-        /// Term by term multiplication method for the Torsor structure
+        /// Term by term double multiplication method for the Torsor structure
         /// </summary>
-        /// <param name="torsor"></param>
-        /// <param name="multiplier"></param>
+        /// <param name="torsor">Torsor to be multiplied</param>
+        /// <param name="multiplier">Multiplier as a double</param>
         /// <returns></returns>
         public Torsor Multiply(Torsor torsor, double multiplier)
         {

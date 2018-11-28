@@ -14,19 +14,19 @@ namespace HAL.ENPC.Debug
         /// <summary>
         /// Average filter constructor
         /// </summary>
-        /// <param name="bufferSize">Number of coefficients - Size of the window</param>
-        public AverageFilter(int bufferSize) : base(bufferSize)
+        /// <param name="filtererSize">Number of coefficients - Size of the measure window</param>
+        public AverageFilter(int filterSize) : base(filterSize)
         {
-            double[] array = new double[bufferSize];
-            for(int i=0;i<bufferSize;i++)
+            double[] array = new double[filterSize];
+            for(int i=0;i<filterSize;i++)
             {
-                array[i] = 1.0 / bufferSize;
+                array[i] = 1.0 / filterSize;
             }
-            coefficients = array;
+            _coefficients = array;
 
-            for(int i=0;i<bufferSize;i++)
+            for(int i=0;i<filterSize;i++)
             {
-                Console.WriteLine(array[i]);
+                System.Diagnostics.Debug.Print(_coefficients[i].ToString());
             }
         }
     }

@@ -15,8 +15,8 @@ namespace HAL.ENPC.Debug
         /// <summary>
         /// Median filter constructor
         /// </summary>
-        /// <param name="bufferSize">Size of the value window</param>
-        public MedianFilter(int bufferSize) : base(bufferSize)
+        /// <param name="filterSize">Number of coefficients - Size of the measure window</param>
+        public MedianFilter(int filterSize) : base(filterSize)
         {
 
         }

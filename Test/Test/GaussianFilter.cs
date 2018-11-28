@@ -13,40 +13,44 @@ namespace HAL.ENPC.Debug
         /// <summary>
         /// Gaussian filter constructor
         /// </summary>
-        /// <param name="bufferSize">Number of coefficients - Size of the window</param>
-        /// <param name="mu">Gaussian mean</param>
-        /// <param name="sigma">Gaussian standard deviation</param>
-        public GaussianFilter(int bufferSize, double mu, double sigma):base(bufferSize)
+        /// <param name="filterSize">Number of coefficients - Size of the measure window</param>
+        /// <param name="mu">Gaussian distribution average</param>
+        /// <param name="sigma">Gaussian distribution standard deviation</param>
+        public GaussianFilter(int filterSize, double mu, double sigma):base(filterSize)
         {
             if (sigma < 0)
             {
                 throw new System.Exception("[Gaussian] L'écart type de la loi gaussienne doit être positif ou nul");
             }
-            double[] array = new double[bufferSize];
 
-            if (bufferSize % 2 != 0)
+            double[] array = new double[filterSize];
+
+            //Weighting
+            if (filterSize % 2 != 0)
             {
-                array[bufferSize / 2] = (Math.Exp(-(0 - mu) * (0 - mu) / (2 * sigma * sigma)) / Math.Sqrt(2 * Math.PI * sigma * sigma));
+                array[filterSize / 2] = (Math.Exp(-(0 - mu) * (0 - mu) / (2 * sigma * sigma)) / Math.Sqrt(2 * Math.PI * sigma * sigma));
             }
 
-            for (int i = 0; i < bufferSize / 2; i++)
+            for (int i = 0; i < filterSize / 2; i++)
             {
-                int x = (bufferSize / 2) - i;
+                int x = (filterSize / 2) - i;
                 array[i] = (Math.Exp(-(x - mu) * (x - mu) / (2 * sigma * sigma)) / Math.Sqrt(2 * Math.PI * sigma * sigma));
-                array[bufferSize - i - 1] = (Math.Exp(-(x - mu) * (x - mu) / (2 * sigma * sigma)) / Math.Sqrt(2 * Math.PI * sigma * sigma));
+                array[filterSize - i - 1] = (Math.Exp(-(x - mu) * (x - mu) / (2 * sigma * sigma)) / Math.Sqrt(2 * Math.PI * sigma * sigma));
             }
 
-            coefficients = array;
-            double somme = coefficients.Sum();
+            _coefficients = array;
 
-            for (int i = 0; i < bufferSize; i++)
+            //Normalization
+            double sum = _coefficients.Sum();
+
+            for (int i = 0; i < filterSize; i++)
             {
-                coefficients[i] /= somme;
+                _coefficients[i] /= sum;
             }
 
-            for (int i=0;i<bufferSize;i++)
+            for (int i=0;i<filterSize;i++)
             {
-                Console.WriteLine(coefficients[i]);
+                System.Diagnostics.Debug.Print(_coefficients[i].ToString());
             }
         }
     }
