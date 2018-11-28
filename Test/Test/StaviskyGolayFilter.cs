@@ -15,31 +15,34 @@ namespace HAL.ENPC.Debug
         /// <summary>
         /// Stavisky-Golay filter constructor
         /// </summary>
-        /// <param name="buffersize">Number of coefficients - Size of the window</param>
+        /// <param name="filtersize">Number of coefficients - Size of the measure window</param>
         /// <param name="degree">Degree of the interpolated polynom</param>
-        public StaviskyGolayFilter(int buffersize, int degree) : base(buffersize)
+        public StaviskyGolayFilter(int filtersize, int degree) : base(filtersize)
         {
-            if (buffersize <= degree)
+            if (filtersize <= degree)
             {
-                throw new System.Exception("[SG] Le degré du polynôme doit être plus grand que la fenêtre");
+                throw new System.Exception("[SG] Le degré du polynôme doit être strictement plus grand que la fenêtre");
             }
-            if (buffersize % 2 == 0)
+            if (filtersize % 2 == 0)
             {
                 throw new System.Exception("[SG] La taille de la fenêtre doit être impaire");
             }
             else
             {
-                double[] fenetre = new double[buffersize];
-                int l = buffersize / 2;
+                double[] fenetre = new double[filtersize];
+                int l = filtersize / 2;
+
+                //Centering
                 for (int i = 0; i < l; i++)
                 {
                     fenetre[i] = -(l - i);
-                    fenetre[buffersize - i - 1] = l - i;
+                    fenetre[filtersize - i - 1] = l - i;
                 }
                 fenetre[l] = 0;
 
-                double[,] jacobien = new double[buffersize, degree];
-                for (int i = 0; i < buffersize; i++)
+                //Computation of the interolation
+                double[,] jacobien = new double[filtersize, degree];
+                for (int i = 0; i < filtersize; i++)
                 {
                     for (int j = 0; j < degree; j++)
                     {
@@ -48,18 +51,18 @@ namespace HAL.ENPC.Debug
                 }
 
                 double[,] matriceCoef = Matrix.Dot(Matrix.Inverse(Matrix.Dot(Matrix.Transpose(jacobien), jacobien)), Matrix.Transpose(jacobien));
-                double[] ligneCoef = new double[buffersize];
+                double[] ligneCoef = new double[filtersize];
 
-                for (int i = 0; i < buffersize; i++)
+                for (int i = 0; i < filtersize; i++)
                 {
                     ligneCoef[i] = matriceCoef[0, i];
                 }
 
-                coefficients = ligneCoef;
+                _coefficients = ligneCoef;
 
-                for (int i = 0; i < buffersize; i++)
+                for (int i = 0; i < filtersize; i++)
                 {
-                    Console.WriteLine(coefficients[i]);
+                    System.Diagnostics.Debug.Print(_coefficients[i].ToString());
                 }
 
             }
