@@ -6,76 +6,138 @@ using System.Threading.Tasks;
 using HAL.ENPC.Filtering;
 using HAL.ENPC.Sensoring.SensorData;
 using System.Collections;
-using MathNet.Filtering;
+using HAL.ENPC.Messaging;
 
 
 namespace HAL.ENPC.Debug
 {
     class RIIFilter : Filter<Torsor>
-    {
+    {  
+        /// <summary>
+        /// Coefficients of the RII filter - measured values
+        /// </summary>
+        private double[] _coefficientsMeasures { get; set; }
 
-        private double[] coefficientsMeasures { get; set; }
-        private double[] coefficientsFiltered { get; set; }
+        /// <summary>
+        /// coefficents of the RII filter - filtered values
+        /// </summary>
+        private double[] _coefficientsFiltered { get; set; }
 
-        private Queue<Torsor> Filteredbuffer;
+        /// <summary>
+        /// Queue dedicated to the storage of filtered values
+        /// </summary>
+        private Queue<Torsor> _filteredbuffer;
 
         /// <summary>
         /// Complete RII filter constructor
         /// </summary>
-        /// <param name="buffersize">Size of the window</param>
+        /// <param name="filtersize">Number of measured values coefficients - Size of the measures window</param>
+        /// <param name="order">Number of filtered values coefficients - Order of the filter</param>
         /// <param name="arrayMeasures">Measured values coefficients</param>
         /// <param name="arrayFiltered">Filtered values coefficients</param>
-        public RIIFilter(int buffersize, double[] arrayMeasures, double[] arrayFiltered) : base(buffersize) 
+        public RIIFilter(int filtersize, int order, double[] arrayMeasures, double[] arrayFiltered) : base(filtersize) 
         {
-            if (arrayMeasures.Length != buffersize)
+            if (arrayMeasures.Length != filtersize)
             {
-                throw new System.Exception("[RII] Le vecteur de ponderation doit être de la même taille que le buffer");
+                throw new System.Exception("[RII] Le vecteur de ponderation des valeurs mesurees doit être de la même taille que la fenetre de mesures");
             }
-            else if (arrayMeasures.Length-1 != arrayFiltered.Length)
+            else if (arrayFiltered.Length != order)
             {
-                throw new System.Exception("[RII] Le vecteur des valeurs filtrées doit contenir une valeur de moins que le vecteur de mesures");
+                throw new System.Exception("[RII] Le vecteur de ponderation des valeurs filtrees doit être de la même taille que l'ordre du filtre");
             }
             else
             {
-                coefficientsMeasures = arrayMeasures;
-                coefficientsFiltered = arrayFiltered;
-                Filteredbuffer = new Queue<Torsor>(coefficientsFiltered.Length);
+                _coefficientsMeasures = arrayMeasures;
+                _coefficientsFiltered = arrayFiltered;
+                _filteredbuffer = new Queue<Torsor>(_coefficientsFiltered.Length);
             }
         }
 
         /// <summary>
-        /// RII low pass filter constructor - 2nd order Butterwoth filter
+        /// RII low pass filter constructor - 1st, 2nd or 3rd order Butterwoth filter
         /// </summary>
         /// <param name="cuttingFrequency">Cutting frequency in Hz</param>
         /// <param name="samplingFrequency">Sampling frequency in Hz</param>
-        public RIIFilter(double cuttingFrequency, double samplingFrequency):base(3)
+        /// <param name="order">Number of filtered values coefficients - Order of the filter</param>
+        public RIIFilter(double cuttingFrequency, double samplingFrequency, int order):base(order+1)
         {
 
             if(cuttingFrequency<=0 || samplingFrequency <= 0)
             {
                 throw new System.Exception("[RII LPF] Les fréquences doivent être strictement positives");
             }
+
+            if(order != 1 || order !=2 || order!=3)
+            {
+                throw new System.Exception("[RII LPF] Les seuls ordres possibles sont 1, 2 ou 3");
+            }
+
             else
             {
-                double ff = cuttingFrequency / samplingFrequency;
-                double ita = 1 / Math.Tan(Math.PI * ff);
-                double q = Math.Sqrt(2);
+                //Frequency conversion from digital to analogic
+                double f = (samplingFrequency / Math.PI) * Math.Tan(Math.PI * cuttingFrequency / samplingFrequency);
 
-                double[] arrayM = new double[3];
-                double[] arrayF = new double[2];
+                double[] arrayM = new double[order+1];
+                double[] arrayF = new double[order];
 
-                arrayM[0] = 1 / (1 + q * ita + ita * ita);
-                arrayM[1] = 2 * arrayM[0];
-                arrayM[2] = arrayM[0];
+                //1st order filter
+                if (order == 1)
+                {
+                    arrayM[0] = (4 * Math.Pow(Math.PI * f, 3)) / (samplingFrequency + Math.PI * f);
+                    arrayM[1] = -arrayM[0];
+                    arrayF[0] = (samplingFrequency - Math.PI * f) / (samplingFrequency + Math.PI * f);
+                }
 
-                arrayF[0] = 2 * (ita * ita - 1) * arrayM[0];
-                arrayF[1] = -(1 - q * ita + ita * ita) * arrayM[0];
+                //2nd order filter
+                else if (order == 2)
+                {
+                    double a = (Math.Sqrt(2) * samplingFrequency) / (Math.PI * f);
+                    double b = (samplingFrequency * samplingFrequency) / Math.Pow(Math.PI * f, 2);
 
-                coefficientsFiltered = arrayF;
-                coefficientsMeasures = arrayM;
+                    arrayM[0] = 1 / (1 + a + b);
+                    arrayM[1] = -2 * arrayM[0];
+                    arrayM[2] = arrayM[0];
+                    arrayF[0] = 2 * (b - 1) / (a + b + 1);
+                    arrayF[1] = (b - a + 1) / (a + b + 1);
+                }
 
-                Console.WriteLine("Filtered" + arrayF[0] + " " + arrayF[1]);
-                Console.WriteLine("Measured" + arrayM[0] + " " + arrayM[1] + " " + arrayM[2]);
+                //3rd order filter
+                else
+                {
+                    double a = (2 * samplingFrequency) / (Math.PI * f);
+                    double b = (2 * samplingFrequency * samplingFrequency) / Math.Pow(Math.PI * f, 2);
+                    double c = Math.Pow(samplingFrequency, 3) / Math.Pow(Math.PI * f, 3);
+
+                    arrayM[0] = 1 / (1 + a + b + c);
+                    arrayM[1] = -3 * arrayM[0];
+                    arrayM[2] = 3 * arrayM[0];
+                    arrayM[3] = -arrayM[0];
+                    arrayF[0] = (3 * c + b - a - 3) / (1 + a + b + c);
+                    arrayF[1] = (3 * c - b - a + 3) / (1 + a + b + c);
+                    arrayF[2] = (c - b + a - 1) / (1 + a + b + c);
+                }
+
+                //Normalization
+                double sum = arrayF.Sum();
+
+                for(int i = 0; i < order; i++)
+                {
+                    arrayF[i] /= sum;
+                }
+
+                _coefficientsFiltered = arrayF;
+                _coefficientsMeasures = arrayM;
+
+                for(int i=0;i<_coefficientsFiltered.Length;i++)
+                {
+                    System.Diagnostics.Debug.Print(_coefficientsFiltered[i].ToString());
+                }
+
+                for (int i = 0; i < _coefficientsMeasures.Length; i++)
+                {
+                    System.Diagnostics.Debug.Print(_coefficientsMeasures[i].ToString());
+                }
+
             }
         }
 
@@ -85,38 +147,41 @@ namespace HAL.ENPC.Debug
         /// <returns></returns>
         protected override Torsor FilterMethod()
         {
-            if(Filteredbuffer.Count==0)
+            //Initialisation of the filtered values queue
+            if(_filteredbuffer.Count==0)
             {
-                for(int i=0;i<coefficientsFiltered.Length;i++)
+                for(int i=0;i<_coefficientsFiltered.Length;i++)
                 {
-                    Filteredbuffer.Enqueue(FilterBuffer[i]);
+                    _filteredbuffer.Enqueue(FilterBuffer[i]);
                 }
             }
 
+            //y_n = \sum_{i = l-1}^{0}a_ix_{n - i} + \sum_{i = k}^{1}b_iy_{n - i}
             Torsor torsor = Torsor.Default;
-            for(int i=0;i<coefficientsMeasures.Length;i++)
+            for(int i=0;i<_coefficientsMeasures.Length;i++)
             {
-                torsor = torsor.Add(Multiply(FilterBuffer[(CurrentIndex + i) % FilterSize], coefficientsMeasures[FilterSize - i - 1]));
+                torsor = torsor.Add(Multiply(FilterBuffer[(CurrentIndex + i) % FilterSize], _coefficientsMeasures[FilterSize - i - 1]));
             }
             
             int n = 0;
-            foreach (Torsor t in Filteredbuffer)
+            for(int j=0;j<_coefficientsFiltered.Length;j++)
             {
-                torsor = torsor.Add(Multiply(t, coefficientsFiltered[FilterSize-n-1]));
+                torsor = torsor.Add(Multiply(_filteredbuffer.Peek(), _coefficientsFiltered[FilterSize-j-1]));
                 n++;
             }
 
-            Filteredbuffer.Dequeue();
-            Filteredbuffer.Enqueue(torsor);
+            //Upload new filtered values
+            _filteredbuffer.Dequeue();
+            _filteredbuffer.Enqueue(torsor);
 
             return (torsor);
         }
 
         /// <summary>
-        /// Term by term multiplication method for the Torsor structure
+        /// Term by term double multiplication method for the Torsor structure
         /// </summary>
-        /// <param name="torsor"></param>
-        /// <param name="multiplier"></param>
+        /// <param name="torsor">Torsor to be multiplied</param>
+        /// <param name="multiplier">Multiplier as a double</param>
         /// <returns></returns>
         public static Torsor Multiply(Torsor torsor, double multiplier)
         {
