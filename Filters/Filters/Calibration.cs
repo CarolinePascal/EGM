@@ -25,13 +25,28 @@ namespace HAL.ENPC.Debug
 {
     public class Calibration : HAL.ENPC.Debug.AverageFilter
     {
-
+        /// <summary>
+        /// Data collected after the caliration of the tool mounted on the sensor - cf. Calibration C# solution
+        /// </summary>
         private double[] _calibData = new double[12]; //mg c s fx fy fz xmg ymg zmg mx my mz
 
+        /// <summary>
+        /// EGM OnlineController - Needs to be monitoring the Mechanisms states of the robot
+        /// </summary>
         private Control.OnlineController _egm;
 
+        /// <summary>
+        /// Robot used as a Mechanism 
+        /// </summary>
         private Mechanism _robot;
 
+        /// <summary>
+        /// Calibration filter constructor
+        /// </summary>
+        /// <param name="filterSize">umber of coefficients - Size of the measure window</param>
+        /// <param name="resultsCalibration">Data collected after the calibration of the tool as a double[] - Order : mg c s fx fy fz xmg ymg zmg mx my mz</param>
+        /// <param name="controllers">External controllers necessaty for the filtering</param>
+        /// <param name="mechanism">Robot used as a Mechanism</param>
         public Calibration(int filterSize, double[] resultsCalibration, Control.OnlineController[] controllers, Mechanism mechanism) : base(filterSize,controllers)
         {
             double[] _calibData = resultsCalibration;
@@ -39,21 +54,29 @@ namespace HAL.ENPC.Debug
             _robot = mechanism;
         }
 
+        /// <summary>
+        /// Calibration filtering process
+        /// </summary>
+        /// <param name="sensorData"></param>
+        /// <returns></returns>
         public override TorsorState FilterMethod(TorsorState sensorData)
         {
+            //Avergage filtering of the raw force sensor values
             Torsor measure = base.FilterMethod(sensorData).Value;
 
-            
-
+            //Chack wetehr the measurements show a danger for the sensor
             if (Security(measure))
             {
                 return (new TorsorState(measure, true));
             }
 
+            //Get the current joints values
             Joints currentJoints = ((Sensoring.SensorData.Mechanism.EgmMecanismState)_egm.SensorState.Value).Joints;
+
+            //Compute the gravity effects corrections
             Vector3D[] corrGravite = CorrectionGravite(currentJoints);
 
-            //Corrections
+            //Applying gravity and offsets corrections
 
             measure.Values[0] -= _calibData[3] + corrGravite[0].Values[0];
             measure.Values[1] -= _calibData[4] + corrGravite[0].Values[1];
@@ -66,8 +89,14 @@ namespace HAL.ENPC.Debug
             return (new TorsorState(measure, false));
         }
 
+        /// <summary>
+        /// Computation of the gravity and offsets corrections according to the robot position
+        /// </summary>
+        /// <param name="joints">Current joints values as a Joints</param>
+        /// <returns></returns>
         private Vector3D[] CorrectionGravite(Joints joints)
         {
+            //In case HAL Rotation matrix sucks
             //double R13 = Math.Cos(joints.J5) * (Math.Cos(joints.J1) * Math.Cos(joints.J4) * Math.Cos(joints.J2 + joints.J3) - Math.Sin(joints.J1) * Math.Sin(joints.J4));
             //R13 += Math.Sin(joints.J5) + Math.Sin(joints.J2 + joints.J3) * Math.Cos(joints.J1);
             //R13 *= Math.Sin(joints.J6);
@@ -81,26 +110,33 @@ namespace HAL.ENPC.Debug
             //double R33 = -Math.Sin(joints.J6) * (Math.Sin(joints.J5) * Math.Cos(joints.J2 + joints.J3) + Math.Sin(joints.J2 + joints.J3) * Math.Cos(joints.J4) * Math.Cos(joints.J5));
             //R33 -= Math.Cos(joints.J6) * Math.Sin(joints.J4) * Math.Sin(joints.J2 + joints.J3);
 
-            
+            //Simulation of the robot position
             Motion.JointPositions positions = new Motion.JointPositions(_robot.Joints, joints.Values);
             _robot.Jog(positions, null);
 
+            //Getting the corresponding rotation matrix
             RotationMatrix endPoint = _robot.GetActiveEndPointLocation(true).Rotation;
 
             double R13 = endPoint.Values[2][0];
             double R23 = endPoint.Values[2][1];
             double R33 = endPoint.Values[2][2];
 
+            //Computing gravity forces corrections
             Vector3D vector = new Vector3D(new double[] { R13 * _calibData[1] + R23 * _calibData[2], -R13 * _calibData[2] + R23 * _calibData[1], R33 });
             Vector3D vectorF = vector.Multiply(-_calibData[0]);
 
+            //Computing gravity torques corrections
             Vector3D center = new Vector3D(new double[] { _calibData[6], _calibData[7], _calibData[8] });
             Vector3D vectorM = vector.CrossProduct(center);
 
             return(new Vector3D[] { vectorF, vectorM });
-
         }
 
+        /// <summary>
+        /// Security checking method - regarding to the maximum sensing range of the robot
+        /// </summary>
+        /// <param name="torsor">Measured forces and torques torsor as a Torsor</param>
+        /// <returns></returns>
         private bool Security(Torsor torsor)
         {
             bool flag = false;
