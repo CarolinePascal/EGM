@@ -1,10 +1,7 @@
 import sympy as sp
 import numpy as np
+import numpy.linalg as lg
 #exp.evalf(subs={a:6, b:5, c:2})
-
-
-
-
 
 ## Usefull parameters of the robot 
 
@@ -58,16 +55,15 @@ Masses = sp.Matrix([sp.Symbol("M1"),sp.Symbol("M2"),sp.Symbol("M3"),sp.Symbol("M
 
 DHParameters = []
 
-DHParameters.append([0,'t1',0,'L1'])
-DHParameters.append([-sp.pi/2,'t2',0,0])
-DHParameters.append([0,'t3','-d3',0])
-DHParameters.append([sp.pi/2,'t4','-d4','r4'])
-DHParameters.append([-sp.pi/2,'t5',0,0])
-DHParameters.append([sp.pi/2,'t6',0,0])
+t1, t2, t3, t4, t5, t6 = sp.symbols("t1 t2 t3 t4 t5 t6")
+
+DHParameters.append([0,t1,0,'L1'])
+DHParameters.append([-sp.pi/2,t2,0,0])
+DHParameters.append([0,t3,'-d3',0])
+DHParameters.append([sp.pi/2,t4,'-d4','r4'])
+DHParameters.append([-sp.pi/2,t5,0,0])
+DHParameters.append([sp.pi/2,t6,0,'L6'])
 DHParameters.append([0,0,0,'Lt'])
-
-
-
 
 
 ## Inital computation of the geometrical matrices
@@ -144,7 +140,6 @@ def VTranslation(i):
     if(i==0):
         return(sp.Matrix([0,0,0]))
     else:
-        t=sp.Symbol('t'+str(i)+"'")
         return(sp.expand(InvMatrices[i-1].col_del(3).row_del(3)*(VTranslation(i-1)+VRotation(i-1).cross(sp.Matrix([Matrices[i-1][0,3],Matrices[i-1][1,3],Matrices[i-1][2,3]])))))
         
 #Computation function
@@ -164,9 +159,9 @@ def InitSpeed(Matrices, InvMatrices):
 def Energie(i):
     M=sp.Symbol('M'+str(i))
     E=0
-    E+=(1/2)*(VitessesRot[i].T*MatricesInertie[i-1]*VitessesRot[i])[0]
-    E+=(1/2)*(M*VitessesTrans[i].T*VitessesTrans[i])[0]
-    E+=(Moments[i-1].T*(VitessesTrans[i].cross(VitessesRot[i])))[0]
+    E+=sp.expand((1/2)*(VitessesRot[i].T*MatricesInertie[i-1]*VitessesRot[i])[0])
+    E+=sp.expand((1/2)*(M*VitessesTrans[i].T*VitessesTrans[i])[0])
+    E+=sp.expand((Moments[i-1].T*(VitessesTrans[i].cross(VitessesRot[i])))[0])
     return(sp.expand(E))
     
 #Kinetic energy of the robot and its tool
@@ -185,9 +180,9 @@ def MatriceInertieTot(E):
         for j in range(i,7):
             print(i,j)
             if(i==j):
-                A[i,i]=2*E.coeff(sp.Symbol('t'+str(i+1)+"'"),2)
+                A[i,i]=sp.expand(2*E.coeff(sp.Symbol('t'+str(i+1)+"'"),2))
             else:
-                A[i,j]=E.coeff(sp.Symbol('t'+str(i+1)+"'")*sp.Symbol('t'+str(j+1)+"'"),1)
+                A[i,j]=sp.expand(E.coeff(sp.Symbol('t'+str(i+1)+"'")*sp.Symbol('t'+str(j+1)+"'"),1))
                 A[j,i]=A[i,j]
     return(sp.expand(A))
 
@@ -206,7 +201,7 @@ def MatriceCoriolis(A):
         for j in range(n):
             print(i,j)
             for k in range(n):
-                C[i,j]+=(1/2)*(sp.diff(A[i,j],sp.Symbol('t'+str(k+1)))+sp.diff(A[i,k],sp.Symbol('t'+str(j+1)))-sp.diff(A[j,k],sp.Symbol('t'+str(i+1))))*sp.Symbol("t"+str(k+1)+"'")
+                C[i,j]+=sp.expand((1/2)*(sp.diff(A[i,j],sp.Symbol('t'+str(k+1)))+sp.diff(A[i,k],sp.Symbol('t'+str(j+1)))-sp.diff(A[j,k],sp.Symbol('t'+str(i+1))))*sp.Symbol("t"+str(k+1)+"'"))
     return(sp.expand(C))
 
 ## Computation of the potential energy and vector
@@ -232,7 +227,7 @@ def EnergiePot(i):
         for i in range(i):
             T*=Matrices[i]
             
-        E+=(G*T*M)[0]
+        E+=sp.expand((G*T*M)[0])
         return(sp.expand(E))
         
 #Potential energy of the robot and its tool
@@ -246,7 +241,7 @@ def EnergiePotTot():
 def VecteurGravite(E):
     Q = sp.zeros(7,1)
     for i in range(7):
-        Q[i,0]=sp.diff(E,sp.Symbol('t'+str(i+1)))
+        Q[i,0]=sp.expand(sp.diff(E,sp.Symbol('t'+str(i+1))))
     return(Q)
         
 ## Computation of the friction term
@@ -307,26 +302,45 @@ def ModeleDynamique():
 
 
 ## MAIN
-        
-def Main():
-    print("Computing geometry")
-    Matrices, InvMatrices = InitGeo(DHParameters)
-    print("Computing speeds")
-    VitessesTrans,VitessesRot = InitSpeed(Matrices,InvMatrices)  
-    print("Computing kinematic energy")
-    Ecin = EnergieTot()  
-    print("Computing dynamic matrices")
-    A = CorrectifActionneurs(MatriceInertieTot(Ecin))  
-    C=MatriceCoriolis(A) 
-    print("Computing potential energy")
-    Epot = EnergiePotTot() 
-    print("Computing gravity vector")
-    Q = VecteurGravite(Epot)
-    print("Computing friction vector")
-    Frot = Frottement()
-    print("Computing external efforts  vector")
-    Eff = VecteurEfforts(F)
-    print("Computing the global dynamic model")
-    T = ModeleDynamique()
-    
-    
+#Possible amélioration : passer un coup de sp.trigsimp() sur tous les résultats (Attention au temps de calul...)
+
+"""      
+print("Computing geometry")
+Matrices, InvMatrices = InitGeo(DHParameters)
+print("Computing speeds")
+VitessesTrans,VitessesRot = InitSpeed(Matrices,InvMatrices)  
+print("Computing kinematic energy")
+
+Ecin = EnergieTot()  
+print("Computing dynamic matrices")
+A = CorrectifActionneurs(MatriceInertieTot(Ecin))  
+C=MatriceCoriolis(A) 
+print("Computing potential energy")
+Epot = EnergiePotTot() 
+print("Computing gravity vector")
+Q = VecteurGravite(Epot)
+print("Computing friction vector")
+Frot = Frottement()
+print("Computing external efforts  vector")
+Eff = VecteurEfforts(F)
+print("Computing the global dynamic model")
+T = ModeleDynamique()
+"""
+C = np.matrix([[1,0,0,0,0,0,0,0,0,0,0,0],[0,1,0,0,0,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0,0,0,0],[0,0,0,1,0,0,0,0,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,0,1,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,1,0,0],
+[0,0,0,0,0,0,0,0,0,0,1,0],
+[0,0,0,0,0,0,0,0,0,0,0,1],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,-1,2],
+[0,0,0,0,0,0,0,0,0,1,0,3],
+[0,0,0,0,0,0,0,0,0,-2,-3,0]])
+
+D = np.matrix([[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[1,0,0,0,0,0],[0,1,0,0,0,0],[0,0,1,0,0,0],[0,0,0,1,0,0],[0,0,0,0,1,0],[0,0,0,0,0,1],[10,0,0,0,0,0],[0,10,0,0,0,0],[0,0,10,0,0,0],[0,-2,-3,10,0,0],[2,0,4,0,10,0],[3,-4,0,0,0,10],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]])
