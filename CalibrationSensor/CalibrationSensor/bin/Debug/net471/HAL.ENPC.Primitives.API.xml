@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>HAL.ENPC.Primitives</name>
+  </assembly>
+  <members>
+    <member name="M:HAL.ENPC.Control.OnlineController.CreateGeneric(HAL.ENPC.Control.OnlineController@,System.String,System.String,System.Int32,System.Int32,System.Collections.Generic.List{HAL.Control.IControllableObject},System.Collections.Generic.List{HAL.Procedures.Procedure},System.Collections.Generic.List{HAL.Communications.ElectricSignal},System.Collections.Generic.List{HAL.ENPC.Control.OnlineController},HAL.ENPC.Control.OnlineController@)">
+      <summary>Create a generic on-line controller.</summary>
+      <param name="instance">Existing instance to be modified.</param>
+      <param name="alias">Controller alias.</param>
+      <param name="mechanisms">Robot(s) being controlled.</param>
+      <param name="procedure">Procedure(s) executed by the controller.</param>
+      <param name="signal">Signal(s) mapped to the controller.</param>
+      <param name="onlineController">On-line controller.</param>
+      <param name="ipAdress">Controller's IP address.</param>
+      <param name="clientPort">Client port.</param>
+      <param name="receivePort">Receiver port.</param>
+      <param name="subControllers">Sub controllers connected to this on-line controller.</param>
+    </member>
+    <member name="M:HAL.ENPC.Control.OnlineController.CreateEGM(HAL.ENPC.Control.OnlineController@,System.String,System.String,System.Int32,System.Int32,System.Collections.Generic.List{HAL.Control.IControllableObject},System.Collections.Generic.List{HAL.ENPC.Control.OnlineController},System.Collections.Generic.List{HAL.Procedures.Procedure},System.Collections.Generic.List{HAL.Communications.ElectricSignal},HAL.ENPC.Control.OnlineController@)">
+      <summary>Create a ABB on-line controller with EGM protocol.</summary>
+      <param name="instance">Existing instance to be modified.</param>
+      <param name="alias">Controller alias.</param>
+      <param name="mechanisms">Robot(s) being controlled.</param>
+      <param name="procedure">Procedure(s) executed by the controller.</param>
+      <param name="signal">Signal(s) mapped to the controller.</param>
+      <param name="onlineController">On-line controller.</param>
+      <param name="ipAdress">Controller's IP address.</param>
+      <param name="clientPort">Client port.</param>
+      <param name="receivePort">Receiver port.</param>
+      <param name="subControllers">Sub controllers connected to this on-line controller.</param>
+    </member>
+  </members>
+</doc>

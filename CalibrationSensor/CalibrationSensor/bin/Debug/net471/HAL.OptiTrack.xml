@@ -1,0 +1,375 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HAL.OptiTrack</name>
+    </assembly>
+    <members>
+        <member name="T:HAL.OptiTrack.Data.HAL_Marker">
+            <summary>Represents a marker in a frame of data.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Marker.#ctor">
+            <summary>Creates a default marker at the origin.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Marker.#ctor(NatNetML.Marker)">
+            <summary>Creates a marker from a NatNet one.</summary>
+            <param name="marker">Base marker.</param>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_Marker.Position">
+            <summary>Current position.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_Marker.Id">
+            <summary>Identifier.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_Marker.Size">
+            <summary>Radius of marker.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Marker.UpdatePosition(NatNetML.Marker)">
+            <summary>Updates the position of this marker.</summary>
+            <param name="marker">Marker data from frame.</param>
+            <returns>Position of marker.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Marker.Equals(HAL.OptiTrack.Data.HAL_Marker)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Marker.Equals(NatNetML.Marker)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Marker.Equals(System.Object)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="obj">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="T:HAL.OptiTrack.Data.HAL_RigidBody">
+            <summary>Represents a rigid body in a frame of data.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_RigidBody.#ctor">
+            <summary>Creates a default rigid body at the origin.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_RigidBody.#ctor(NatNetML.RigidBody)">
+            <summary>Create a rigid body from an existing descriptor.</summary>
+            <param name="descriptor">Existing descriptor.</param>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_RigidBody.Alias">
+            <summary>Rigid body name.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_RigidBody.Id">
+            <summary>Unique identifier.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_RigidBody.ParentId">
+            <summary>Unique identifier of parent.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_RigidBody.ParentOffset">
+            <summary>Offset from the parent's origin.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_RigidBody.Markers">
+            <summary>Makers that make up this rigid body.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_RigidBody.Location">
+            <summary>Location of rigid body.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_RigidBody.MeanError">
+            <summary>Mean deviation from tracking.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_RigidBody.IsTracked">
+            <summary>Whether this body is actively being tracked.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_RigidBody.Update(NatNetML.RigidBodyData)">
+            <summary>Updates all properties from reported frame data.</summary>
+            <param name="data">Reported data.</param>
+            <returns>Current location of this rigid body.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_RigidBody.UpdateLocation(NatNetML.RigidBodyData)">
+            <summary>Updates the location from reported frame data.</summary>
+            <param name="data">Reported data.</param>
+            <returns>Current location of this rigid body.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_RigidBody.Equals(HAL.OptiTrack.Data.HAL_RigidBody)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_RigidBody.Equals(NatNetML.RigidBody)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_RigidBody.Equals(NatNetML.RigidBodyData)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_RigidBody.Equals(System.Object)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="obj">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="T:HAL.OptiTrack.Data.HAL_Skeleton">
+            <summary>Represents a skeleton in a frame of data.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Skeleton.#ctor">
+            <summary>Creates a default skeleton with no parts.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Skeleton.#ctor(NatNetML.Skeleton,HAL.OptiTrack.Processor)">
+            <summary>Create a skeleton from an existing descriptor.</summary>
+            <param name="descriptor">Existing descriptor.</param>
+            <param name="processor">Processor used to resolve existing bone elements.</param>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_Skeleton.Alias">
+            <summary>Rigid body name.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_Skeleton.Id">
+            <summary>Unique identifier.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Data.HAL_Skeleton.Bones">
+            <summary>Bones which make up this skeleton.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Skeleton.Equals(HAL.OptiTrack.Data.HAL_Skeleton)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Skeleton.Equals(NatNetML.Skeleton)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Skeleton.Equals(NatNetML.SkeletonData)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="other">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Data.HAL_Skeleton.Equals(System.Object)">
+            <summary>Determines whether the specified object is equal to the current object.</summary>
+            <param name="obj">The object to compare with the current object. </param>
+            <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
+        </member>
+        <member name="T:HAL.OptiTrack.Processor">
+            <summary>Processes data from a receiver and maintains the positions of rigid bodies and skeletons.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.Frames">
+            <summary>Queue of frames to process.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.ProcessAllFrames">
+            <summary>
+            Whether every frame should be processed or, in the case of latency, whether only the most recent frame should.
+            This can be used to allow frame skipping and reduce the latency in time critical applications.
+            </summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.IncludeMarkers">
+            <summary>Whether to update rigid bodies from new frame data.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.IncludeRigidBodies">
+            <summary>Whether to update rigid bodies from new frame data.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.IncludeSkeletons">
+            <summary>Whether to update skeletons from new frame data.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.FilterUpdatesByName">
+            <summary>Whether to filter updates from new frame data according to element name.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.FilterUpdatesById">
+            <summary>Whether to filter updates from new frame data according to element id.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.Markers">
+            <summary>Markers in the scene which are not included in a Rigid Body or Skeleton.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.Bodies">
+            <summary>Rigid bodies in the scene.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.Skeletons">
+            <summary>Skeletons in the scene.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Processor.FilteredBodies">
+            <summary>Bodies that are currently tracked and match the filter criterion.</summary>
+        </member>
+        <member name="E:HAL.OptiTrack.Processor.FrameProcessed">
+            <summary>Invoked when a frame has been processed.</summary>
+        </member>
+        <member name="T:HAL.OptiTrack.Processor.FrameProcessedHandler">
+            <summary>Handler capable of being invoked on each processed frame.</summary>
+            <param name="sender">Processor which has undertaken the processing.</param>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.Start">
+            <summary>Starts the continuous processing task.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.StopAndWait">
+            <summary>Stops the continuous processing task and awaits its completion.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.Stop">
+            <summary>Stops the continuous processing task.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.Reset">
+            <summary>Resets all filters and item collections.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.EnqueueFrame(NatNetML.FrameOfMocapData,System.Collections.Generic.IEnumerable{NatNetML.DataDescriptor})">
+            <summary>Enqueues a given frame for processing.</summary>
+            <param name="frame">Frame to process.</param>
+            <param name="dataDescriptors">Associated data descriptors.</param>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.ProcessFrameLoop">
+            <summary>Loops to continually process frame data.</summary>
+            <returns>A task which returns when the processor is stopped.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.UpdateFromFrame(NatNetML.FrameOfMocapData)">
+            <summary>Updates the items according to the last frame on the server.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.ProcessFrame(NatNetML.FrameOfMocapData)">
+            <summary>Processes a given frame and updates items accordingly.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.UpdateDataDescriptors(System.Collections.Generic.IEnumerable{NatNetML.DataDescriptor})">
+            <summary>Retrieves the list of currently visible items and updates lists accordingly.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.EnsureMarker(NatNetML.Marker)">
+            <summary>Adds a marker to the current processor data list.</summary>
+            <param name="descriptor">Marker descriptor.</param>
+            <returns>Marker.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.EnsureRigidBody(NatNetML.RigidBody)">
+            <summary>Adds a rigid body to the current processor data list.</summary>
+            <param name="descriptor">Rigid body descriptor.</param>
+            <returns>Rigid body.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.EnsureSkeleton(NatNetML.Skeleton)">
+            <summary>Adds a skeleton to the current processor data list.</summary>
+            <param name="descriptor">Skeleton descriptor.</param>
+            <returns>Skeleton.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.AddToFilter(System.Int32)">
+            <summary>Ensures that the given id is included in the id filter.</summary>
+            <param name="id">Id to include.</param>
+            <remarks>This will have no effect unless <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesById"/> is active.</remarks>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.AddToFilter(System.String)">
+            <summary>Ensures that the given name is included in the name filter.</summary>
+            <param name="name">Name to include.</param>
+            <remarks>This will have no effect unless <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesByName"/> is active.</remarks>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.AddToFilter(HAL.OptiTrack.Data.HAL_RigidBody)">
+            <summary>Adds this rigid body to all filters.</summary>
+            <param name="rigidBody">Rigid body to include.</param>
+            <remarks>This will have no effect unless <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesById"/> or <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesByName"/> is active.</remarks>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.AddToFilter(HAL.OptiTrack.Data.HAL_Skeleton)">
+            <summary>Adds this skeleton to all filters.</summary>
+            <param name="skeleton">Skeleton to include.</param>
+            <remarks>This will have no effect unless <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesById"/> or <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesByName"/> is active.</remarks>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.RemoveFromFilter(System.Int32)">
+            <summary>Removes the given id from the id filter.</summary>
+            <param name="id">Id to remove.</param>
+            <remarks>This will have no effect unless <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesById"/> is active.</remarks>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.RemoveFromFilter(System.String)">
+            <summary>Removes the given name from the name filter.</summary>
+            <param name="name">Name to remove.</param>
+            <remarks>This will have no effect unless <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesByName"/> is active.</remarks>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.RemoveFromFilter(HAL.OptiTrack.Data.HAL_RigidBody)">
+            <summary>Removes this rigid body from all filters.</summary>
+            <param name="rigidBody">Rigid body to remove.</param>
+            <remarks>This will have no effect unless <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesById"/> or <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesByName"/> is active.</remarks>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.RemoveFromFilter(HAL.OptiTrack.Data.HAL_Skeleton)">
+            <summary>Removes this skeleton, and all its parts, from all filters.</summary>
+            <param name="skeleton">Skeleton to remove.</param>
+            <remarks>This will have no effect unless <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesById"/> or <see cref="P:HAL.OptiTrack.Processor.FilterUpdatesByName"/> is active.</remarks>
+        </member>
+        <member name="M:HAL.OptiTrack.Processor.ClearFilters">
+            <summary>Clears all filters.</summary>
+        </member>
+        <member name="T:HAL.OptiTrack.Receiver">
+            <summary>Controls connections to NatNet clients.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.#ctor">
+            <summary>Creates a default receiver for a server hosted on the same machine.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.#ctor(System.Net.IPAddress,System.Net.IPAddress)">
+            <summary>Creates a default receiver for a server hosted on the same machine.</summary>
+            <param name="serverAddress">IP Address of the server.</param>
+            <param name="localAddress">IP address of this machine on the server's network.</param>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.LocalAddress">
+            <summary>IP address of this machine on the server's network.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.ServerAddress">
+            <summary>IP Address of the server.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.Server">
+            <summary>Connected server from which this is receiving.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.Processor">
+            <summary>Processor dealing with frames received from this client.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.Handlers">
+            <summary>Processing callbacks.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.Markers">
+            <summary>Markers in the scene which are not included in a Rigid Body or Skeleton.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.Bodies">
+            <summary>Rigid bodies in the scene.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.Skeletons">
+            <summary>Skeletons in the scene.</summary>
+        </member>
+        <member name="P:HAL.OptiTrack.Receiver.FilteredBodies">
+            <summary>Bodies that are currently tracked and match the filter criterion.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.Connect">
+            <summary>Connect to the server and begin processing.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.Disconnect">
+            <summary>Disconnects the current client.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.Start">
+            <summary>Starts the reception of data.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.StopAndWait">
+            <summary>Stops the reception of data and awaits the final processing cycle.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.Stop">
+            <summary>Stops the reception of data.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.CreateClient">
+            <summary>Create a new NatNet client, which manages all communication with the NatNet server (e.g. Motive).</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.OnFrameReceived(NatNetML.FrameOfMocapData,NatNetML.NatNetClientML)">
+            <summary>
+            [NatNet] OnFrameReceived will be called when a frame of Mocap
+            data is received from the server application.
+            Note: This callback is on the network service thread, so it is
+            important to return from this function quickly as possible 
+            to prevent incoming frames of data from buffering up on the
+            network socket.
+            Note: "data" is a reference structure to the current frame of data.
+            NatNet re-uses this same instance for each incoming frame, so it should
+            not be kept (the values contained in "data" will become replaced after
+            this callback function has exited).
+            </summary>
+            <param name="data">The actual frame of mocap data</param>
+            <param name="client">The NatNet client instance</param>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.Update">
+            <summary>Updates the current data from the latest available MoCap frame.</summary>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.AddCallback(HAL.OptiTrack.Processor.FrameProcessedHandler)">
+            <summary>Adds a callback to be executed when each frame is processed.</summary>
+            <param name="handler">Handler to execute.</param>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.RemoveCallback(HAL.OptiTrack.Processor.FrameProcessedHandler)">
+            <summary>Removes a callback from the frame processor.</summary>
+            <param name="handler">Handler to remove.</param>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.GetDataDescriptions">
+            <summary>Gets the descriptions of all currently tracked items from the server.</summary>
+            <returns>Descriptions of all currently tracked items.</returns>
+        </member>
+        <member name="M:HAL.OptiTrack.Receiver.Dispose">
+            <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <LangVersion>latest</LangVersion>
+    <TargetFramework>net471</TargetFramework>
+    <Configurations>Debug;Release;ReleaseLocalRefs</Configurations>
+  </PropertyGroup>
+
+  <!--todo https://github.com/dotnet/sdk/issues/1458 Remove when issue closed - SA Tracking-->
+  <Target Name="_ResolveCopyLocalNuGetPackagePdbs" Condition="$(CopyLocalLockFileAssemblies) == true" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).pdb')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != ''&#xD;&#xA; and Exists('%(RootDir)%(Directory)%(Filename).pdb')" />
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).xml')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != ''&#xD;&#xA; and Exists('%(RootDir)%(Directory)%(Filename).xml')" />
+      <ReferenceCopyLocalPaths Include="@(ReferenceCopyLocalPaths->'%(RootDir)%(Directory)%(Filename).API.xml')" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' != ''&#xD;&#xA; and Exists('%(RootDir)%(Directory)%(Filename).API.xml')" />
+    </ItemGroup>
+  </Target>
+  <ItemGroup>
+    <PackageReference Include="HAL.ENPC" Version="1.2.9-beta" />
+    <PackageReference Include="HAL.ENPC.Primitives" Version="1.2.9-beta" />
+  </ItemGroup>
+
+</Project>
