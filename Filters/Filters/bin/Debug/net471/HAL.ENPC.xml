@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>HAL.ENPC</name>
+  </assembly>
+  <members>
+    <member name="M:HAL.ENPC.Control.CartesianControl.MoveTowards(System.Boolean@,HAL.ENPC.Sensoring.SensorData.Mechanism.IMecanismStateEnpc@)">
+      <summary> Move towards a target frame. </summary>
+      <param name="reached">
+      </param>
+      <param name="state">Mechanism state.</param>
+    </member>
+    <member name="M:HAL.ENPC.Control.EgmConstraints.UpdateConstraints(HAL.Objects.Mechanisms.Mechanism,System.Boolean)">
+      <summary> Update mechanism constraints and target constraints. </summary>
+      <param name="mechanism">Mechanism to constraint.</param>
+      <param name="isOrientationFree">
+      </param>
+    </member>
+    <member name="M:HAL.ENPC.Control.TargetTracker.#ctor(HAL.ENPC.Control.CartesianControl,System.String)">
+      <summary>Create a on-line target tracking procedure with a OptiTrack setup. </summary>
+      <param name="cartesianControl">
+      </param>
+      <param name="targetName">OptiTrack tracked Body's name. (The tracked target)</param>
+    </member>
+  </members>
+</doc>
